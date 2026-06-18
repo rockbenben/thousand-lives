@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
-import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome } from './state'
+import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome, applyFlags } from './state'
 import type { TurnResult } from './types'
 
 const sc: Scenario = scenarioSchema.parse({
@@ -372,5 +372,38 @@ describe('rollOutcome 加权分支', () => {
   it('rng 落在后段取第二项', () => {
     // rng()=0.9 → 0.9*4=3.6 > 1 → 第二项
     expect(rollOutcome(choice, () => 0.9)?.effects).toEqual({ hp: 5 })
+  })
+})
+
+describe('applyFlags 印记增减', () => {
+  it('并入新印记（去重去空）、移除指定印记', () => {
+    expect(applyFlags(['吉', '凶'], ['吉', '福'], ['凶'])).toEqual(['吉', '福'])
+    expect(applyFlags([], ['  '], [])).toEqual([])
+  })
+})
+
+describe('applyChoice 整合 outcomes/flags', () => {
+  const sc2: Scenario = scenarioSchema.parse({
+    id: 'i', title: 'I', emoji: '🎯', intro: '开局',
+    attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
+    maxTurns: 5, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
+  })
+  const turnOut = (): TurnResult => ({
+    narrative: '剧情', summary: '摘要',
+    choices: [{ text: '赌', effects: {}, outcomes: [
+      { weight: 1, effects: { hp: 10 }, flagsSet: ['吉'] },
+    ] }],
+  })
+  it('outcomes 分支应用 effects 与 flags，且跳过命运无常缩放', () => {
+    const st = applyChoice(sc2, initState(sc2, undefined, undefined, 'local'), turnOut(), 0, () => 0)
+    expect(st.attributes.hp).toBe(60)        // 10 原值，未被放大
+    expect(st.flags).toEqual(['吉'])
+  })
+  it('flagsClear 移除印记', () => {
+    let st = initState(sc2, undefined, undefined, 'local')
+    st = { ...st, flags: ['吉', '凶'] }
+    const tr: TurnResult = { narrative: 'n', summary: 's',
+      choices: [{ text: 'c', effects: {}, flagsClear: ['凶'] }] }
+    expect(applyChoice(sc2, st, tr, 0).flags).toEqual(['吉'])
   })
 })

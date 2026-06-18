@@ -95,6 +95,7 @@ export function checkEnding(
   sc: Scenario,
   attrs: Record<string, number>,
   completedTurns: number,
+  flags: string[] = [],
 ): Ending | null {
   const dead = sc.attributes.filter(
     (a) => a.deathBelow !== undefined && attrs[a.key] <= a.deathBelow,
@@ -108,14 +109,14 @@ export function checkEnding(
         c.kind === 'cmp' &&
         c.op === '<=' &&
         dead.some((a) => c.attr === a.key && c.value <= a.deathBelow!) &&
-        evalCondition(c, attrs, completedTurns, sc.maxTurns)
+        evalCondition(c, attrs, completedTurns, sc.maxTurns, flags)
       )
     })
     if (custom) return { tone: custom.tone, reason: custom.condition }
     return { tone: '死亡', reason: `${dead[0].name}耗尽` }
   }
   for (const e of sc.endings) {
-    if (evalCondition(parseCondition(e.condition), attrs, completedTurns, sc.maxTurns)) {
+    if (evalCondition(parseCondition(e.condition), attrs, completedTurns, sc.maxTurns, flags)) {
       return { tone: e.tone, reason: e.condition }
     }
   }
@@ -158,6 +159,17 @@ export function rollFortune(
   return { effects: scaled, twist: pool[Math.floor(rng() * pool.length) % pool.length] }
 }
 
+// 应用印记增减：先去掉 clear，再并入 set（去重）
+export function applyFlags(flags: string[], set?: string[], clear?: string[]): string[] {
+  const cleared = new Set((clear ?? []).map((s) => s.trim()).filter(Boolean))
+  const kept = flags.filter((f) => !cleared.has(f))
+  for (const raw of set ?? []) {
+    const f = raw.trim()
+    if (f && !kept.includes(f)) kept.push(f)
+  }
+  return kept
+}
+
 // 加权分支：无 outcomes 返回 null；否则按 weight 加权掷骰取一
 export function rollOutcome(choice: Choice, rng: () => number): Outcome | null {
   const outs = choice.outcomes
@@ -180,29 +192,58 @@ export function applyChoice(
 ): GameState {
   const choice = turnRes.choices[choiceIdx]
   if (!choice) throw new Error(`选项不存在: ${choiceIdx}`)
-  const { effects, twist } = rng
-    ? rollFortune(choice.effects, rng)
-    : { effects: choice.effects, twist: undefined }
-  // 本回合 effect（已含命运无常缩放）叠加每回合衰减，一次性结算
-  const attributes = clampEffects(sc, st.attributes, mergeEffects(effects, decayEffects(sc)), st.flags)
+  const flags0 = st.flags ?? []
+
+  // 有 outcomes 则掷骰取一分支（跳过命运无常）；否则走旧 effects + 命运无常
+  const picked = rng ? rollOutcome(choice, rng) : (choice.outcomes?.[0] ?? null)
+  let baseEffects: Record<string, number>
+  let twist: string | undefined
+  let setFlags = choice.flagsSet
+  let clearFlags = choice.flagsClear
+  let endTone = choice.endTone
+  let reaction = choice.reaction
+  let itemsGained = turnRes.itemsGained
+  let itemsLost = turnRes.itemsLost
+  if (picked) {
+    baseEffects = picked.effects ?? {}
+    setFlags = picked.flagsSet ?? setFlags
+    clearFlags = picked.flagsClear ?? clearFlags
+    endTone = picked.endTone ?? endTone
+    reaction = picked.reaction ?? reaction
+    if (picked.itemsGained) itemsGained = picked.itemsGained
+    if (picked.itemsLost) itemsLost = picked.itemsLost
+  } else if (rng) {
+    const f = rollFortune(choice.effects, rng)
+    baseEffects = f.effects
+    twist = f.twist
+  } else {
+    baseEffects = choice.effects
+  }
+
+  const attributes = clampEffects(sc, st.attributes, mergeEffects(baseEffects, decayEffects(sc)), flags0)
+  const flags = applyFlags(flags0, setFlags, clearFlags)
   const history = [
     ...st.history,
     {
       narrative: turnRes.narrative,
       choiceText: choice.text,
       summary: turnRes.summary,
-      ...(choice.reaction ? { reaction: choice.reaction } : {}),
+      ...(reaction ? { reaction } : {}),
       ...(twist ? { twist } : {}),
     },
   ]
+  const ended = endTone
+    ? { tone: endTone, reason: 'forced' }
+    : checkEnding(sc, attributes, history.length, flags) ?? undefined
   return {
     ...st,
     attributes,
+    flags,
     history,
-    inventory: applyItems(st.inventory ?? [], turnRes),
+    inventory: applyItems(st.inventory ?? [], { ...turnRes, itemsGained, itemsLost }),
     memory: applyMemory(st.memory, turnRes.memoryAdd),
     goalProgress: nextProgress(st.goalProgress, turnRes.goalProgress),
-    ended: checkEnding(sc, attributes, history.length) ?? undefined,
+    ended,
   }
 }
 
