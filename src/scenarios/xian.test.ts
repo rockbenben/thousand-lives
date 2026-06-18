@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { builtinScenarios } from './index'
 import { clampEffects, initState, checkEnding, applyChoice } from '../engine/state'
 import { parseCondition } from '../engine/condition'
+import { localTurn } from '../engine/local'
 
 const xian = builtinScenarios.find((s) => s.id === 'xian')!
 
@@ -65,6 +66,25 @@ describe('xian 跳出三界门控', () => {
     // cult 92, dao 88，但无化神印记 → 不触发跳出三界
     const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴'])
     expect(r?.tone === '跳出三界·不在五行').toBe(false)
+  })
+})
+
+describe('xian 身份起点分化', () => {
+  // 第 1 回合（history 为空）抽中各身份起点事件的概率（高权重应≈必中）
+  const startHitRate = (flag: string) => {
+    const base = initState(xian, undefined, undefined, 'local')
+    const st = { ...base, flags: [flag], history: [] as typeof base.history }
+    let hit = 0
+    for (let i = 0; i < 300; i++) {
+      const tr = localTurn(xian, st, () => Math.random())
+      if (tr.summary.includes(`${flag}起点`)) hit++
+    }
+    return hit / 300
+  }
+  it('三身份第1回合高概率命中各自起点事件', () => {
+    expect(startHitRate('魔道')).toBeGreaterThan(0.9)
+    expect(startHitRate('仙门')).toBeGreaterThan(0.9)
+    expect(startHitRate('散修')).toBeGreaterThan(0.9)
   })
 })
 
