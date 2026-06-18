@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#0e1430"/>
+  <!-- 星盘外环(极淡鎏金) -->
+  <circle cx="16" cy="13.5" r="7.4" fill="none" stroke="#cba85a" stroke-width="0.7" opacity="0.55"/>
+  <!-- 命/星盘指针:竖长金芒 + 横短,朱砂心 -->
+  <path d="M16 5.4 L17.15 13.2 L16 15 L14.85 13.2 Z" fill="#ecd28f"/>
+  <path d="M9.6 13.3 L16 12.3 L22.4 13.3 L16 14.3 Z" fill="#cba85a"/>
+  <circle cx="16" cy="13.3" r="1.25" fill="#c9503a"/>
+  <!-- 翻开的命书 -->
+  <path d="M4.6 21 Q10.4 18.7 15.4 21 L15.4 27.4 Q10.4 25.1 4.6 27.4 Z" fill="#cba85a"/>
+  <path d="M27.4 21 Q21.6 18.7 16.6 21 L16.6 27.4 Q21.6 25.1 27.4 27.4 Z" fill="#ecd28f"/>
+  <!-- 书脊 -->
+  <rect x="15.4" y="20.4" width="1.2" height="7.2" rx="0.4" fill="#0e1430"/>
+  <!-- 页面金线 -->
+  <path d="M6.8 22.4 Q10.6 21 13.6 22.4 M6.8 24.2 Q10.6 22.8 13.6 24.2" stroke="#0e1430" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <path d="M18.4 22.4 Q21.4 21 25.2 22.4 M18.4 24.2 Q21.4 22.8 25.2 24.2" stroke="#0e1430" stroke-width="0.5" fill="none" opacity="0.45"/>
+</svg>
