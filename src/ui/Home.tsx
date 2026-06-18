@@ -175,6 +175,26 @@ export function Home({
           e.target.value = ''
         }}
       />
+
+      <footer className="colophon">
+        <span className="colophon-rule" aria-hidden="true" />
+        <a
+          className="colophon-mark"
+          href="https://github.com/rockbenben/thousand-lives"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="在 GitHub 查看并共撰千世书开源仓库"
+        >
+          <span className="colophon-seal" aria-hidden="true">
+            <span>开</span>
+            <span>源</span>
+          </span>
+          <span className="colophon-meta">
+            <span className="colophon-invite">在 GitHub 上共撰此书</span>
+            <span className="colophon-repo">rockbenben / thousand-lives</span>
+          </span>
+        </a>
+      </footer>
     </div>
   )
 }
