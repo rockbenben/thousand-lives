@@ -155,3 +155,10 @@ describe('xian 仙门弧', () => {
     expect(evs.length).toBeGreaterThanOrEqual(3)
   })
 })
+
+describe('xian 散修弧', () => {
+  it('存在 requires has(散修) 的支线事件（≥3）', () => {
+    const evs = (xian.localEvents ?? []).filter((e) => e.requires?.includes('散修'))
+    expect(evs.length).toBeGreaterThanOrEqual(3)
+  })
+})
