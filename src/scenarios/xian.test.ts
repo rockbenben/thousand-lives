@@ -42,6 +42,11 @@ describe('xian 结局重挂', () => {
   it('飞升不受寿元门控，到点即触', () => {
     expect(checkEnding(xian, { cultivation: 96, daoHeart: 75, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])?.tone).toBe('渡劫飞升·得道成仙')
   })
+  it('飞升需修为>=96，仅到化神+中等道心不触发', () => {
+    // 有化神印记、道心 50、修为仅 90 → 不应飞升（应为 null 或非飞升结局）
+    const r = checkEnding(xian, { cultivation: 90, daoHeart: 50, lifespan: 50 }, 40, ['筑基','金丹','元婴','化神'])
+    expect(r?.tone === '渡劫飞升·得道成仙').toBe(false)
+  })
 })
 
 describe('xian 守护', () => {
