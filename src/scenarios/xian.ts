@@ -12,6 +12,13 @@ export const xian: Scenario = {
       name: '修为',
       initial: 10,
       max: 100,
+      ceiling: 20,
+      ceilingUnlocks: [
+        { flag: '筑基', max: 45 },
+        { flag: '金丹', max: 70 },
+        { flag: '元婴', max: 90 },
+        { flag: '化神', max: 100 },
+      ],
       bands: [
         { upTo: 20, label: '炼气期', severity: 'low', directive: '你灵力浅薄、神通有限，凡间术法尚不能尽展，强敌当前唯有智取或避走。' },
         { upTo: 45, label: '筑基期', severity: 'normal' },
@@ -42,6 +49,13 @@ export const xian: Scenario = {
       // 寿元随光阴每载自然流逝（-2/载）：一世三十载纯靠岁月正好油尽，
       // 想活过全程须主动突破/灵丹/夺造化续命——「修仙即与天争寿」的核心张力。
       decayPerTurn: 2,
+      ceiling: 60,
+      ceilingUnlocks: [
+        { flag: '筑基', max: 75 },
+        { flag: '金丹', max: 88 },
+        { flag: '元婴', max: 96 },
+        { flag: '化神', max: 100 },
+      ],
       bands: [
         { upTo: 15, label: '寿元将尽', severity: 'critical', directive: '大限将至，叙事中油尽灯枯的死气缠身；至少一个选项是搏命续命的孤注一掷。' },
         { upTo: 40, label: '寿元渐衰', severity: 'low', directive: '气血渐亏、白发暗生，岁月已在催你。' },
