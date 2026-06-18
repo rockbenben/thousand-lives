@@ -148,3 +148,10 @@ describe('xian 魔道弧 + 正道追缉', () => {
       (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes('正道追缉')))).toBe(true)
   })
 })
+
+describe('xian 仙门弧', () => {
+  it('存在 requires has(仙门) 的支线事件（≥3）', () => {
+    const evs = (xian.localEvents ?? []).filter((e) => e.requires?.includes('仙门'))
+    expect(evs.length).toBeGreaterThanOrEqual(3)
+  })
+})
