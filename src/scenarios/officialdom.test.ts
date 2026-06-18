@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { officialdom } from './officialdom'
 import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
+import { buildTurnMessages } from '../engine/prompt'
 
 describe('officialdom 长度与圣眷衰减（70岁荣休）', () => {
   it('maxTurns 扩到 44（进士→70岁荣休）', () => {
@@ -115,5 +116,27 @@ describe('officialdom 隐藏 endTone', () => {
     const idx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone === '站队倾覆·满门抄斩'))
     const next = applyChoice(officialdom, st, tr as any, idx, () => 0.999)
     expect(next.ended?.reason).toBe('forced')
+  })
+})
+
+describe('officialdom AI 模式', () => {
+  it('加 ceilingUnlocks+flag 后提示注入官阶印记/封顶/词表', () => {
+    const st = initState(officialdom, officialdom.openings!.find((o) => o.name === '世家子弟'), undefined, 'ai')
+    const sys = buildTurnMessages(officialdom, st).find((m) => m.role === 'system')!.content
+    expect(sys).toContain('印记')
+    expect(sys).toContain('封顶')
+    for (const f of ['知府', '封疆', '九卿', '阁老']) expect(sys).toContain(f)
+    // 隐藏 tone 经词表注入（骤擢入阁 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
+    expect(sys).toContain('骤擢入阁')
+  })
+  it('systemPrompt 含官阶封顶规则与文字狱极稀指导', () => {
+    expect(officialdom.systemPrompt).toContain('官阶')
+    expect(officialdom.systemPrompt).toContain('文字狱')
+  })
+  it('提示不含「共 undefined」与「第 24 年」', () => {
+    const st = initState(officialdom, officialdom.openings![0], undefined, 'ai')
+    const msgs = buildTurnMessages(officialdom, st).map((m) => m.content).join('\n')
+    expect(msgs).not.toContain('undefined')
+    expect(msgs).not.toContain('第 24 年')
   })
 })
