@@ -101,7 +101,7 @@ export const xian: Scenario = {
         '九霄之上仙门洞开，垂下万道祥光将你温柔接引。你回望脚下这片生你养你、磨你也成全你的天地，俯身一揖，而后衣袂翻飞，踏光而上。雷劫的焦痕尚在身上，你却已不觉痛——脱去这一身凡骨，连呼吸都化作清风。天门在身后缓缓阖拢，自此你超脱轮回，是这方天地走出去的，第一缕逍遥仙气。',
     },
     {
-      condition: 'cultivation>=90 & daoHeart>=85',
+      condition: 'has(化神) & daoHeart>=85',
       tone: '跳出三界·不在五行',
       epilogue:
         '你盘膝悬坐于一座孤峰绝顶，青衫被山风掀起，双目微阖、面容澄澈如琉璃。身周星河流转、云海翻涌，万象在你身侧奔涌，你却纹丝不动，唇边噙着一抹空明辽远的笑——三界五行，再也圈不住你。',
@@ -1757,7 +1757,7 @@ export const xian: Scenario = {
       ],
       summary: '化神机缘',
       once: true,
-      requires: 'has(元婴) & cultivation>=86',
+      requires: 'has(元婴) & cultivation>=87',
       minTurn: 30,
       weight: 2.5,
     },

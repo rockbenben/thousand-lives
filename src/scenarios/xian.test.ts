@@ -55,6 +55,19 @@ describe('xian 守护', () => {
   })
 })
 
+describe('xian 跳出三界门控', () => {
+  it('has(化神) & daoHeart>=85 → 跳出三界·不在五行', () => {
+    // cult 92, dao 88, 持化神印记 → 触发跳出三界
+    const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴', '化神'])
+    expect(r?.tone).toBe('跳出三界·不在五行')
+  })
+  it('无化神印记时不触发跳出三界', () => {
+    // cult 92, dao 88，但无化神印记 → 不触发跳出三界
+    const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴'])
+    expect(r?.tone === '跳出三界·不在五行').toBe(false)
+  })
+})
+
 describe('xian 突破机缘', () => {
   it('四个核心突破机缘事件均存在（筑基/金丹/元婴/化神）', () => {
     const count = (xian.localEvents ?? []).filter(
