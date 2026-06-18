@@ -162,3 +162,18 @@ describe('xian 散修弧', () => {
     expect(evs.length).toBeGreaterThanOrEqual(3)
   })
 })
+
+describe('xian 因果种子', () => {
+  const seeds = ['善缘老者', '宿怨仇敌', '传艺之徒', '受恩散修']
+  it('每组种子都有埋种与回收事件', () => {
+    for (const s of seeds) {
+      const plant = (xian.localEvents ?? []).find((e) =>
+        e.choices.some((c) => (c.outcomes ?? []).some((o) => (o.flagsSet ?? []).includes(s))))
+      const reap = (xian.localEvents ?? []).find((e) => e.requires?.includes(s))
+      expect(plant, `${s} 埋种`).toBeTruthy()
+      expect(reap, `${s} 回收`).toBeTruthy()
+      expect(reap!.choices.some((c) => (c.outcomes ?? []).length >= 2 || (c.flagsClear ?? []).includes(s) ||
+        (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes(s))), `${s} 回收三态/清除`).toBe(true)
+    }
+  })
+})
