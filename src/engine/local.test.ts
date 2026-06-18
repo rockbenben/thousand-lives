@@ -105,6 +105,27 @@ describe('local engine', () => {
   })
 })
 
+describe('localTurn 透传新字段', () => {
+  const sc = scenarioSchema.parse({
+    id: 'p', title: 'P', emoji: '🎴', intro: '开局',
+    attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
+    maxTurns: 30, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
+    localEvents: [{
+      narrative: '机缘', summary: '奇遇',
+      choices: [
+        { text: '赌', effects: {}, outcomes: [{ weight: 1, effects: { hp: 5 }, flagsSet: ['吉'] }] },
+        { text: '走凶地', effects: {}, endTone: '暴毙' },
+      ],
+    }],
+  })
+  it('TurnResult 的 choices 携带 outcomes 与 endTone', () => {
+    const st = initState(sc, undefined, undefined, 'local')
+    const tr = localTurn(sc, st, () => 0)
+    expect(tr.choices[0].outcomes?.[0].flagsSet).toEqual(['吉'])
+    expect(tr.choices[1].endTone).toBe('暴毙')
+  })
+})
+
 describe('pickLocalEvent 印记门控', () => {
   const sc = scenarioSchema.parse({
     id: 'g', title: 'G', emoji: '🎴', intro: '开局',

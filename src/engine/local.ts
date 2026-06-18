@@ -87,7 +87,15 @@ export function localTurn(sc: Scenario, st: GameState, rng: Rng = Math.random): 
   }
   return {
     narrative: e.narrative,
-    choices: e.choices.map((c) => ({ text: c.text, effects: c.effects, reaction: c.reaction })),
+    choices: e.choices.map((c) => ({
+      text: c.text,
+      effects: c.effects,
+      reaction: c.reaction,
+      ...(c.outcomes ? { outcomes: c.outcomes } : {}),
+      ...(c.flagsSet ? { flagsSet: c.flagsSet } : {}),
+      ...(c.flagsClear ? { flagsClear: c.flagsClear } : {}),
+      ...(c.endTone ? { endTone: c.endTone } : {}),
+    })),
     summary: e.summary,
     itemsGained: e.itemsGained,
     itemsLost: e.itemsLost,
