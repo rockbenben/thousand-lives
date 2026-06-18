@@ -12,6 +12,13 @@ export const wuxia: Scenario = {
       name: '武功',
       initial: 12,
       max: 100,
+      ceiling: 30,
+      ceilingUnlocks: [
+        { flag: '入流', max: 50 },
+        { flag: '一流', max: 70 },
+        { flag: '绝顶', max: 88 },
+        { flag: '宗师', max: 100 },
+      ],
       bands: [
         { upTo: 20, label: '三脚猫', severity: 'low', directive: '你武艺稀松，强敌当前只能智取或逃命，硬拼必败。' },
         { upTo: 45, label: '小有身手', severity: 'normal' },
