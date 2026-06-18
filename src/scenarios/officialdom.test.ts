@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { officialdom } from './officialdom'
-import { clampEffects } from '../engine/state'
+import { clampEffects, initState } from '../engine/state'
 
 describe('officialdom 长度与圣眷衰减（70岁荣休）', () => {
   it('maxTurns 扩到 44（进士→70岁荣休）', () => {
@@ -34,5 +34,19 @@ describe('officialdom 权势官阶封顶', () => {
   it('圣眷与官声不设官阶封顶', () => {
     expect(clampEffects(officialdom, { favor: 95 }, { favor: 50 }, []).favor).toBe(100)
     expect(clampEffects(officialdom, { name: 95 }, { name: 50 }, []).name).toBe(100)
+  })
+})
+
+describe('officialdom 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    for (const n of ['寒门进士', '世家子弟', '内廷养子']) {
+      const op = officialdom.openings!.find((o) => o.name === n)
+      expect(op?.flag).toBe(n)
+      expect(initState(officialdom, op).flags).toContain(n)
+    }
+  })
+  it('内廷养子专属事件带 has(内廷养子) 门控', () => {
+    const ev = (officialdom.localEvents ?? []).find((e) => e.summary === '内廷阴影')
+    expect(ev?.requires).toContain('has(内廷养子)')
   })
 })
