@@ -121,7 +121,7 @@ export const wuxia: Scenario = {
         '电光石火的一瞬，那困扰你多年的滞涩忽然尽数化开——刀光与心念合而为一，你看清了武学最深处那一线玄机。那一刻你周身气劲流转如江河入海，举手投足皆暗合天地至理，再无半分窒碍。世人只道你一夜之间脱胎换骨，却不知你是踩中了那道千载难逢、可遇不可求的奇缘。从此剑道通玄，江湖再无人能解你这一剑。',
     },
     {
-      condition: 'fame>=96',
+      condition: 'maxTurns & fame>=96',
       tone: '侠之大者·万古流芳',
       epilogue:
         '你白发苍苍，立在曾被你救下的那座小城城头，城下百姓自发摆开香案、燃起香火遥遥相拜。一名说书人在茶楼里拍响醒木，正讲到你当年仗刀救人的那一幕，满堂听客屏息。你倚着城垛，望着这人间烟火，眼角是欣慰的泪。',
@@ -695,6 +695,7 @@ export const wuxia: Scenario = {
       keyMoment: true,
       requires: 'gongfu>=26',
       minTurn: 4,
+      weight: 3,
       itemsGained: ['武学秘籍'],
     },
     {
@@ -709,6 +710,7 @@ export const wuxia: Scenario = {
       requires: 'has(入流) & gongfu>=46',
       keyMoment: true,
       minTurn: 12,
+      weight: 3,
     },
     {
       narrative:
@@ -1196,7 +1198,7 @@ export const wuxia: Scenario = {
       requires: 'has(一流) & gongfu>=66',
       keyMoment: true,
       minTurn: 16,
-      weight: 1.1,
+      weight: 3,
     },
     {
       narrative:
