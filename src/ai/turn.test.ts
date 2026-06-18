@@ -137,6 +137,24 @@ describe('stripChoiceList', () => {
   })
 })
 
+describe('AI 回合含印记/强制结局字段', () => {
+  const wrap = (choice: object) => JSON.stringify({
+    narrative: '你立于山门之前，灵气稀薄。',
+    choices: [choice, { text: '另寻他途', effects: {} }],
+    summary: '山门前',
+  })
+  it('flagsSet/flagsClear/endTone 被保留', () => {
+    const r = parseTurnResult(wrap({ text: '凝结金丹', effects: { cultivation: 6 }, flagsSet: ['金丹'], endTone: '仙缘垂青·一步登天' }))
+    expect(r.choices[0].flagsSet).toEqual(['金丹'])
+    expect(r.choices[0].endTone).toBe('仙缘垂青·一步登天')
+  })
+  it('非法 flagsSet（字符串）被容错为 undefined，整回合仍解析', () => {
+    const r = parseTurnResult(wrap({ text: 'x', effects: {}, flagsSet: '金丹' }))
+    expect(r.choices[0].flagsSet).toBeUndefined()
+    expect(r.choices.length).toBe(2)
+  })
+})
+
 describe('visibleNarrative', () => {
   it('截掉已开始输出的 JSON', () => {
     expect(visibleNarrative('正文写到一半{"choices":[{"te')).toBe('正文写到一半')

@@ -5,6 +5,10 @@ import type { TurnResult } from '../engine/types'
 const choiceSchema = z.object({
   text: z.string().min(1),
   effects: z.record(z.string(), z.number()).default({}),
+  // AI 可授印记 / 触发隐藏结局；非必要字段，非法值容错为 undefined，不拖垮整回合解析
+  flagsSet: z.array(z.string().min(1)).optional().catch(undefined),
+  flagsClear: z.array(z.string().min(1)).optional().catch(undefined),
+  endTone: z.string().min(1).optional().catch(undefined),
 })
 
 // prompt 契约要求 3~4 个选项，这里刻意放宽到 2~6：
