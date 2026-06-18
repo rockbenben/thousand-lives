@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { wuxia } from './wuxia'
-import { clampEffects } from '../engine/state'
+import { clampEffects, initState } from '../engine/state'
 
 describe('wuxia 武功境界封顶', () => {
   it('无境界印记时武功封顶 30', () => {
@@ -21,5 +21,24 @@ describe('wuxia 武功境界封顶', () => {
   it('性命与侠名不设境界封顶（高于任何印记仍可到 max）', () => {
     expect(clampEffects(wuxia, { life: 95 }, { life: 50 }, []).life).toBe(100)
     expect(clampEffects(wuxia, { fame: 95 }, { fame: 50 }, []).fame).toBe(100)
+  })
+})
+
+describe('wuxia 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    const names = ['市井孤儿', '名门弟子', '灭门遗孤']
+    for (const n of names) {
+      const op = wuxia.openings!.find((o) => o.name === n)
+      expect(op?.flag).toBe(n)
+      expect(initState(wuxia, op).flags).toContain(n)
+    }
+  })
+  it('名门专属事件带 has(名门弟子) 门控', () => {
+    const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '师兄刁难')
+    expect(ev?.requires).toContain('has(名门弟子)')
+  })
+  it('灭门遗孤专属事件带 has(灭门遗孤) 门控', () => {
+    const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '残谱现世')
+    expect(ev?.requires).toContain('has(灭门遗孤)')
   })
 })
