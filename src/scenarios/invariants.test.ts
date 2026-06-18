@@ -93,8 +93,11 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
       const n: Norm = { mt: false, ge: new Map(), le: new Map() }
       for (const c of clausesOf(cond)) {
         if (c.kind === 'maxTurns') n.mt = true
-        else if (c.op === '>=') n.ge.set(c.attr, Math.max(n.ge.get(c.attr) ?? -Infinity, c.value))
-        else n.le.set(c.attr, Math.min(n.le.get(c.attr) ?? Infinity, c.value))
+        else if (c.kind === 'cmp') {
+          if (c.op === '>=') n.ge.set(c.attr, Math.max(n.ge.get(c.attr) ?? -Infinity, c.value))
+          else n.le.set(c.attr, Math.min(n.le.get(c.attr) ?? Infinity, c.value))
+        }
+        // 忽略 has/!has 子句
       }
       return n
     }

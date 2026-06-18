@@ -66,3 +66,20 @@ describe('复合条件（与）', () => {
     expect(conditionAttrs(parseCondition('maxTurns'))).toEqual([])
   })
 })
+
+describe('has() 印记条件', () => {
+  it('解析并判定 has / !has', () => {
+    expect(evalCondition(parseCondition('has(金丹)'), {}, 0, 30, ['金丹'])).toBe(true)
+    expect(evalCondition(parseCondition('has(金丹)'), {}, 0, 30, [])).toBe(false)
+    expect(evalCondition(parseCondition('!has(结怨)'), {}, 0, 30, [])).toBe(true)
+    expect(evalCondition(parseCondition('!has(结怨)'), {}, 0, 30, ['结怨'])).toBe(false)
+  })
+  it('与属性子句用 & 组合', () => {
+    const c = parseCondition('hp>=10 & has(金丹)')
+    expect(evalCondition(c, { hp: 20 }, 0, 30, ['金丹'])).toBe(true)
+    expect(evalCondition(c, { hp: 20 }, 0, 30, [])).toBe(false)
+  })
+  it('maxTurns 为 undefined 时 maxTurns 子句恒 false（涌现剧本）', () => {
+    expect(evalCondition(parseCondition('maxTurns'), {}, 99, undefined, [])).toBe(false)
+  })
+})
