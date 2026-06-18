@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { builtinScenarios } from './index'
 import { clampEffects, initState, checkEnding } from '../engine/state'
+import { parseCondition } from '../engine/condition'
 
 const xian = builtinScenarios.find((s) => s.id === 'xian')!
 
@@ -40,5 +41,11 @@ describe('xian 结局重挂', () => {
   })
   it('飞升不受寿元门控，到点即触', () => {
     expect(checkEnding(xian, { cultivation: 96, daoHeart: 75, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])?.tone).toBe('渡劫飞升·得道成仙')
+  })
+})
+
+describe('xian 守护', () => {
+  it('结局条件全部可解析（含 has()）', () => {
+    for (const e of xian.endings) expect(() => parseCondition(e.condition)).not.toThrow()
   })
 })
