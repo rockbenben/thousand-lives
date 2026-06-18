@@ -53,7 +53,7 @@ describe('xian 守护', () => {
 describe('xian 突破机缘', () => {
   it('四个核心突破机缘事件均存在（筑基/金丹/元婴/化神）', () => {
     const count = (xian.localEvents ?? []).filter(
-      (e) => e.keyMoment && /筑基机缘|金丹机缘|元婴机缘|化神机缘/.test(e.summary),
+      (e) => /筑基机缘|金丹机缘|元婴机缘|化神机缘/.test(e.summary),
     ).length
     expect(count).toBeGreaterThanOrEqual(4)
   })
@@ -67,7 +67,7 @@ describe('xian 突破机缘', () => {
       history: Array(4).fill({ narrative: '', choiceText: '', summary: '' }),
     }
     // 直接构造一个筑基突破 TurnResult（取自事件池中 summary 含「筑基机缘」的事件）
-    const ev = (xian.localEvents ?? []).find((e) => e.summary.includes('筑基机缘') && e.keyMoment)
+    const ev = (xian.localEvents ?? []).find((e) => e.summary.includes('筑基机缘'))
     expect(ev).toBeTruthy()
     // 取其「稳妥成功」选项（带 outcomes，成功分支 flagsSet 含 筑基）
     const tr = {

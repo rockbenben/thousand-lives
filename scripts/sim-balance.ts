@@ -61,7 +61,9 @@ const strategies: Record<string, (rng: () => number) => Strategy> = {
 function playOne(sc: Scenario, strat: Strategy, rng: () => number) {
   let st = initState(sc, sc.openings?.[0], sc.ambitions?.[0], 'local')
   let guard = 0
-  while (!st.ended && guard++ < sc.maxTurns + 5) {
+  // xian 无 maxTurns（涌现式），上限设 200 防死循环
+  const hardCap = (sc.maxTurns ?? 0) > 0 ? sc.maxTurns + 5 : 200
+  while (!st.ended && guard++ < hardCap) {
     const tr = localTurn(sc, st, rng)
     st = applyChoice(sc, st, tr, strat(sc, st, tr), rng)
   }
@@ -99,17 +101,45 @@ function run(scId: string, games: number, decay: Record<string, number>) {
   console.log(`   致死属性: ${dattrs || '无'}`)
 
   const pct = (n: number) => `${((n / games) * 100).toFixed(1)}%`.padStart(6)
+
+  // 从 flags 提取最高境界（化神>元婴>金丹>筑基>炼气）
+  const highestRealm = (flags: string[] | undefined): string => {
+    const f = flags ?? []
+    if (f.includes('化神')) return '化神'
+    if (f.includes('元婴')) return '元婴'
+    if (f.includes('金丹')) return '金丹'
+    if (f.includes('筑基')) return '筑基'
+    return '炼气'
+  }
+  // 是否飞升（结局基调含「飞升」）
+  const isAscended = (st: ReturnType<typeof playOne>) =>
+    st.ended ? /飞升/.test(st.ended.tone) : false
+
   for (const name of Object.keys(strategies)) {
     const rng = makeRng(0xc0ffee + name.length * 7919)
     const strat = strategies[name](rng)
     let deaths = 0, bad = 0, reachedMax = 0
+    let ascended = 0
+    const realmCount: Record<string, number> = { 化神: 0, 元婴: 0, 金丹: 0, 筑基: 0, 炼气: 0 }
+    const turnBuckets = { lt10: 0, t10_29: 0, t30_59: 0, gte60: 0 }
     for (let i = 0; i < games; i++) {
       const st = playOne(sc, strat, rng)
       if (diedStructurally(sc, st)) deaths++
       if (badEnding(sc, st)) bad++
-      if (st.history.length >= sc.maxTurns) reachedMax++
+      if (sc.maxTurns && st.history.length >= sc.maxTurns) reachedMax++
+      if (isAscended(st)) ascended++
+      realmCount[highestRealm(st.flags)]++
+      const turns = st.history.length
+      if (turns < 10) turnBuckets.lt10++
+      else if (turns < 30) turnBuckets.t10_29++
+      else if (turns < 60) turnBuckets.t30_59++
+      else turnBuckets.gte60++
     }
     console.log(`   [${name.padEnd(7)}] 真死亡 ${pct(deaths)}   坏结局 ${pct(bad)}   活到满期 ${pct(reachedMax)}`)
+    console.log(`             飞升率 ${pct(ascended)}`)
+    console.log(`             收场回合: <10=${pct(turnBuckets.lt10)} 10-29=${pct(turnBuckets.t10_29)} 30-59=${pct(turnBuckets.t30_59)} 60+=${pct(turnBuckets.gte60)}`)
+    const realmStr = Object.entries(realmCount).map(([k, v]) => `${k}=${pct(v)}`).join(' ')
+    console.log(`             最高境界: ${realmStr}`)
   }
 }
 
