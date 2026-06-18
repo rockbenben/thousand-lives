@@ -2141,6 +2141,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '路边老人',
+      once: true,
       weight: 0.9,
     },
     {
@@ -2194,7 +2195,7 @@ export const xian: Scenario = {
           outcomes: [
             {
               weight: 1,
-              effects: { daoHeart: 6 },
+              effects: { daoHeart: 6, lifespan: -2 },
               flagsSet: ['宿怨仇敌'],
               reaction: '你收剑入鞘，转身离去。仇家呆愣地望着你的背影，久久说不出话。你心里那口气，不知是散了，还是留着的。',
             },
@@ -2207,6 +2208,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '放过仇敌',
+      once: true,
       minTurn: 6,
       weight: 0.9,
     },
@@ -2274,6 +2276,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '收徒传艺',
+      once: true,
       minTurn: 5,
       weight: 0.9,
     },
@@ -2341,6 +2344,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '施恩散修',
+      once: true,
       weight: 0.9,
     },
     {

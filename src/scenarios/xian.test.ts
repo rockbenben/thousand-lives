@@ -172,8 +172,9 @@ describe('xian 因果种子', () => {
       const reap = (xian.localEvents ?? []).find((e) => e.requires?.includes(s))
       expect(plant, `${s} 埋种`).toBeTruthy()
       expect(reap, `${s} 回收`).toBeTruthy()
-      expect(reap!.choices.some((c) => (c.outcomes ?? []).length >= 2 || (c.flagsClear ?? []).includes(s) ||
-        (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes(s))), `${s} 回收三态/清除`).toBe(true)
+      const clears = reap!.choices.some((c) => (c.flagsClear ?? []).includes(s)) ||
+        reap!.choices.some((c) => (c.outcomes ?? []).length > 0 && (c.outcomes ?? []).every((o) => (o.flagsClear ?? []).includes(s)))
+      expect(clears, `${s} 回收清除印记`).toBe(true)
     }
   })
 })
