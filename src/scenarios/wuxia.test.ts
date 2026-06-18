@@ -1,6 +1,29 @@
 import { describe, it, expect } from 'vitest'
 import { wuxia } from './wuxia'
 import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
+import { buildTurnMessages } from '../engine/prompt'
+
+describe('wuxia AI 模式', () => {
+  it('加 ceilingUnlocks+flag 后 scenarioUsesFlags 生效，提示注入印记/境界封顶/词表', () => {
+    const st = initState(wuxia, wuxia.openings!.find((o) => o.name === '名门弟子'), undefined, 'ai')
+    const sys = buildTurnMessages(wuxia, st).find((m) => m.role === 'system')!.content
+    expect(sys).toContain('印记')
+    expect(sys).toContain('封顶')
+    // 4 境界词表入提示
+    for (const f of ['入流', '一流', '绝顶', '宗师']) expect(sys).toContain(f)
+    // 隐藏 tone 入提示（走火入魔/奇缘）
+    expect(sys).toContain('走火入魔')
+  })
+  it('systemPrompt 含江湖境界封顶规则与走火入魔极稀指导', () => {
+    expect(wuxia.systemPrompt).toContain('境界')
+    expect(wuxia.systemPrompt).toContain('走火入魔')
+  })
+  it('有 maxTurns，提示用「共 30 载/年」而非「共 undefined」', () => {
+    const st = initState(wuxia, wuxia.openings![0], undefined, 'ai')
+    const msgs = buildTurnMessages(wuxia, st).map((m) => m.content).join('\n')
+    expect(msgs).not.toContain('undefined')
+  })
+})
 
 describe('wuxia 武功境界封顶', () => {
   it('无境界印记时武功封顶 30', () => {
