@@ -21,7 +21,10 @@ const SLOTS_KEY = 'tl.slots'
 const ENDINGS_KEY = 'tl.endings'
 const STATS_KEY = 'tl.stats'
 
+export const SAVE_VERSION = 2
+
 export interface SaveGame {
+  v?: number
   scenario: Scenario
   state: GameState
   pendingTurn: TurnResult | null
@@ -43,6 +46,7 @@ export function validateSaveGame(data: unknown): SaveGame | null {
   try {
     const d = data as SaveGame
     if (!d || typeof d !== 'object') return null
+    if (d.v !== SAVE_VERSION) return null
     scenarioSchema.parse(d.scenario)
     if (!d.state || typeof d.state !== 'object' || !Array.isArray(d.state.history)) return null
     // attributes 必须是非空普通对象——否则进 Play 渲染 state.attributes[key] 直接崩溃(白屏)
@@ -86,7 +90,7 @@ export function loadSave(): SaveGame | null {
 
 export function saveSave(s: SaveGame): void {
   try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(s))
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ ...s, v: SAVE_VERSION }))
   } catch (e) {
     // 配额满等存储失败不应打断游戏：内存中的状态仍然有效，只是刷新后无法恢复
     console.warn('存档写入失败', e)
@@ -162,7 +166,7 @@ function rawSlots(): unknown[] {
 }
 
 export function saveToSlot(name: string, game: SaveGame, now: number): SaveSlot {
-  const slot: SaveSlot = { id: `slot_${now}`, name: name.trim() || '未命名', savedAt: now, game }
+  const slot: SaveSlot = { id: `slot_${now}`, name: name.trim() || '未命名', savedAt: now, game: { ...game, v: SAVE_VERSION } }
   localStorage.setItem(SLOTS_KEY, JSON.stringify([...rawSlots(), slot]))
   return slot
 }

@@ -3,10 +3,11 @@ import {
   loadConfig, saveConfig, loadSave, saveSave, clearSave,
   loadCustomScenarios, addCustomScenario,
   listSlots, saveToSlot, deleteSlot, exportSaveString, parseSaveFile, validateSaveGame,
-  recordEnding, seenEndings,
+  recordEnding, seenEndings, SAVE_VERSION,
   type SaveGame,
 } from './storage'
 import { wasteland } from './scenarios/wasteland'
+import { builtinScenarios } from './scenarios'
 import { initState } from './engine/state'
 import type { AIConfig } from './ai/types'
 
@@ -149,7 +150,7 @@ describe('save slots', () => {
 })
 
 describe('export / import', () => {
-  const mk = (): SaveGame => ({ scenario: wasteland, state: initState(wasteland), pendingTurn: null })
+  const mk = (): SaveGame => ({ v: SAVE_VERSION, scenario: wasteland, state: initState(wasteland), pendingTurn: null })
 
   it('导出再导入往返一致', () => {
     const text = exportSaveString(mk())
@@ -185,6 +186,21 @@ describe('export / import', () => {
     const v = validateSaveGame(g)
     expect(v?.pendingTurn).toBeNull()
     expect(v?.scenario.id).toBe('wasteland')
+  })
+})
+
+describe('存档版本作废', () => {
+  const xianSave = (v?: number) => ({
+    v, scenario: builtinScenarios.find((s) => s.id === 'xian'),
+    state: { scenarioId: 'xian', attributes: { cultivation: 10, daoHeart: 50, lifespan: 60 }, history: [] },
+    pendingTurn: null,
+  })
+  it('无版本/旧版本的存档作废为 null', () => {
+    expect(validateSaveGame(xianSave(undefined))).toBeNull()
+    expect(validateSaveGame(xianSave(SAVE_VERSION - 1))).toBeNull()
+  })
+  it('当前版本存档正常加载', () => {
+    expect(validateSaveGame(xianSave(SAVE_VERSION))).not.toBeNull()
   })
 })
 
