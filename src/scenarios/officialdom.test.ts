@@ -94,3 +94,26 @@ describe('officialdom 巅峰结局须 maxTurns（不中途白嫖）', () => {
     expect(['出将入相·名垂青史', '权倾朝野·一手遮天', '万民称颂·青天再世', '简在帝心·恩宠无两', '名相贤臣·配享太庙']).toContain(r!.tone)
   })
 })
+
+describe('officialdom 隐藏 endTone', () => {
+  it('新增致死与天堂隐藏结局存在且为哨兵 favor<=-1', () => {
+    for (const t of ['文字狱·瘐死诏狱', '站队倾覆·满门抄斩', '简在帝心·骤擢入阁']) {
+      const e = officialdom.endings.find((x) => x.tone === t)
+      expect(e?.condition, t).toBe('favor<=-1')
+    }
+  })
+  it('夺嫡选边含低权站队倾覆 endTone 分支', () => {
+    const ev = (officialdom.localEvents ?? []).find((e) => e.summary === '夺嫡选边')!
+    const has = ev.choices.some((c) => (c.outcomes ?? []).some((o) => o.endTone === '站队倾覆·满门抄斩'))
+    expect(has).toBe(true)
+  })
+  it('endTone 强制即终局', () => {
+    let st = initState(officialdom, officialdom.openings!.find((o) => o.name === '世家子弟'))
+    st = { ...st, attributes: { name: 50, power: 50, favor: 50 }, history: Array(12).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (officialdom.localEvents ?? []).find((e) => e.summary === '夺嫡选边')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone === '站队倾覆·满门抄斩'))
+    const next = applyChoice(officialdom, st, tr as any, idx, () => 0.999)
+    expect(next.ended?.reason).toBe('forced')
+  })
+})
