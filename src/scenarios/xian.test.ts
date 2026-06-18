@@ -252,6 +252,11 @@ describe('C 渡劫飞升', () => {
     const safe = ev.choices.find((c) => !(c.outcomes ?? []).some((o) => o.endTone))!
     expect(safe).toBeTruthy() // 避劫选项不带 endTone
   })
+  it('apex 只经 endTone：两 apex condition 恒为哨兵', () => {
+    for (const t of ['渡劫飞升·得道成仙', '跳出三界·不在五行']) {
+      expect(xian.endings.find((e) => e.tone === t)!.condition).toBe('lifespan<=-1')
+    }
+  })
   it('迎劫成功/失败由 endTone 定结局', () => {
     const ev = (xian.localEvents ?? []).find((e) => e.summary === '九重天劫')!
     const st = { ...initState(xian, undefined, undefined, 'local'), flags: ['筑基','金丹','元婴','化神'], attributes: { cultivation: 95, daoHeart: 70, lifespan: 40 } }

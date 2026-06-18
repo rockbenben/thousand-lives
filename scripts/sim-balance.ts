@@ -37,9 +37,13 @@ const strategies: Record<string, (rng: () => number) => Strategy> = {
   random: (rng) => (_sc, _st, tr) => Math.floor(rng() * tr.choices.length),
   survive: () => (sc, st, tr) => {
     const dk = deathAttrs(sc).map((a) => a.key)
+    const lethal = /形神俱灭|横死|暴毙|身死|道消|坐化|羽化|走火/
     let best = 0
     let bestScore = -Infinity
     tr.choices.forEach((c, i) => {
+      // 谨慎玩家避开"有致死结局分支"的赌命选项（如渡天劫的迎劫）
+      const risky = (c.outcomes ?? []).some((o) => o.endTone && lethal.test(o.endTone)) || (c.endTone && lethal.test(c.endTone))
+      if (risky) return
       const minDeath = Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0)))
       const sum = Object.values(c.effects).reduce((s, v) => s + v, 0)
       const score = minDeath * 100 + sum
