@@ -83,7 +83,11 @@ export function buildTurnMessages(
   const bands = currentBands(sc, st.attributes)
   const inventory = st.inventory ?? []
   const lines: string[] = []
-  lines.push(`【第 ${current} ${sc.turnUnit}，共 ${sc.maxTurns} ${sc.turnUnit}】`)
+  lines.push(
+    sc.maxTurns !== undefined
+      ? `【第 ${current} ${sc.turnUnit}，共 ${sc.maxTurns} ${sc.turnUnit}】`
+      : `【第 ${current} ${sc.turnUnit}】`,
+  )
   // 数值 + 命名状态一起给，AI 才能据状态改写而非只看裸数字
   lines.push(
     `【当前状态】${bands.map(({ attr, band }) => `${attr.name} ${st.attributes[attr.key]}（${band.label}）`).join('，')}`,

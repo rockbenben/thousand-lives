@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
+import { builtinScenarios } from '../scenarios'
 import { initState } from './state'
 import { buildTurnMessages, buildEndingMessages } from './prompt'
 import type { GameState, TurnRecord } from './types'
@@ -128,6 +129,22 @@ describe('buildTurnMessages', () => {
     // 未传场景时不应凭空出现该标记（向后兼容）
     const [, noScene] = buildTurnMessages(sc, withHistory(1), '我去贿赂守卫')
     expect(noScene.content).not.toContain('【当前场景】')
+  })
+})
+
+describe('涌现剧本 prompt header', () => {
+  it('xian（无 maxTurns）的提示不含 undefined', () => {
+    const xian = builtinScenarios.find((s) => s.id === 'xian')!
+    const msgs = buildTurnMessages(xian, initState(xian, xian.openings![0], undefined, 'ai'))
+    const user = msgs.find((m) => m.role === 'user')!.content
+    expect(user).not.toContain('undefined')
+    expect(user).toContain(`第 1 ${xian.turnUnit}`)
+  })
+  it('有 maxTurns 的剧本仍标出总数', () => {
+    const sg = builtinScenarios.find((s) => s.id === 'spy')! // spy 有 maxTurns
+    const msgs = buildTurnMessages(sg, initState(sg, undefined, undefined, 'ai'))
+    const user = msgs.find((m) => m.role === 'user')!.content
+    expect(user).toContain(`共 ${sg.maxTurns}`)
   })
 })
 
