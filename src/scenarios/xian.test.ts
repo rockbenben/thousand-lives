@@ -133,3 +133,18 @@ describe('xian 突破机缘', () => {
     expect(clampEffects(xian, next.attributes, { cultivation: 30 }, next.flags!).cultivation).toBeGreaterThan(20)
   })
 })
+
+describe('xian 魔道弧 + 正道追缉', () => {
+  it('存在魔道屠戮事件可埋下正道追缉印记', () => {
+    const seedEv = (xian.localEvents ?? []).find((e) =>
+      e.requires?.includes('魔道') &&
+      e.choices.some((c) => (c.outcomes ?? []).some((o) => (o.flagsSet ?? []).includes('正道追缉'))))
+    expect(seedEv).toBeTruthy()
+  })
+  it('存在 requires has(正道追缉) 的追杀回收事件', () => {
+    const payoff = (xian.localEvents ?? []).find((e) => e.requires?.includes('正道追缉'))
+    expect(payoff).toBeTruthy()
+    expect(payoff!.choices.some((c) => (c.flagsClear ?? []).includes('正道追缉') ||
+      (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes('正道追缉')))).toBe(true)
+  })
+})
