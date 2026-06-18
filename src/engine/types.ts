@@ -3,11 +3,29 @@ export interface ChatMessage {
   content: string
 }
 
+export interface Outcome {
+  weight?: number
+  effects?: Record<string, number>
+  reaction?: string
+  narrative?: string
+  flagsSet?: string[]
+  flagsClear?: string[]
+  itemsGained?: string[]
+  itemsLost?: string[]
+  // 命中即强制结局，无视数值
+  endTone?: string
+}
+
 export interface Choice {
   text: string
   effects: Record<string, number>
   // 选择后他人的即时反馈（本地事件可选）
   reaction?: string
+  // 加权分支：存在则引擎掷骰取一（跳过命运无常），否则走 effects
+  outcomes?: Outcome[]
+  flagsSet?: string[]
+  flagsClear?: string[]
+  endTone?: string
 }
 
 export interface TurnResult {

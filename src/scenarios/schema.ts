@@ -44,12 +44,30 @@ export const openingSchema = z.object({
   flag: z.string().optional(),
 })
 
+// 加权分支：选择可以有多个结果，每个结果带权重、effects、标记等
+export const outcomeSchema = z.object({
+  weight: z.number().positive().default(1),
+  effects: z.record(z.string(), z.number()).default({}),
+  reaction: z.string().optional(),
+  narrative: z.string().optional(),
+  flagsSet: z.array(z.string()).optional(),
+  flagsClear: z.array(z.string()).optional(),
+  itemsGained: z.array(z.string().min(1)).optional(),
+  itemsLost: z.array(z.string().min(1)).optional(),
+  endTone: z.string().optional(),
+})
+
 // 本地事件：无需 AI 即可游玩的预置剧情单元。本地模式下引擎从事件池加权随机抽取组合成一局。
 export const localChoiceSchema = z.object({
   text: z.string().min(1),
   effects: z.record(z.string(), z.number()).default({}),
   // 选择后他人的即时反馈（本地模式展示，营造代入与「爽感」）
   reaction: z.string().optional(),
+  // 加权分支：存在则引擎掷骰取一，每分支自带 effects/印记/可选强制结局
+  outcomes: z.array(outcomeSchema).min(1).optional(),
+  flagsSet: z.array(z.string()).optional(),
+  flagsClear: z.array(z.string()).optional(),
+  endTone: z.string().optional(),
 })
 export const localEventSchema = z.object({
   narrative: z.string().min(1),

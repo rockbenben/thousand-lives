@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
-import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune } from './state'
+import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome } from './state'
 import type { TurnResult } from './types'
 
 const sc: Scenario = scenarioSchema.parse({
@@ -352,5 +352,25 @@ describe('机缘封顶 ceiling/ceilingUnlocks', () => {
   })
   it('持有解锁印记后截在更高上限', () => {
     expect(clampEffects(capSc, { cultivation: 44 }, { cultivation: 50 }, ['金丹']).cultivation).toBe(70)
+  })
+})
+
+describe('rollOutcome 加权分支', () => {
+  const choice = {
+    text: '帮老人', effects: {}, outcomes: [
+      { weight: 1, effects: { hp: -5 }, flagsSet: ['结怨'] },
+      { weight: 3, effects: { hp: 5 } },
+    ],
+  }
+  it('无 outcomes 返回 null', () => {
+    expect(rollOutcome({ text: 'x', effects: {} }, () => 0)).toBeNull()
+  })
+  it('rng 落在首段权重内取第一项', () => {
+    // total=4，rng()*4=0 → 命中 weight1 的第一项
+    expect(rollOutcome(choice, () => 0)?.flagsSet).toEqual(['结怨'])
+  })
+  it('rng 落在后段取第二项', () => {
+    // rng()=0.9 → 0.9*4=3.6 > 1 → 第二项
+    expect(rollOutcome(choice, () => 0.9)?.effects).toEqual({ hp: 5 })
   })
 })

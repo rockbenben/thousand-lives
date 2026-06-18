@@ -1,6 +1,6 @@
 import type { Scenario, Opening, Attribute } from '../scenarios/schema'
 import { parseCondition, evalCondition } from './condition'
-import type { GameState, TurnResult, Ending } from './types'
+import type { GameState, TurnResult, Ending, Choice, Outcome } from './types'
 
 export function initState(
   sc: Scenario,
@@ -156,6 +156,19 @@ export function rollFortune(
   }
   const pool = good ? FORTUNE_GOOD : FORTUNE_BAD
   return { effects: scaled, twist: pool[Math.floor(rng() * pool.length) % pool.length] }
+}
+
+// 加权分支：无 outcomes 返回 null；否则按 weight 加权掷骰取一
+export function rollOutcome(choice: Choice, rng: () => number): Outcome | null {
+  const outs = choice.outcomes
+  if (!outs || outs.length === 0) return null
+  const total = outs.reduce((s, o) => s + (o.weight ?? 1), 0)
+  let r = rng() * total
+  for (const o of outs) {
+    r -= o.weight ?? 1
+    if (r <= 0) return o
+  }
+  return outs[outs.length - 1]
 }
 
 export function applyChoice(
