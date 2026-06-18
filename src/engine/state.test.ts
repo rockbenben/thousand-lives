@@ -407,3 +407,25 @@ describe('applyChoice 整合 outcomes/flags', () => {
     expect(applyChoice(sc2, st, tr, 0).flags).toEqual(['吉'])
   })
 })
+
+describe('forceEnding 强制结局（天堂地狱）', () => {
+  const sc3: Scenario = scenarioSchema.parse({
+    id: 'h', title: 'H', emoji: '🎲', intro: '开局',
+    attributes: [{ key: 'hp', name: '生命', initial: 90, max: 100, deathBelow: 0 }],
+    maxTurns: 30, systemPrompt: 'GM',
+    endings: [{ condition: 'maxTurns', tone: '终' }, { condition: 'hp<=0', tone: '死' }],
+  })
+  it('endTone 无视数值直接定结局', () => {
+    const tr: TurnResult = { narrative: 'n', summary: 's',
+      choices: [{ text: '踩中凶煞', effects: {}, endTone: '当场暴毙' }] }
+    const st = applyChoice(sc3, initState(sc3, undefined, undefined, 'local'), tr, 0)
+    expect(st.ended).toEqual({ tone: '当场暴毙', reason: 'forced' })
+    expect(st.attributes.hp).toBe(90) // 数值健康也照样结束
+  })
+  it('outcomes 分支也能携带 endTone', () => {
+    const tr: TurnResult = { narrative: 'n', summary: 's',
+      choices: [{ text: '探秘境', effects: {}, outcomes: [{ weight: 1, endTone: '得道飞升' }] }] }
+    const st = applyChoice(sc3, initState(sc3, undefined, undefined, 'local'), tr, 0, () => 0)
+    expect(st.ended?.tone).toBe('得道飞升')
+  })
+})
