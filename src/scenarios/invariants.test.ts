@@ -151,4 +151,9 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
     if (violations.length) console.log('\n— 违规（确定性逻辑缺陷）—\n' + violations.join('\n'))
     expect(violations).toEqual([])
   })
+
+  it('所有内置剧本的结局条件可解析（含 has()）', () => {
+    for (const sc of builtinScenarios)
+      for (const e of sc.endings) expect(() => parseCondition(e.condition)).not.toThrow()
+  })
 })
