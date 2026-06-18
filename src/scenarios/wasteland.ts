@@ -13,6 +13,9 @@ export const wasteland: Scenario = {
       initial: 80,
       max: 100,
       deathBelow: 0,
+      // 末世环境无时不在消耗你——饥渴、严寒、辐射与旧伤，
+      // 生命每日自然流失（-1/天）；须靠进食、医疗、庇护所恢复，坐以待毙则油尽身死。
+      decayPerTurn: 1,
       bands: [
         { upTo: 20, label: '濒死', severity: 'critical', directive: '身负重伤、行动迟缓，叙事中体现剧痛与失血；耗体力的行动只能勉力完成、收益缩水且代价加重，但仍可尝试。' },
         { upTo: 50, label: '负伤', severity: 'low', directive: '带伤行动，剧烈动作会加重伤势。' },
@@ -60,6 +63,7 @@ export const wasteland: Scenario = {
 - 感染者、其他幸存者、物资短缺、天气与伤病都是威胁来源
 - 物资（supplies）每天自然消耗：每个选项的 effects 都必须包含 supplies 的负数变化（通常 -3 至 -10）；觅食类选项可以在扣除当日消耗后净增加 supplies
 - supplies 为 0 时玩家陷入饥饿，本回合所有选项的 effects 必须额外扣减 hp（约 -10）与 sanity（约 -5），剧情中体现饥饿与绝望
+- 末世环境每日侵蚀生命（饥渴、严寒、辐射、旧伤），生命会自然流失，须靠进食、医疗、庇护所等主动恢复，坐以待毙则油尽身死；紧要关头可给出「耗命搏一线」的险选
 - 玩家理智（sanity）过低时，剧情中应出现幻觉与误判
 - 临近第30天时，逐步铺垫军方救援的线索`,
   endings: [
