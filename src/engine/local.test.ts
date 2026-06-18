@@ -104,3 +104,29 @@ describe('local engine', () => {
     expect(txt).toContain('2')
   })
 })
+
+describe('pickLocalEvent 印记门控', () => {
+  const sc = scenarioSchema.parse({
+    id: 'g', title: 'G', emoji: '🎴', intro: '开局',
+    attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
+    maxTurns: 30, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
+    localEvents: [
+      { narrative: '需印记', summary: '魔事', requires: 'has(魔道)',
+        choices: [{ text: 'a', effects: {} }, { text: 'b', effects: {} }] },
+      { narrative: '通用', summary: '常事',
+        choices: [{ text: 'a', effects: {} }, { text: 'b', effects: {} }] },
+    ],
+  })
+  it('无印记时拿不到 has(魔道) 门控的事件', () => {
+    const st = initState(sc, undefined, undefined, 'local')
+    const seen = new Set<string>()
+    for (let i = 0; i < 50; i++) seen.add(pickLocalEvent(sc, st, () => Math.random())!.summary)
+    expect(seen.has('魔事')).toBe(false)
+  })
+  it('持有印记后可拿到', () => {
+    const st = { ...initState(sc, undefined, undefined, 'local'), flags: ['魔道'] }
+    let got = false
+    for (let i = 0; i < 50 && !got; i++) if (pickLocalEvent(sc, st, () => Math.random())!.summary === '魔事') got = true
+    expect(got).toBe(true)
+  })
+})

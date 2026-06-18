@@ -23,7 +23,7 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
     if (e.requiresItem && !inv.includes(e.requiresItem)) return false
     if (e.requires) {
       try {
-        if (!evalCondition(parseCondition(e.requires), st.attributes, turn, sc.maxTurns)) return false
+        if (!evalCondition(parseCondition(e.requires), st.attributes, turn, sc.maxTurns, st.flags ?? [])) return false
       } catch {
         return false // 门控语法非法：视为不满足，跳过（不崩）
       }
@@ -61,7 +61,7 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
   // 连贯性偏置：已解锁的「剧情弧」事件优先推进，避免被通用事件淹没成散乱片段。
   // requiresItem（玩家已持该物品 → 该弧的后续）权重最高；requires（属性门控）次之。
   const effWeight = (e: LocalEvent) =>
-    (e.weight ?? 1) * (e.requiresItem ? 5 : e.requires ? 2 : 1) * stageBias(e)
+    (e.weight ?? 1) * (e.requiresItem ? 5 : e.requires ? 2 : 1) * (e.wildcard ? 1.5 : 1) * stageBias(e)
 
   const total = pool.reduce((s, e) => s + effWeight(e), 0)
   let r = rng() * total

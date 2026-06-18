@@ -87,6 +87,8 @@ export const localEventSchema = z.object({
   itemsLost: z.array(z.string().min(1)).optional(),
   // 里程碑事件：仅在「命运抉择」关键回合出现，呈现为剧情大卡 + 专属配图（按 summary 取图）。
   keyMoment: z.boolean().optional(),
+  // 野事件：意外/奇遇，任何回合可低概率乱入（pickLocalEvent 给保底权重）
+  wildcard: z.boolean().optional(),
 })
 
 export const endingSchema = z.object({
