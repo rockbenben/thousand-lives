@@ -1,9 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
+import { wuxia } from '../scenarios/wuxia'
 import { initState } from './state'
 import { buildTurnMessages, buildEndingMessages, scenarioUsesFlags } from './prompt'
 import type { GameState, TurnRecord } from './types'
+
+const xian = builtinScenarios.find((s) => s.id === 'xian')!
 
 const sc: Scenario = scenarioSchema.parse({
   id: 'test', title: '测试', emoji: '🎲', intro: '末日开局',
@@ -182,5 +185,27 @@ describe('buildEndingMessages', () => {
     expect(user.content).toContain('摘要1')
     expect(user.content).toContain('死亡')
     expect(user.content).toContain('不要输出 JSON')
+  })
+})
+
+describe('prompt 词表注入通用化（非 xian-硬编）', () => {
+  it('wuxia 的哨兵隐藏结局基调被注入 endTone 契约（life<=-1 也识别）', () => {
+    const st = initState(wuxia, wuxia.openings!.find((o) => o.flag)!, undefined, 'ai')
+    const sys = buildTurnMessages(wuxia, st).find((m) => m.role === 'system')!.content
+    // 奇缘证道 仅经 hiddenTones 词表注入（不在 systemPrompt 文本里），故能证明注入生效
+    expect(sys).toContain('奇缘证道')
+    expect(sys).toContain('暗伤迸发')
+  })
+  it('wuxia 契约境界顺序用本题材印记（入流→一流→绝顶→宗师，非炼气→筑基）', () => {
+    const st = initState(wuxia, wuxia.openings!.find((o) => o.flag)!, undefined, 'ai')
+    const sys = buildTurnMessages(wuxia, st).find((m) => m.role === 'system')!.content
+    expect(sys).toContain('入流→一流→绝顶→宗师')
+    expect(sys).not.toContain('炼气→筑基→金丹→元婴→化神')
+  })
+  it('xian 回归：飞升等哨兵基调仍注入，境界顺序为 xian 印记', () => {
+    const st = initState(xian, xian.openings!.find((o) => o.flag)!, undefined, 'ai')
+    const sys = buildTurnMessages(xian, st).find((m) => m.role === 'system')!.content
+    expect(sys).toContain('渡劫飞升·得道成仙') // xian lifespan<=-1 哨兵基调仍在词表
+    expect(sys).toContain('筑基→金丹→元婴→化神')
   })
 })

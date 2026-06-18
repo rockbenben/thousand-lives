@@ -11,7 +11,7 @@ describe('wuxia AI 模式', () => {
     expect(sys).toContain('封顶')
     // 4 境界词表入提示
     for (const f of ['入流', '一流', '绝顶', '宗师']) expect(sys).toContain(f)
-    // 隐藏 tone 入提示（走火入魔/奇缘）
+    // 走火入魔 由 systemPrompt 文本命中（hiddenTones 词表注入另由 prompt.test.ts 覆盖）
     expect(sys).toContain('走火入魔')
   })
   it('systemPrompt 含江湖境界封顶规则与走火入魔极稀指导', () => {

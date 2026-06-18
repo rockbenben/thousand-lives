@@ -3,6 +3,7 @@ import type { ChatMessage, GameState, Ending } from './types'
 import { bandOf, type ResolvedBand } from './bands'
 import { isKeyMoment } from './keymoment'
 import { effectiveCeiling } from './state'
+import { parseCondition } from './condition'
 
 const RECENT_TURNS = 3
 
@@ -38,7 +39,7 @@ function formatContract(
       : []),
     ...(usesFlags
       ? [
-          `- 可选 "flagsSet":["印记名"]：仅当剧情中玩家真正达成境界突破或获得关键身份际遇时授予；境界印记只能取：${vocab.realms.join('、')}，且须按炼气→筑基→金丹→元婴→化神顺序、不得越级`,
+          `- 可选 "flagsSet":["印记名"]：仅当剧情中玩家真正达成境界突破或获得关键身份际遇时授予；境界印记只能取：${vocab.realms.join('、')}，且须按 ${vocab.realms.join('→')} 顺序、不得越级`,
           `- 可选 "endTone":"结局基调"：极稀有，仅当出现无视一切的横死凶险或泼天造化时用，使本回合即终局；可取的隐藏基调（须精确）：${vocab.hiddenTones.join('、')}。天威难测，绝大多数回合都不应出现`,
         ]
       : []),
@@ -55,10 +56,19 @@ export function scenarioUsesFlags(sc: Scenario): boolean {
   return !!sc.openings?.some((o) => o.flag) || sc.attributes.some((a) => a.ceilingUnlocks)
 }
 
+// 哨兵隐藏结局：condition 为单个 <= 子句、且阈值低于该属性死线（永不自然成立，仅由 endTone 触发）
+function isHiddenSentinel(sc: Scenario, cond: string): boolean {
+  const c = parseCondition(cond)
+  if (c.kind !== 'cmp' || c.op !== '<=') return false
+  const attr = sc.attributes.find((a) => a.key === c.attr)
+  if (!attr || attr.deathBelow === undefined) return false
+  return c.value < attr.deathBelow
+}
+
 // 派生 AI 可授予的境界印记词表与可触发的隐藏结局基调词表
 function flagVocab(sc: Scenario): { realms: string[]; hiddenTones: string[] } {
   const realms = [...new Set(sc.attributes.flatMap((a) => (a.ceilingUnlocks ?? []).map((u) => u.flag)))]
-  const hiddenTones = sc.endings.filter((e) => e.condition === 'lifespan<=-1').map((e) => e.tone)
+  const hiddenTones = sc.endings.filter((e) => isHiddenSentinel(sc, e.condition)).map((e) => e.tone)
   return { realms, hiddenTones }
 }
 
