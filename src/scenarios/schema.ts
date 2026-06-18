@@ -36,6 +36,8 @@ export const attributeSchema = z
 export const openingSchema = z.object({
   name: z.string().min(1),
   prompt: z.string().min(1),
+  // 开局即写入的身份印记（如 '魔道'），用于身份门控事件
+  flag: z.string().optional(),
 })
 
 // 本地事件：无需 AI 即可游玩的预置剧情单元。本地模式下引擎从事件池加权随机抽取组合成一局。

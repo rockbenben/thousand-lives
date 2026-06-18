@@ -56,5 +56,7 @@ export interface GameState {
   memory?: string[]
   // 目标进度（0~100）：AI 模式下由模型逐回合评估玩家离 ambition 有多近，供 UI 展示
   goalProgress?: number
+  // 印记：隐藏的具名状态（身份/机缘/因果种子），门控事件、结局、属性封顶
+  flags?: string[]
   ended?: Ending
 }

@@ -125,6 +125,16 @@ describe('initState', () => {
     expect(st.opening).toBe('商人——精明的商人')
     expect(initState(sc).opening).toBeUndefined()
   })
+  it('按 opening.flag 写入身份印记，无 flag 则为空', () => {
+    const withFlag = scenarioSchema.parse({
+      id: 'f', title: 'F', emoji: '🚩', intro: '开局',
+      attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 }],
+      openings: [{ name: '魔道', prompt: '魔功传人', flag: '魔道' }],
+      maxTurns: 5, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
+    })
+    expect(initState(withFlag, withFlag.openings![0]).flags).toEqual(['魔道'])
+    expect(initState(withFlag).flags).toEqual([])
+  })
 })
 
 describe('applyMemory', () => {

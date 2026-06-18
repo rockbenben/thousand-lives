@@ -19,6 +19,7 @@ export function initState(
     ambition: ambition?.trim() || undefined,
     mode,
     memory: [],
+    flags: opening?.flag ? [opening.flag] : [],
   }
 }
 
