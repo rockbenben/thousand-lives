@@ -22,7 +22,7 @@ export const officialdom: Scenario = {
     {
       key: 'favor',
       name: '圣眷',
-      initial: 35,
+      initial: 42,
       max: 100,
       deathBelow: 0,
       // 圣眷如朝露易逝，久不面圣、新宠迭出，恩宠逐年自然消退（-1/年）；
