@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { wuxia } from './wuxia'
-import { clampEffects, initState, applyChoice } from '../engine/state'
+import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
 
 describe('wuxia 武功境界封顶', () => {
   it('无境界印记时武功封顶 30', () => {
@@ -75,5 +75,41 @@ describe('wuxia 突破闸门', () => {
     expect(ev.requires).toContain('has(入流)')
     const ev3 = (wuxia.localEvents ?? []).find((e) => e.summary === '内功突破')!
     expect(ev3.requires).toContain('has(一流)')
+  })
+})
+
+describe('wuxia C 式 apex 渡劫', () => {
+  it('两 apex 结局改哨兵，高武功高侠名也不被动触发', () => {
+    // 满血绝顶高武高侠名，回合 28：被动 apex 不应触发
+    const r = checkEnding(wuxia, { gongfu: 96, fame: 80, life: 70 }, 28, ['入流', '一流', '绝顶'])
+    expect(r?.tone === '武林至尊·一代宗师').toBe(false)
+    expect(r?.tone === '武功盖世·终成独夫').toBe(false)
+  })
+  it('apex 闸门事件结构：keyMoment+once、requires 绝顶、三选项含 endTone', () => {
+    const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '泰山论剑')!
+    expect(ev.keyMoment).toBe(true)
+    expect(ev.once).toBe(true)
+    expect(ev.requires).toContain('has(绝顶)')
+    // 全力一搏选项含三态 endTone（至尊/独夫/走火入魔）
+    const bold = ev.choices.find((c) => (c.outcomes ?? []).some((o) => o.endTone === '武林至尊·一代宗师'))!
+    const tones = (bold.outcomes ?? []).map((o) => o.endTone)
+    expect(tones).toContain('武林至尊·一代宗师')
+    expect(tones).toContain('走火入魔·经脉俱断')
+    // 避险选项不带 endTone
+    const safe = ev.choices.find((c) => !(c.outcomes ?? []).length && !c.endTone)
+    expect(safe).toBeTruthy()
+  })
+  it('迎劫成功分支 → 武林至尊；失败分支 → 走火入魔', () => {
+    let st = initState(wuxia, wuxia.openings!.find((o) => o.name === '名门弟子'))
+    st = { ...st, attributes: { gongfu: 88, fame: 70, life: 60 }, flags: ['入流', '一流', '绝顶'], history: Array(24).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '泰山论剑')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const boldIdx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone === '武林至尊·一代宗师'))
+    // rng=0 取首个 outcome（成功·至尊放第一）
+    const win = applyChoice(wuxia, st, tr as any, boldIdx, () => 0)
+    expect(win.ended?.tone).toBe('武林至尊·一代宗师')
+    // rng=0.99 取末个 outcome（走火入魔放最后）
+    const lose = applyChoice(wuxia, st, tr as any, boldIdx, () => 0.99)
+    expect(lose.ended?.tone).toBe('走火入魔·经脉俱断')
   })
 })
