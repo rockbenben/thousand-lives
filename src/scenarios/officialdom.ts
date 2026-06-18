@@ -40,6 +40,13 @@ export const officialdom: Scenario = {
       name: '权势',
       initial: 30,
       max: 100,
+      ceiling: 30,
+      ceilingUnlocks: [
+        { flag: '知府', max: 50 },
+        { flag: '封疆', max: 70 },
+        { flag: '九卿', max: 85 },
+        { flag: '阁老', max: 100 },
+      ],
       bands: [
         { upTo: 15, label: '孤立无援', severity: 'critical', directive: '你在朝中无党无援，叙事体现孤臣的步步惊心，政敌环伺。' },
         { upTo: 40, label: '根基浅薄', severity: 'low', directive: '党援单薄，办事缺人手与奥援。' },
