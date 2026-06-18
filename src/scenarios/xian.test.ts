@@ -40,11 +40,13 @@ describe('xian 结局重挂', () => {
     expect(checkEnding(xian, { cultivation: 70, daoHeart: 60, lifespan: 8 }, 40, ['筑基', '金丹'])?.tone).toBe('金丹寿尽·享寿千载')
     expect(checkEnding(xian, { cultivation: 15, daoHeart: 50, lifespan: 8 }, 40, [])?.tone).toBe('炼气蹉跎·泯然众生')
   })
-  it('飞升不受寿元门控，到点即触', () => {
-    expect(checkEnding(xian, { cultivation: 96, daoHeart: 75, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])?.tone).toBe('渡劫飞升·得道成仙')
+  it('飞升改为哨兵 condition，高修为高道心也不被动触发', () => {
+    // condition 改为 lifespan<=-1，寿元正常时永不自然成立
+    const r = checkEnding(xian, { cultivation: 96, daoHeart: 75, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])
+    expect(r?.tone === '渡劫飞升·得道成仙').toBe(false)
   })
-  it('飞升需修为>=96，仅到化神+中等道心不触发', () => {
-    // 有化神印记、道心 50、修为仅 90 → 不应飞升（应为 null 或非飞升结局）
+  it('化神高修为也不被动触发飞升（须通过渡劫事件 endTone）', () => {
+    // 有化神印记、道心 50、修为 90 → 不应飞升
     const r = checkEnding(xian, { cultivation: 90, daoHeart: 50, lifespan: 50 }, 40, ['筑基','金丹','元婴','化神'])
     expect(r?.tone === '渡劫飞升·得道成仙').toBe(false)
   })
@@ -57,13 +59,13 @@ describe('xian 守护', () => {
 })
 
 describe('xian 跳出三界门控', () => {
-  it('has(化神) & daoHeart>=85 → 跳出三界·不在五行', () => {
-    // cult 92, dao 88, 持化神印记 → 触发跳出三界
+  it('跳出三界改为哨兵 condition，高道心化神也不被动触发', () => {
+    // condition 改为 lifespan<=-1，寿元正常时永不自然成立
     const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴', '化神'])
-    expect(r?.tone).toBe('跳出三界·不在五行')
+    expect(r?.tone === '跳出三界·不在五行').toBe(false)
   })
   it('无化神印记时不触发跳出三界', () => {
-    // cult 92, dao 88，但无化神印记 → 不触发跳出三界
+    // cult 92, dao 88，但无化神印记 → 不触发跳出三界（哨兵 condition 确保如此）
     const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴'])
     expect(r?.tone === '跳出三界·不在五行').toBe(false)
   })
@@ -224,5 +226,39 @@ describe('xian L2b 守护', () => {
       e.choices.some((c) => c.endTone?.match(/横死|暴毙|身死|形神/) ||
         (c.outcomes ?? []).some((o) => o.endTone?.match(/横死|暴毙|身死|形神/))))
     for (const e of lethal) expect(e.minTurn ?? 0).toBeGreaterThanOrEqual(10)
+  })
+})
+
+describe('C 渡劫飞升', () => {
+  it('飞升/跳出三界 改为哨兵 condition，不再被动达标', () => {
+    const fs = xian.endings.find((e) => e.tone === '渡劫飞升·得道成仙')!
+    const tj = xian.endings.find((e) => e.tone === '跳出三界·不在五行')!
+    expect(fs.condition).toBe('lifespan<=-1')
+    expect(tj.condition).toBe('lifespan<=-1')
+    // 满血化神高道心高修为也不自然触发 apex
+    const r = checkEnding(xian, { cultivation: 98, daoHeart: 90, lifespan: 80 }, 40, ['筑基', '金丹', '元婴', '化神'])
+    expect(['渡劫飞升·得道成仙', '跳出三界·不在五行'].includes(r?.tone ?? '')).toBe(false)
+  })
+  it('渡天劫事件:keyMoment + requires has(化神)&修为>=92 + 迎劫三态 endTone', () => {
+    const ev = (xian.localEvents ?? []).find((e) => e.summary === '九重天劫')!
+    expect(ev.keyMoment).toBe(true)
+    expect(ev.once).toBe(true)
+    expect(ev.requires).toBe('has(化神) & cultivation>=92')
+    const brave = ev.choices.find((c) => (c.outcomes ?? []).some((o) => o.endTone === '强渡天劫·形神俱灭'))!
+    const tones = (brave.outcomes ?? []).map((o) => o.endTone)
+    expect(tones).toContain('渡劫飞升·得道成仙')
+    expect(tones).toContain('跳出三界·不在五行')
+    expect(tones).toContain('强渡天劫·形神俱灭')
+    const safe = ev.choices.find((c) => !(c.outcomes ?? []).some((o) => o.endTone))!
+    expect(safe).toBeTruthy() // 避劫选项不带 endTone
+  })
+  it('迎劫成功/失败由 endTone 定结局', () => {
+    const ev = (xian.localEvents ?? []).find((e) => e.summary === '九重天劫')!
+    const st = { ...initState(xian, undefined, undefined, 'local'), flags: ['筑基','金丹','元婴','化神'], attributes: { cultivation: 95, daoHeart: 70, lifespan: 40 } }
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects ?? {}, outcomes: c.outcomes, endTone: c.endTone })) }
+    const braveIdx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone === '强渡天劫·形神俱灭'))
+    // rng=0 取首个 outcome（作者把"跳出三界"或"飞升"放靠前即成功）
+    const ended = applyChoice(xian, st, tr as any, braveIdx, () => 0).ended
+    expect(['渡劫飞升·得道成仙','跳出三界·不在五行','强渡天劫·形神俱灭'].includes(ended?.tone ?? '')).toBe(true)
   })
 })
