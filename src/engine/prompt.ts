@@ -1,11 +1,18 @@
-import type { Scenario } from '../scenarios/schema'
+import type { Scenario, Attribute } from '../scenarios/schema'
 import type { ChatMessage, GameState, Ending } from './types'
 import { bandOf, type ResolvedBand } from './bands'
 import { isKeyMoment } from './keymoment'
+import { effectiveCeiling } from './state'
 
 const RECENT_TURNS = 3
 
-function formatContract(attrKeys: string[], useItems: boolean, hasGoal: boolean): string {
+function formatContract(
+  attrKeys: string[],
+  useItems: boolean,
+  hasGoal: boolean,
+  usesFlags: boolean,
+  vocab: { realms: string[]; hiddenTones: string[] },
+): string {
   const itemField = useItems
     ? '；可选 "itemsGained":["新获得的物品"] 与 "itemsLost":["失去/消耗的物品"]'
     : ''
@@ -29,12 +36,30 @@ function formatContract(attrKeys: string[], useItems: boolean, hasGoal: boolean)
     ...(useItems
       ? ['- 物品：剧情中获得道具时写入 itemsGained，消耗/损毁时写入 itemsLost；可让某些选项依赖玩家已持有的物品']
       : []),
+    ...(usesFlags
+      ? [
+          `- 可选 "flagsSet":["印记名"]：仅当剧情中玩家真正达成境界突破或获得关键身份际遇时授予；境界印记只能取：${vocab.realms.join('、')}，且须按炼气→筑基→金丹→元婴→化神顺序、不得越级`,
+          `- 可选 "endTone":"结局基调"：极稀有，仅当出现无视一切的横死凶险或泼天造化时用，使本回合即终局；可取的隐藏基调（须精确）：${vocab.hiddenTones.join('、')}。天威难测，绝大多数回合都不应出现`,
+        ]
+      : []),
   ].join('\n')
 }
 
 // 汇总当前各属性的状态段，供 UI/prompt 复用
 export function currentBands(sc: Scenario, attrs: Record<string, number>) {
   return sc.attributes.map((a) => ({ attr: a, band: bandOf(a, attrs[a.key]) }))
+}
+
+// 该剧本是否启用「印记/境界封顶」体系（决定是否给 AI 注入相关上下文与契约）
+export function scenarioUsesFlags(sc: Scenario): boolean {
+  return !!sc.openings?.some((o) => o.flag) || sc.attributes.some((a) => a.ceilingUnlocks)
+}
+
+// 派生 AI 可授予的境界印记词表与可触发的隐藏结局基调词表
+function flagVocab(sc: Scenario): { realms: string[]; hiddenTones: string[] } {
+  const realms = [...new Set(sc.attributes.flatMap((a) => (a.ceilingUnlocks ?? []).map((u) => u.flag)))]
+  const hiddenTones = sc.endings.filter((e) => e.condition === 'lifespan<=-1').map((e) => e.tone)
+  return { realms, hiddenTones }
 }
 
 // 把落入 critical/low 段且带 directive 的状态收集为硬指令；critical 额外要求开场即写后果
@@ -71,11 +96,13 @@ export function buildTurnMessages(
 ): ChatMessage[] {
   const keys = sc.attributes.map((a) => a.key)
   const useItems = true
+  const usesFlags = scenarioUsesFlags(sc)
+  const vocab = flagVocab(sc)
   const system = [
     sc.systemPrompt,
     '',
     `属性说明：${sc.attributes.map((a) => `${a.key}=${a.name}（0~${a.max}）`).join('，')}`,
-    formatContract(keys, useItems, !!st.ambition),
+    formatContract(keys, useItems, !!st.ambition, usesFlags, vocab),
   ].join('\n')
 
   const done = st.history.length
@@ -112,6 +139,19 @@ export function buildTurnMessages(
     lines.push(
       `【玩家身份】${st.opening} —— 这是主角的身份、出身与设定，贯穿全程：剧情走向、人物言行、他人对主角的态度都须与之契合、据此合理演绎，不得与身份脱节或自相矛盾。`,
     )
+  }
+
+  if (usesFlags) {
+    const flags = st.flags ?? []
+    if (flags.length > 0) {
+      lines.push(`【当前印记】${flags.join('、')} —— 这是玩家已达的境界、身份与在演的因果，剧情须与之一致。`)
+    }
+    const capped = sc.attributes.filter((a) => a.ceilingUnlocks)
+    if (capped.length > 0) {
+      lines.push(
+        `【境界封顶】${capped.map((a: Attribute) => `${a.name}上限 ${effectiveCeiling(a, flags)}`).join('，')} —— 未达更高境界印记前，相关属性最多到此；要让玩家更进一境，须在 JSON 中 flagsSet 对应境界印记，且只在真正的突破机缘时。`,
+      )
+    }
   }
 
   if (done === 0) {

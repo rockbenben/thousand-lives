@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { initState } from './state'
-import { buildTurnMessages, buildEndingMessages } from './prompt'
+import { buildTurnMessages, buildEndingMessages, scenarioUsesFlags } from './prompt'
 import type { GameState, TurnRecord } from './types'
 
 const sc: Scenario = scenarioSchema.parse({
@@ -145,6 +145,32 @@ describe('涌现剧本 prompt header', () => {
     const msgs = buildTurnMessages(sg, initState(sg, undefined, undefined, 'ai'))
     const user = msgs.find((m) => m.role === 'user')!.content
     expect(user).toContain(`共 ${sg.maxTurns}`)
+  })
+})
+
+describe('印记/境界注入（门控）', () => {
+  const xian = builtinScenarios.find((s) => s.id === 'xian')!
+  const wasteland = builtinScenarios.find((s) => s.id === 'wasteland')!
+  it('scenarioUsesFlags 仅对带 flag/ceilingUnlocks 的剧本为真', () => {
+    expect(scenarioUsesFlags(xian)).toBe(true)
+    expect(scenarioUsesFlags(wasteland)).toBe(false)
+  })
+  it('xian 提示含当前印记、境界封顶、flagsSet/endTone 契约与词表', () => {
+    const st = { ...initState(xian, xian.openings!.find((o) => o.flag === '魔道'), undefined, 'ai') }
+    const msgs = buildTurnMessages(xian, st)
+    const all = msgs.map((m) => m.content).join('\n')
+    expect(all).toContain('当前印记')
+    expect(all).toContain('魔道')
+    expect(all).toContain('境界封顶')
+    expect(all).toContain('flagsSet')
+    expect(all).toContain('金丹') // 境界印记词表
+    expect(all).toContain('endTone')
+  })
+  it('无 flag 题材（wasteland）提示不含印记/境界/flagsSet 段', () => {
+    const msgs = buildTurnMessages(wasteland, initState(wasteland, undefined, undefined, 'ai'))
+    const all = msgs.map((m) => m.content).join('\n')
+    expect(all).not.toContain('当前印记')
+    expect(all).not.toContain('flagsSet')
   })
 })
 
