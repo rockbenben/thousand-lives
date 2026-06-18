@@ -16,7 +16,7 @@ export function Memoir({
   onViewArt?: (src: string) => void
 }) {
   const cards = state.history
-    .map((t, i) => ({ t, turnNo: i + 1, ki: scenario.maxTurns !== undefined ? keyMomentIndex(i + 1, scenario.maxTurns) : -1 }))
+    .map((t, i) => ({ t, turnNo: i + 1, ki: keyMomentIndex(i + 1, scenario.maxTurns) }))
     .filter((x) => x.ki >= 0)
 
   return (

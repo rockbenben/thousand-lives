@@ -180,7 +180,7 @@ export function Play({
   }
 
   const turnNo = state.history.length + 1
-  const keyMoment = scenario.maxTurns !== undefined && isKeyMoment(turnNo, scenario.maxTurns)
+  const keyMoment = isKeyMoment(turnNo, scenario.maxTurns)
   const curArt = hasNodeArt(scenario.id, pendingTurn?.summary)
     ? nodeImage(scenario.id, pendingTurn?.summary)
     : undefined
@@ -311,7 +311,7 @@ export function Play({
       <div className="log" ref={logRef}>
         {state.history.length === 0 && <p className="intro">{scenario.intro}</p>}
         {state.history.map((t, i) => {
-          const km = scenario.maxTurns !== undefined && isKeyMoment(i + 1, scenario.maxTurns)
+          const km = isKeyMoment(i + 1, scenario.maxTurns)
           const art = hasNodeArt(scenario.id, t.summary) ? nodeImage(scenario.id, t.summary) : undefined
           return (
             <div key={i} className={`turn ${km ? 'key-moment' : ''} ${art && !km ? 'has-thumb' : ''}`}>

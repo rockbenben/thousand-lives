@@ -35,7 +35,7 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
   const onceOk = (e: LocalEvent) => !(e.once && usedSummaries.has(e.summary))
   // 里程碑事件只在关键回合出现；普通回合排除它们(为关键回合保留)。
   // 涌现剧本（无 maxTurns）不产生关键回合，里程碑事件全部不触发。
-  const keyTurn = sc.maxTurns !== undefined && isKeyMoment(turn, sc.maxTurns)
+  const keyTurn = isKeyMoment(turn, sc.maxTurns)
   const phaseOk = (e: LocalEvent) => (keyTurn ? !!e.keyMoment : !e.keyMoment)
 
   // 先在「本阶段」内挑(关键→里程碑、普通→非里程碑),逐步放宽:先松 fresh,再松阶段限制

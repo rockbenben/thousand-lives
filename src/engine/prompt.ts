@@ -173,7 +173,7 @@ export function buildTurnMessages(
     lines.push(...directives)
   }
 
-  if (sc.maxTurns !== undefined && isKeyMoment(current, sc.maxTurns)) {
+  if (isKeyMoment(current, sc.maxTurns)) {
     lines.push(
       '【关键抉择】本回合是命运转折点：各选项的属性摆动应明显大于平时（约 1.5~2 倍），后果更深远；正文要渲染出这一刻的分量与紧张。',
     )

@@ -9,12 +9,19 @@ export function keyMomentTurns(maxTurns: number): number[] {
   return [...new Set(ts)]
 }
 
+// 涌现剧本（无 maxTurns）：每 4 回合一个命运抉择里程碑
+const EMERGENT_KEY_EVERY = 4
+
 // 关键节点的序号（第几个命运抉择，从 0 起）；非关键回合返回 -1。用于给剧情卡分配专属配图。
 // 节点的「名称」直接用该回合事件的 summary（内容化、各不相同），不在此另取位置名。
-export function keyMomentIndex(turnNo: number, maxTurns: number): number {
+export function keyMomentIndex(turnNo: number, maxTurns?: number): number {
+  if (maxTurns === undefined) {
+    return turnNo > 0 && turnNo % EMERGENT_KEY_EVERY === 0 ? turnNo / EMERGENT_KEY_EVERY - 1 : -1
+  }
   return keyMomentTurns(maxTurns).indexOf(turnNo)
 }
 
-export function isKeyMoment(turnNo: number, maxTurns: number): boolean {
+export function isKeyMoment(turnNo: number, maxTurns?: number): boolean {
+  if (maxTurns === undefined) return turnNo > 0 && turnNo % EMERGENT_KEY_EVERY === 0
   return keyMomentTurns(maxTurns).includes(turnNo)
 }
