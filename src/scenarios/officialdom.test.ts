@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { officialdom } from './officialdom'
-import { clampEffects, initState, applyChoice } from '../engine/state'
+import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
 
 describe('officialdom 长度与圣眷衰减（70岁荣休）', () => {
   it('maxTurns 扩到 44（进士→70岁荣休）', () => {
@@ -76,5 +76,21 @@ describe('officialdom 升迁闸门', () => {
     const next = applyChoice(officialdom, st, tr as any, idx, () => 0)
     expect(next.flags).toContain('知府')
     expect(next.attributes.power).toBeGreaterThan(30)
+  })
+})
+
+describe('officialdom 巅峰结局须 maxTurns（不中途白嫖）', () => {
+  it('满血高位在非荣休年不触发巅峰结局', () => {
+    // 高 name/power/favor，但回合数 < maxTurns（第 20 年）：巅峰结局不应触发
+    const r = checkEnding(officialdom, { name: 98, power: 98, favor: 98 }, 20, ['知府', '封疆', '九卿', '阁老'])
+    for (const t of ['出将入相·名垂青史', '权倾朝野·一手遮天', '万民称颂·青天再世', '简在帝心·恩宠无两']) {
+      expect(r?.tone === t, t).toBe(false)
+    }
+  })
+  it('荣休年（满期）高位触发巅峰结局', () => {
+    const r = checkEnding(officialdom, { name: 98, power: 98, favor: 98 }, 44, ['知府', '封疆', '九卿', '阁老'])
+    expect(r?.tone).toBeTruthy()
+    // 满期高 name&power → 出将入相（最具体在前）
+    expect(['出将入相·名垂青史', '权倾朝野·一手遮天', '万民称颂·青天再世', '简在帝心·恩宠无两', '名相贤臣·配享太庙']).toContain(r!.tone)
   })
 })
