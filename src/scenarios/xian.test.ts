@@ -199,6 +199,15 @@ describe('xian 隐藏天堂地狱', () => {
   })
 })
 
+describe('xian systemPrompt 末法世界观', () => {
+  it('含末法/机缘稀缺/境界突破/隐藏结局极稀有的指导', () => {
+    const sp = xian.systemPrompt
+    expect(sp).toMatch(/末法|灵气衰微/)
+    expect(sp).toMatch(/机缘|突破/)
+    expect(sp).toMatch(/极稀有|天威难测/) // 约束 endTone 不滥用
+  })
+})
+
 describe('xian L2b 守护', () => {
   it('所有结局条件可解析', () => {
     for (const e of xian.endings) expect(() => parseCondition(e.condition)).not.toThrow()
