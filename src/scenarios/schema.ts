@@ -20,6 +20,10 @@ export const attributeSchema = z
     // 每回合自动衰减量（>=0）：回合推进时该属性自动 -decayPerTurn，再叠加本回合 effect。
     // 用于「逆水行舟」式张力——如修仙的寿元随岁月流逝，须主动续命方能久持。不填即不衰减。
     decayPerTurn: z.number().nonnegative().optional(),
+    // 有效上限：初始 ceiling（缺省=max），持有 ceilingUnlocks 中的印记后逐级抬高。
+    // 用于「机缘封顶」——无突破印记则修为/寿元卡在低位。
+    ceiling: z.number().optional(),
+    ceilingUnlocks: z.array(z.object({ flag: z.string(), max: z.number() })).optional(),
     bands: z.array(bandSchema).min(1).optional(),
   })
   .refine((a) => a.initial >= 0 && a.initial <= a.max, {

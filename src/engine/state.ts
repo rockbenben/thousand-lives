@@ -1,4 +1,4 @@
-import type { Scenario, Opening } from '../scenarios/schema'
+import type { Scenario, Opening, Attribute } from '../scenarios/schema'
 import { parseCondition, evalCondition } from './condition'
 import type { GameState, TurnResult, Ending } from './types'
 
@@ -68,16 +68,24 @@ export function mergeEffects(...maps: Record<string, number>[]): Record<string, 
   return out
 }
 
+// 属性的有效上限：基线 ceiling（缺省 max），叠加已持有印记解锁的更高上限，最终不超过 max。
+export function effectiveCeiling(a: Attribute, flags: string[]): number {
+  let cap = a.ceiling ?? a.max
+  for (const u of a.ceilingUnlocks ?? []) if (flags.includes(u.flag)) cap = Math.max(cap, u.max)
+  return Math.min(a.max, cap)
+}
+
 export function clampEffects(
   sc: Scenario,
   attrs: Record<string, number>,
   effects: Record<string, number>,
+  flags: string[] = [],
 ): Record<string, number> {
   const next = { ...attrs }
   for (const a of sc.attributes) {
     const d = effects[a.key]
     if (typeof d === 'number' && Number.isFinite(d)) {
-      next[a.key] = Math.min(a.max, Math.max(0, next[a.key] + d))
+      next[a.key] = Math.min(effectiveCeiling(a, flags), Math.max(0, next[a.key] + d))
     }
   }
   return next
@@ -163,7 +171,7 @@ export function applyChoice(
     ? rollFortune(choice.effects, rng)
     : { effects: choice.effects, twist: undefined }
   // 本回合 effect（已含命运无常缩放）叠加每回合衰减，一次性结算
-  const attributes = clampEffects(sc, st.attributes, mergeEffects(effects, decayEffects(sc)))
+  const attributes = clampEffects(sc, st.attributes, mergeEffects(effects, decayEffects(sc)), st.flags)
   const history = [
     ...st.history,
     {
@@ -199,6 +207,7 @@ export function resolveCustomAction(
     sc,
     st.attributes,
     mergeEffects(resolved.actionEffects ?? {}, decayEffects(sc)),
+    st.flags,
   )
   const history = [
     ...st.history,

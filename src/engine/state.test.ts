@@ -337,3 +337,20 @@ describe('resolveCustomAction', () => {
     expect(next.ended).toEqual({ tone: '死亡', reason: '生命耗尽' })
   })
 })
+
+describe('机缘封顶 ceiling/ceilingUnlocks', () => {
+  const capSc: Scenario = scenarioSchema.parse({
+    id: 'cap', title: 'C', emoji: '⛰️', intro: '开局',
+    attributes: [{
+      key: 'cultivation', name: '修为', initial: 10, max: 100,
+      ceiling: 45, ceilingUnlocks: [{ flag: '金丹', max: 70 }],
+    }],
+    maxTurns: 5, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
+  })
+  it('无印记时截在 ceiling', () => {
+    expect(clampEffects(capSc, { cultivation: 44 }, { cultivation: 10 }, []).cultivation).toBe(45)
+  })
+  it('持有解锁印记后截在更高上限', () => {
+    expect(clampEffects(capSc, { cultivation: 44 }, { cultivation: 50 }, ['金丹']).cultivation).toBe(70)
+  })
+})
