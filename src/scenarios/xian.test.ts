@@ -198,3 +198,15 @@ describe('xian 隐藏天堂地狱', () => {
     expect(hell).toBeTruthy()
   })
 })
+
+describe('xian L2b 守护', () => {
+  it('所有结局条件可解析', () => {
+    for (const e of xian.endings) expect(() => parseCondition(e.condition)).not.toThrow()
+  })
+  it('所有致死/暴毙类隐藏事件 minTurn>=10', () => {
+    const lethal = (xian.localEvents ?? []).filter((e) =>
+      e.choices.some((c) => c.endTone?.match(/横死|暴毙|身死|形神/) ||
+        (c.outcomes ?? []).some((o) => o.endTone?.match(/横死|暴毙|身死|形神/))))
+    for (const e of lethal) expect(e.minTurn ?? 0).toBeGreaterThanOrEqual(10)
+  })
+})

@@ -118,11 +118,15 @@ function run(scId: string, games: number, decay: Record<string, number>) {
   const isApex = (st: ReturnType<typeof playOne>) =>
     st.ended ? /飞升|跳出三界/.test(st.ended.tone) : false
 
+  // 一步登天 jackpot 判断（隐藏结局，仅由 endTone 触发）
+  const isJackpot = (st: ReturnType<typeof playOne>) =>
+    st.ended ? st.ended.tone === '仙缘垂青·一步登天' : false
+
   for (const name of Object.keys(strategies)) {
     const rng = makeRng(0xc0ffee + name.length * 7919)
     const strat = strategies[name](rng)
     let deaths = 0, bad = 0, reachedMax = 0
-    let ascended = 0, apex = 0
+    let ascended = 0, apex = 0, jackpot = 0
     const realmCount: Record<string, number> = { 化神: 0, 元婴: 0, 金丹: 0, 筑基: 0, 炼气: 0 }
     const turnBuckets = { lt10: 0, t10_29: 0, t30_59: 0, gte60: 0 }
     for (let i = 0; i < games; i++) {
@@ -132,6 +136,7 @@ function run(scId: string, games: number, decay: Record<string, number>) {
       if (sc.maxTurns && st.history.length >= sc.maxTurns) reachedMax++
       if (isAscended(st)) ascended++
       if (isApex(st)) apex++
+      if (isJackpot(st)) jackpot++
       realmCount[highestRealm(st.flags)]++
       const turns = st.history.length
       if (turns < 10) turnBuckets.lt10++
@@ -140,7 +145,7 @@ function run(scId: string, games: number, decay: Record<string, number>) {
       else turnBuckets.gte60++
     }
     console.log(`   [${name.padEnd(7)}] 真死亡 ${pct(deaths)}   坏结局 ${pct(bad)}   活到满期 ${pct(reachedMax)}`)
-    console.log(`             飞升率 ${pct(ascended)}   登顶率 ${pct(apex)}`)
+    console.log(`             飞升率 ${pct(ascended)}   登顶率 ${pct(apex)}   一步登天 ${pct(jackpot)}`)
     console.log(`             收场回合: <10=${pct(turnBuckets.lt10)} 10-29=${pct(turnBuckets.t10_29)} 30-59=${pct(turnBuckets.t30_59)} 60+=${pct(turnBuckets.gte60)}`)
     const realmStr = Object.entries(realmCount).map(([k, v]) => `${k}=${pct(v)}`).join(' ')
     console.log(`             最高境界: ${realmStr}`)
