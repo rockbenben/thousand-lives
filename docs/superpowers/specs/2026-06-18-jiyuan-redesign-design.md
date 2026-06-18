@@ -25,6 +25,7 @@
 - 身份（魔道/仙门/草根）决定可遇事件与支线。
 - 提高随机/意外事件占比；增加主角暴毙几率。
 - 隐藏事件「无视数值，碰到就天堂或地狱」。
+- **人生长度涌现化**：删掉玩家设定的「人生长度」；有天然时钟者活多久看本事，其余用隐藏的叙事软上限（谍战 1945 投降、官场 70 岁荣休等）。
 
 **非目标（留待后续 spec）**
 - 把 L2 内容推广到其他 8 个剧本（本 spec 只做 xian）。
@@ -53,6 +54,7 @@
   - 例「凝结金丹」：窗口第 8-15 载，`requires cultivation>=40 & daoHeart>=55`，低权重（稀有）。
   - 抓住且成功 → 得「金丹」印记，天花板升 70；失败 → 重伤（寿元-）甚至走火（道心-）。
   - 错过窗口 → 金丹机缘几十载一遇或再不出现 → 大概率卡死筑基 → 软结局。
+- **境界亦抬寿元上限**（炼气百年→筑基二百→金丹五百→元婴千载……）：突破不仅升修为天花板，也续寿。于是人生长度涌现（详见 §9）——突破续命→活更久，卡关→油尽而终，飞升→唯一跳出钟摆的逃逸。寿元上限复用 §4 的 `ceilingUnlocks` 机制。
 - 苟命不再够用：要飞升必须主动争机缘，而争机缘要冒险。
 
 ## 5. 因果 & 随机后果
@@ -82,13 +84,14 @@
 |---|---|---|
 | 印记 flags | `GameState.flags: string[]`；choice/outcome 加 `flagsSet/flagsClear` | 写入 flags |
 | 条件语言扩展 | — | `parseCondition` 支持 `has(NAME)` / `!has(NAME)`；`evalCondition` 接收 flags。事件门控 + 结局共用 |
-| 机缘封顶 | attribute 加 `ceiling?: number` + `ceilingUnlocks?: {flag,max}[]` | `clampEffects` 用「印记解锁后的有效上限」截断 |
+| 机缘封顶 | attribute 加 `ceiling?: number` + `ceilingUnlocks?: {flag,max}[]` | `clampEffects` 用「印记解锁后的有效上限」截断；**修为天花板与寿元上限共用此机制** |
 | 加权分支 outcomes | choice 加 `outcomes?: {weight,effects,reaction?,narrative?,flagsSet?,flagsClear?,itemsGained?,itemsLost?,endTone?}[]` | 有 outcomes 则按权重掷骰取一，否则走旧 effects |
 | 强制结局 forceEnding | outcome/event 加 `endTone?: string` | 命中即 `ended={tone}`，绕过数值；epilogue 仍从 `sc.endings` 按 tone 取 |
 | 身份印记 | opening 加 `flag?: string` | `initState` 写入 `state.flags` |
 | 频率 | event 加 `wildcard?: boolean`；调 `FORTUNE_CHANCE` | `pickLocalEvent` 给野事件保底权重 |
+| 人生长度涌现 | `maxTurns` 改为**可选** | 无 `maxTurns`→靠寿元/生命≤0、终局、逃逸结局终止 + 高位硬兜底防无限循环；有则作隐藏软上限。详见 §9 |
 
-**触点文件**：`src/engine/types.ts`、`src/scenarios/schema.ts`、`src/engine/condition.ts`、`src/engine/state.ts`、`src/engine/local.ts`（pickLocalEvent/localTurn）。
+**触点文件**：`src/engine/types.ts`、`src/scenarios/schema.ts`、`src/engine/condition.ts`、`src/engine/state.ts`、`src/engine/local.ts`（pickLocalEvent/localTurn）；**人生长度涌现化**还涉及 `src/ui/Setup.tsx`（删「人生长度」选项）、`src/App.tsx`（replay 的 maxTurns 缩放逻辑）。
 
 **AI 模式同步（两者共享引擎）**：AI 回合返回 schema（`src/ai/turn.ts` / `types.ts` 的 TurnResult）加 `flagsSet/endTone`；systemPrompt 指导 GM 何时授印记、触发隐藏结局、尊重境界封顶；引擎对**封顶与强制结局兜底强制执行**，不全靠 AI 自觉。
 
@@ -103,7 +106,31 @@
 - 仙门弟子 → 宗门任务/门规/长辈庇荫与倾轧（稳但受束缚）。
 - 草根散修 → 资源极匮、处处碰壁，开局带「无门无派」印记（机缘更稀但自由）。
 
-## 9. 成功标准（可量化 + 体感）
+## 9. 人生长度：涌现 vs 隐藏软上限
+
+**去掉玩家设定的「人生长度」**（删 Setup 选项）。长度不再是输入，而是模拟的产物——可能一直延续，也可能戛然而止。两种终止机制：
+
+- **涌现长度**（有天然时钟的剧本）：无 `maxTurns`。每回合照走，直到 ① 时钟耗尽（寿元/生命 ≤0）② 暴毙/走火/隐藏地狱 ③ 逃逸结局（飞升等）。境界印记同时抬寿元上限（炼气百年→筑基二百→金丹五百→元婴千载），于是「突破续命→活更久，卡关→油尽而终，飞升→跳出钟摆」。加一个高位硬兜底（防病态无限循环）。
+- **隐藏软上限**（任务/生涯/剧情制）：`maxTurns` 仍在，但**对玩家隐藏**且锚定一个叙事终点；到点触发「叙事终局」，按当时成就（属性/印记）结算好坏。现有 `maxTurns & ...` 那批结局原样复用，触发器从「数字到顶」变「大限到了」。可在叙事里暗示（「已是民国三十四年」「年近古稀」）营造紧迫。
+
+**各剧本定案**：
+
+| 剧本 | 模式 | 锚点 / 时钟 | 参数 |
+|---|---|---|---|
+| 仙途 xian | 涌现 | 寿元（境界抬上限，飞升逃逸） | — |
+| 末世 wasteland | 涌现 | 生命/物资耗尽 | — |
+| 武侠 wuxia | 涌现 | 性命（到老死/归隐） | — |
+| 大航海 voyage | 涌现 | 船力/性命（到死/巨富收手） | — |
+| 梨园 liyuan | 涌现 | 卖艺到老死/退隐 | — |
+| 谍战 spy | 隐藏软上限 | 1945.08 日本投降 | 1940.08 入局 → 60 月 |
+| 官场 officialdom | 隐藏软上限 | 70 岁荣休 | 30 岁入仕 → 40 年 |
+| 三国 sanguo | 隐藏软上限 | 辅主一生，到老死/天下定 | 约 40 年 |
+| 星际 scifi | 隐藏软上限 | 世代航行抵达目的地 | 约 50 年 |
+| 穿书 book | 隐藏软上限 | 原著剧情完结 + 「逃出书中」逃逸结局 | 约 30 章 |
+
+> 本 spec 只实现 xian 的涌现长度；其余剧本的软上限/涌现改造随各自 L2 推广时落地。但**引擎对「`maxTurns` 可选 + 涌现终止 + 高位兜底」的支持属 L1，本期即做**；删 Setup 人生长度选项亦本期做（影响全剧本）。
+
+## 10. 成功标准（可量化 + 体感）
 
 用 `scripts/sim-balance.ts`（扩展以追踪印记/突破/强制结局）验证 xian：
 - 「苟命」(survive) 策略**不再近乎必然飞升**：飞升率降到稀有；「没突破」软结局成为被动玩法的常见归宿。
@@ -112,7 +139,7 @@
 - **身份分流**：不同开局命中不同事件集（魔道局明显多「屠戮/追杀」事件）。
 - 体感：playtest（browse）确认「争机缘」的紧张与「福祸无常」的味道。
 
-## 10. 范围与顺序
+## 11. 范围与顺序
 
 本 spec = **xian 旗舰**：
 1. **L1 引擎**（§7，全剧本+双模式共享）——先做，TDD，每个原语配单测（参照 `decayPerTurn` 的做法）。
@@ -121,14 +148,14 @@
 
 **后续独立 spec**：L0/L2 推广到其他 8 剧本；sanguo 深度重构。
 
-## 11. 风险
+## 12. 风险
 
 - **内容量**：xian L2 事件量大（当前已 1600 行），新增机缘/身份/因果/隐藏事件会更多——分批写、用 sim 校准。
 - **暴毙平衡**：隐藏地狱太频会劝退；必须稀有且「冒险才触发」。
 - **AI 遵从**：AI 可能不按印记/封顶出牌 → 引擎兜底强制执行（clamp + forceEnding）。
 - **存档兼容**：新字段全可选、给默认值，旧存档不破。
 
-## 12. 测试策略
+## 13. 测试策略
 
 - 每个引擎原语 TDD 单测（flags 读写、条件 `has()`、ceiling 截断、outcomes 掷骰、forceEnding、opening flag）。
 - 扩展 `sim-balance.ts`：统计飞升率、各境界卡关率、暴毙率、身份事件命中分布。
