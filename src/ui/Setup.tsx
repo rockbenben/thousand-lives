@@ -35,7 +35,6 @@ export function Setup({
   const [customId, setCustomId] = useState(false)
   const [customIdText, setCustomIdText] = useState('')
   const [ambition, setAmbition] = useState('')
-  const [lenMult, setLenMult] = useState(1) // 人生长度倍率(基于剧本基准 maxTurns)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState('')
   // 每次配置变更/发起测试都自增；在途测试结算时若已变更则丢弃其结果，避免旧配置的“连接成功/失败”覆盖当前
@@ -280,41 +279,12 @@ export function Setup({
       </section>
       )}
 
-      {scenario.maxTurns !== undefined && (
-      <section className="panel">
-        <h3 title="决定这一生有多长。越长越能多走几程、看更多风景，但属性起伏与变数也越多">
-          人生长度
-        </h3>
-        <p className="hint">短则凝练，长则尽兴——三十不是定数，你的一生由你定多长。</p>
-        <div className="len-row">
-          {[
-            { label: '标准', mult: 1 },
-            { label: '加长', mult: 1.6 },
-            { label: '漫长', mult: 2.4 },
-          ].map((l) => (
-            <button
-              key={l.label}
-              className={`len-chip ${lenMult === l.mult ? 'selected' : ''}`}
-              onClick={() => setLenMult(l.mult)}
-            >
-              <span className="len-name">{l.label}</span>
-              <span className="len-turns">{Math.round(scenario.maxTurns! * l.mult)} {scenario.turnUnit}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-      )}
-
       <button
         className="primary start-btn"
         disabled={!ready}
         onClick={() => {
           if (mode === 'ai') saveConfig(config())
-          const sc =
-            lenMult === 1 || scenario.maxTurns === undefined
-              ? scenario
-              : { ...scenario, maxTurns: Math.round(scenario.maxTurns * lenMult) }
-          onStart(sc, finalOpening(), mode === 'ai' ? ambition : '', mode)
+          onStart(scenario, finalOpening(), mode === 'ai' ? ambition : '', mode)
         }}
       >
         开始这段人生

@@ -783,16 +783,7 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
 .opening.selected { border-color: var(--cinnabar); background: rgba(201, 80, 58, 0.08); }
 .opening.selected strong { color: var(--cinnabar-bright); }
 .mode-row { display: flex; gap: 12px; flex-wrap: wrap; }
-/* 人生长度选择 */
-.len-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.len-chip {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  min-width: 96px; padding: 8px 16px;
-}
-.len-chip.selected { border-color: var(--gold); background: rgba(203, 168, 90, 0.1); }
-.len-chip .len-name { font-family: var(--font-display); font-size: 1.05rem; color: var(--paper); }
-.len-chip.selected .len-name { color: var(--gold-bright); }
-.len-chip .len-turns { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.05em; }
+
 .mode-card {
   flex: 1; min-width: 200px;
   display: flex; flex-direction: column; gap: 6px; text-align: left;
