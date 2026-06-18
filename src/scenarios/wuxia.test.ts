@@ -113,3 +113,30 @@ describe('wuxia C 式 apex 渡劫', () => {
     expect(lose.ended?.tone).toBe('走火入魔·经脉俱断')
   })
 })
+
+describe('wuxia 隐藏 endTone', () => {
+  it('凶险事件的逞强选项含低权致死 endTone', () => {
+    const summaries = ['运功撞墙吐血', '险些走火', '中毒暗算']
+    let found = 0
+    for (const s of summaries) {
+      const ev = (wuxia.localEvents ?? []).find((e) => e.summary === s)
+      if (ev?.choices.some((c) => (c.outcomes ?? []).some((o) => /走火入魔|暴毙/.test(o.endTone ?? '')))) found++
+    }
+    expect(found).toBeGreaterThanOrEqual(2)
+  })
+  it('新增致死与奇缘隐藏结局存在且为哨兵 condition', () => {
+    const die = wuxia.endings.find((e) => e.tone === '暗伤迸发·暴毙荒途')
+    const heaven = wuxia.endings.find((e) => e.tone === '奇缘证道·剑道通玄')
+    expect(die?.condition).toBe('life<=-1')
+    expect(heaven?.condition).toBe('life<=-1')
+  })
+  it('暴毙 endTone 即终局', () => {
+    let st = initState(wuxia, wuxia.openings!.find((o) => o.name === '市井孤儿'))
+    st = { ...st, attributes: { gongfu: 50, fame: 40, life: 60 }, history: Array(12).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '运功撞墙吐血')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => /走火入魔|暴毙/.test(o.endTone ?? '')))
+    const next = applyChoice(wuxia, st, tr as any, idx, () => 0.999) // 末个 outcome = 致死
+    expect(next.ended?.reason).toBe('forced')
+  })
+})
