@@ -99,13 +99,13 @@ export const xian: Scenario = {
         '油尽之时，你盘膝坐定，白发垂落如初雪。气血一寸寸冷下去，神识却出奇地清明。你望了望窗外那轮亘古的明月——求了这许多年的长生，终究没能赶在大限之前到来。你轻轻阖上双眼，呼吸渐缓，渐止。山风穿堂而过，蒲团上只余一具温热散尽的躯壳，与一缕未了的道心。',
     },
     {
-      condition: 'cultivation>=96 & daoHeart>=70',
+      condition: 'cultivation>=96 & daoHeart>=90',
       tone: '渡劫飞升·得道成仙',
       epilogue:
         '九霄之上仙门洞开，垂下万道祥光将你温柔接引。你回望脚下这片生你养你、磨你也成全你的天地，俯身一揖，而后衣袂翻飞，踏光而上。雷劫的焦痕尚在身上，你却已不觉痛——脱去这一身凡骨，连呼吸都化作清风。天门在身后缓缓阖拢，自此你超脱轮回，是这方天地走出去的，第一缕逍遥仙气。',
     },
     {
-      condition: 'has(化神) & daoHeart>=85',
+      condition: 'has(化神) & daoHeart>=100',
       tone: '跳出三界·不在五行',
       epilogue:
         '你盘膝悬坐于一座孤峰绝顶，青衫被山风掀起，双目微阖、面容澄澈如琉璃。身周星河流转、云海翻涌，万象在你身侧奔涌，你却纹丝不动，唇边噙着一抹空明辽远的笑——三界五行，再也圈不住你。',
@@ -1643,6 +1643,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '筑基机缘',
+      keyMoment: true,
       once: true,
       requires: 'cultivation>=18',
       minTurn: 3,
@@ -1688,6 +1689,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '金丹机缘',
+      keyMoment: true,
       once: true,
       requires: 'has(筑基) & cultivation>=42',
       minTurn: 10,
@@ -1733,6 +1735,7 @@ export const xian: Scenario = {
         },
       ],
       summary: '元婴机缘',
+      keyMoment: true,
       once: true,
       requires: 'has(金丹) & cultivation>=66',
       minTurn: 24,
@@ -1749,7 +1752,7 @@ export const xian: Scenario = {
             {
               weight: 4,
               flagsSet: ['化神'],
-              effects: { lifespan: 20, cultivation: 8 },
+              effects: { lifespan: 20, cultivation: 5 },
               reaction: '你元神与天地道则相撞、相融，那一刹如亿万雷霆同时在识海中炸响，炸开的是最后一道桎梏。天地的气机涌入你身，你已不止是一个修士，而是这方天地道则的一部分。「化神……到了。」',
             },
             {
@@ -1766,7 +1769,7 @@ export const xian: Scenario = {
             {
               weight: 3,
               flagsSet: ['化神'],
-              effects: { lifespan: 14, cultivation: 6 },
+              effects: { lifespan: 14, cultivation: 3 },
               reaction: '你以凌厉蛮力硬撑着天劫一道道劈落，身上焦痕遍布，却咬牙一步不退。那最后一道天劫在你面前轰然炸开，化神之门应声洞开。「打开了……代价不小，好在，打开了。」',
             },
             {
@@ -1779,8 +1782,9 @@ export const xian: Scenario = {
         },
       ],
       summary: '化神机缘',
+      keyMoment: true,
       once: true,
-      requires: 'has(元婴) & cultivation>=87',
+      requires: 'has(元婴) & cultivation>=89',
       minTurn: 30,
       weight: 2.5,
     },

@@ -41,11 +41,11 @@ describe('xian 结局重挂', () => {
     expect(checkEnding(xian, { cultivation: 15, daoHeart: 50, lifespan: 8 }, 40, [])?.tone).toBe('炼气蹉跎·泯然众生')
   })
   it('飞升不受寿元门控，到点即触', () => {
-    expect(checkEnding(xian, { cultivation: 96, daoHeart: 75, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])?.tone).toBe('渡劫飞升·得道成仙')
+    expect(checkEnding(xian, { cultivation: 96, daoHeart: 92, lifespan: 50 }, 20, ['筑基','金丹','元婴','化神'])?.tone).toBe('渡劫飞升·得道成仙')
   })
-  it('飞升需修为>=96，仅到化神+中等道心不触发', () => {
-    // 有化神印记、道心 50、修为仅 90 → 不应飞升（应为 null 或非飞升结局）
-    const r = checkEnding(xian, { cultivation: 90, daoHeart: 50, lifespan: 50 }, 40, ['筑基','金丹','元婴','化神'])
+  it('飞升需修为>=96 且道心>=90，仅到化神+中低道心不触发', () => {
+    // 有化神印记、道心 85（不足90）、修为 96 → 不应飞升
+    const r = checkEnding(xian, { cultivation: 96, daoHeart: 85, lifespan: 50 }, 40, ['筑基','金丹','元婴','化神'])
     expect(r?.tone === '渡劫飞升·得道成仙').toBe(false)
   })
 })
@@ -57,14 +57,14 @@ describe('xian 守护', () => {
 })
 
 describe('xian 跳出三界门控', () => {
-  it('has(化神) & daoHeart>=85 → 跳出三界·不在五行', () => {
-    // cult 92, dao 88, 持化神印记 → 触发跳出三界
-    const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴', '化神'])
+  it('has(化神) & daoHeart>=100 → 跳出三界·不在五行', () => {
+    // cult 92, dao 100（满值）, 持化神印记 → 触发跳出三界
+    const r = checkEnding(xian, { cultivation: 92, daoHeart: 100, lifespan: 50 }, 40, ['筑基', '金丹', '元婴', '化神'])
     expect(r?.tone).toBe('跳出三界·不在五行')
   })
   it('无化神印记时不触发跳出三界', () => {
-    // cult 92, dao 88，但无化神印记 → 不触发跳出三界
-    const r = checkEnding(xian, { cultivation: 92, daoHeart: 88, lifespan: 50 }, 40, ['筑基', '金丹', '元婴'])
+    // cult 92, dao 100，但无化神印记 → 不触发跳出三界
+    const r = checkEnding(xian, { cultivation: 92, daoHeart: 100, lifespan: 50 }, 40, ['筑基', '金丹', '元婴'])
     expect(r?.tone === '跳出三界·不在五行').toBe(false)
   })
 })
@@ -94,6 +94,13 @@ describe('xian 突破机缘', () => {
       (e) => /筑基机缘|金丹机缘|元婴机缘|化神机缘/.test(e.summary),
     ).length
     expect(count).toBeGreaterThanOrEqual(4)
+  })
+
+  it('四突破机缘标为 keyMoment（剧情大卡/留影）', () => {
+    const km = (xian.localEvents ?? []).filter(
+      (e) => e.keyMoment && /筑基机缘|金丹机缘|元婴机缘|化神机缘/.test(e.summary),
+    )
+    expect(km.length).toBe(4)
   })
 
   it('筑基机缘成功授「筑基」印记并解锁更高修为', () => {

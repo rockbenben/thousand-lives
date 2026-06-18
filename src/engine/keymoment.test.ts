@@ -32,7 +32,8 @@ describe('涌现剧本 keyMoment 周期节奏', () => {
     expect(keyMomentIndex(8, undefined)).toBe(1)
     expect(keyMomentIndex(7, undefined)).toBe(-1)
   })
-  it('有 maxTurns 行为不变', () => {
-    expect(isKeyMoment(5, 20)).toBe(isKeyMoment(5, 20)) // 占位:保持原 keyMomentTurns(20) 逻辑
+  it('有 maxTurns 行为与 keyMomentTurns 一致，且终局必为关键回合', () => {
+    expect(isKeyMoment(5, 20)).toBe(keyMomentTurns(20).includes(5))
+    expect(isKeyMoment(20, 20)).toBe(true)
   })
 })
