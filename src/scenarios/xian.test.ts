@@ -178,3 +178,23 @@ describe('xian 因果种子', () => {
     }
   })
 })
+
+describe('xian 隐藏天堂地狱', () => {
+  it('三个隐藏结局基调存在且 condition 永不自然成立', () => {
+    const tones = ['误入杀阵·横死当场', '凶煞缠身·暴毙荒野', '仙缘垂青·一步登天']
+    for (const t of tones) {
+      const e = xian.endings.find((x) => x.tone === t)
+      expect(e, t).toBeTruthy()
+      expect(e!.condition).toBe('lifespan<=-1')
+    }
+    // 满血也不会自然触发任何隐藏结局
+    const r = checkEnding(xian, { cultivation: 50, daoHeart: 80, lifespan: 80 }, 20, ['筑基'])
+    expect(tones.includes(r?.tone ?? '')).toBe(false)
+  })
+  it('存在带 endTone 的隐藏地狱事件（minTurn>=10）', () => {
+    const hell = (xian.localEvents ?? []).find((e) =>
+      (e.minTurn ?? 0) >= 10 &&
+      e.choices.some((c) => c.endTone || (c.outcomes ?? []).some((o) => o.endTone)))
+    expect(hell).toBeTruthy()
+  })
+})

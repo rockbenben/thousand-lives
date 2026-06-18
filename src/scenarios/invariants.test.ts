@@ -34,7 +34,11 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
         const a = attrByKey.get(c.attr)
         if (!a) continue
         if (c.op === '>=' && c.value > a.max) violations.push(`${tag} ending#${i}(${e.tone}) "${c.attr}>=${c.value}" 超过 max=${a.max} → 永不可达`)
-        if (c.op === '<=' && c.value < 0) violations.push(`${tag} ending#${i}(${e.tone}) "${c.attr}<=${c.value}" 低于下限 0 → 永不可达`)
+        // 允许 value < deathBelow 的 <= 条件：这是"仅由 endTone 触发"的隐藏结局惯用模式（condition 永不自然成立）。
+        // 只有 deathBelow 以上（含 0）且为负才算真正的越界无效。
+        if (c.op === '<=' && c.value < 0 && (a.deathBelow === undefined || c.value >= a.deathBelow)) {
+          violations.push(`${tag} ending#${i}(${e.tone}) "${c.attr}<=${c.value}" 低于下限 0 → 永不可达`)
+        }
       }
       // A3. 同属性自相矛盾：lo>=L & lo<=H 且 L>H → 不可达
       const byAttr = new Map<string, { ge?: number; le?: number }>()
