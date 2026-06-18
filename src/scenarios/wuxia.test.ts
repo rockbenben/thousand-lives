@@ -64,6 +64,15 @@ describe('wuxia 身份印记', () => {
     const ev = (wuxia.localEvents ?? []).find((e) => e.summary === '残谱现世')
     expect(ev?.requires).toContain('has(灭门遗孤)')
   })
+  it('身份门控与既有数值条件合并（不覆盖原 requires）', () => {
+    // 残谱补全/血仇真相 原带 gongfu 阈值，加身份门控须 & 合并、两者并存
+    const buquan = (wuxia.localEvents ?? []).find((e) => e.summary === '残谱补全')
+    expect(buquan?.requires).toContain('has(灭门遗孤)')
+    expect(buquan?.requires).toContain('gongfu>=60')
+    const xuechou = (wuxia.localEvents ?? []).find((e) => e.summary === '血仇真相')
+    expect(xuechou?.requires).toContain('has(灭门遗孤)')
+    expect(xuechou?.requires).toContain('gongfu>=65')
+  })
 })
 
 describe('wuxia 突破闸门', () => {
