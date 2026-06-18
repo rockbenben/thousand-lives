@@ -226,8 +226,9 @@ export function applyChoice(
     baseEffects = choice.effects
   }
 
-  const attributes = clampEffects(sc, st.attributes, mergeEffects(baseEffects, decayEffects(sc)), flags0)
   const flags = applyFlags(flags0, setFlags, clearFlags)
+  // 同回合突破：用「选择后」印记算封顶，使本回合授境界印记 + 属性增益能达新上限
+  const attributes = clampEffects(sc, st.attributes, mergeEffects(baseEffects, decayEffects(sc)), flags)
   const history = [
     ...st.history,
     {

@@ -382,6 +382,21 @@ describe('applyFlags 印记增减', () => {
   })
 })
 
+describe('同回合突破封顶用选择后印记', () => {
+  const sc2 = scenarioSchema.parse({
+    id: 'brk', title: 'B', emoji: '⛰️', intro: 'x',
+    attributes: [{ key: 'p', name: '修为', initial: 10, max: 100, ceiling: 20, ceilingUnlocks: [{ flag: '甲', max: 60 }] }],
+    maxTurns: 5, systemPrompt: 'g', endings: [{ condition: 'maxTurns', tone: '终' }],
+  })
+  it('同回合授印记后修为可达新上限', () => {
+    const st = { ...initState(sc2, undefined, undefined, 'local'), attributes: { p: 19 } }
+    const tr: TurnResult = { narrative: 'n', summary: 's', choices: [{ text: '破', effects: {}, outcomes: [{ weight: 1, effects: { p: 50 }, flagsSet: ['甲'] }] }] }
+    const next = applyChoice(sc2, st, tr, 0, () => 0)
+    expect(next.flags).toContain('甲')
+    expect(next.attributes.p).toBe(60) // 旧实现会卡在 20
+  })
+})
+
 describe('applyChoice 整合 outcomes/flags', () => {
   const sc2: Scenario = scenarioSchema.parse({
     id: 'i', title: 'I', emoji: '🎯', intro: '开局',
