@@ -429,3 +429,31 @@ describe('forceEnding 强制结局（天堂地狱）', () => {
     expect(st.ended?.tone).toBe('得道飞升')
   })
 })
+
+describe('maxTurns 可选 + 涌现终止', () => {
+  const emergent: Scenario = scenarioSchema.parse({
+    id: 'e', title: 'E', emoji: '♾️', intro: '开局',
+    attributes: [{ key: 'life', name: '寿元', initial: 60, max: 100, deathBelow: 0 }],
+    systemPrompt: 'GM', // 注意：无 maxTurns
+    endings: [{ condition: 'life<=0', tone: '油尽' }],
+  })
+  it('无 maxTurns 时不在第 30 回合自动落幕', () => {
+    expect(checkEnding(emergent, { life: 50 }, 30)).toBeNull()
+  })
+  it('无 maxTurns 时寿元归零仍正常死亡', () => {
+    expect(checkEnding(emergent, { life: 0 }, 10)?.tone).toBe('油尽')
+  })
+  it('无 maxTurns 时到达硬兜底强制收束', () => {
+    expect(checkEnding(emergent, { life: 50 }, 300)?.reason).toBe('hardcap')
+  })
+  it('结局条件能读 flags', () => {
+    const sc = scenarioSchema.parse({
+      id: 's', title: 'S', emoji: '🚩', intro: '开局',
+      attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
+      maxTurns: 30, systemPrompt: 'GM',
+      endings: [{ condition: 'maxTurns & has(金丹)', tone: '功成' }, { condition: 'maxTurns', tone: '蹉跎' }],
+    })
+    expect(checkEnding(sc, { hp: 50 }, 30, ['金丹'])?.tone).toBe('功成')
+    expect(checkEnding(sc, { hp: 50 }, 30, [])?.tone).toBe('蹉跎')
+  })
+})

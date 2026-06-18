@@ -91,6 +91,9 @@ export function clampEffects(
   return next
 }
 
+// 涌现剧本（无 maxTurns）的硬兜底：到此回合数强制收束，防病态无限循环
+export const EMERGENT_HARD_CAP = 300
+
 export function checkEnding(
   sc: Scenario,
   attrs: Record<string, number>,
@@ -120,8 +123,11 @@ export function checkEnding(
       return { tone: e.tone, reason: e.condition }
     }
   }
-  // endings 不保证包含 maxTurns 条件：到期仍无命中时兜底收束，否则游戏会无限超出回合上限
-  if (completedTurns >= sc.maxTurns) return { tone: '落幕', reason: 'maxTurns' }
+  // 软上限剧本：到 maxTurns 兜底收束
+  if (sc.maxTurns !== undefined && completedTurns >= sc.maxTurns) return { tone: '落幕', reason: 'maxTurns' }
+  // 涌现剧本：高位硬兜底
+  if (sc.maxTurns === undefined && completedTurns >= EMERGENT_HARD_CAP)
+    return { tone: '落幕', reason: 'hardcap' }
   return null
 }
 
@@ -257,11 +263,12 @@ export function resolveCustomAction(
   action: string,
   resolved: TurnResult,
 ): GameState {
+  const flags = st.flags ?? []
   const attributes = clampEffects(
     sc,
     st.attributes,
     mergeEffects(resolved.actionEffects ?? {}, decayEffects(sc)),
-    st.flags,
+    flags,
   )
   const history = [
     ...st.history,
@@ -270,9 +277,10 @@ export function resolveCustomAction(
   return {
     ...st,
     attributes,
+    flags,
     history,
     memory: applyMemory(st.memory, resolved.memoryAdd),
     goalProgress: nextProgress(st.goalProgress, resolved.goalProgress),
-    ended: checkEnding(sc, attributes, history.length) ?? undefined,
+    ended: checkEnding(sc, attributes, history.length, flags) ?? undefined,
   }
 }

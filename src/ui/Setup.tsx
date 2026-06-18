@@ -280,6 +280,7 @@ export function Setup({
       </section>
       )}
 
+      {scenario.maxTurns !== undefined && (
       <section className="panel">
         <h3 title="决定这一生有多长。越长越能多走几程、看更多风景，但属性起伏与变数也越多">
           人生长度
@@ -297,11 +298,12 @@ export function Setup({
               onClick={() => setLenMult(l.mult)}
             >
               <span className="len-name">{l.label}</span>
-              <span className="len-turns">{Math.round(scenario.maxTurns * l.mult)} {scenario.turnUnit}</span>
+              <span className="len-turns">{Math.round(scenario.maxTurns! * l.mult)} {scenario.turnUnit}</span>
             </button>
           ))}
         </div>
       </section>
+      )}
 
       <button
         className="primary start-btn"
@@ -309,7 +311,7 @@ export function Setup({
         onClick={() => {
           if (mode === 'ai') saveConfig(config())
           const sc =
-            lenMult === 1
+            lenMult === 1 || scenario.maxTurns === undefined
               ? scenario
               : { ...scenario, maxTurns: Math.round(scenario.maxTurns * lenMult) }
           onStart(sc, finalOpening(), mode === 'ai' ? ambition : '', mode)

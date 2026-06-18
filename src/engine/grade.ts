@@ -14,7 +14,8 @@ export function gradeRun(sc: Scenario, st: GameState): RunGrade {
     return a.max > 0 && Number.isFinite(v) ? Math.min(1, Math.max(0, v / a.max)) : 0
   })
   const avg = ratios.length ? ratios.reduce((s, r) => s + r, 0) / ratios.length : 0
-  const surv = sc.maxTurns > 0 ? Math.min(1, st.history.length / sc.maxTurns) : 0
+  const span = sc.maxTurns ?? 60
+  const surv = span > 0 ? Math.min(1, st.history.length / span) : 0
   // 走得越久 + 最终属性越健康 → 分越高
   const score = surv * 0.5 + avg * 0.5
   const rating: RunGrade['rating'] =

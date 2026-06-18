@@ -105,7 +105,7 @@ export const scenarioSchema = z
     attributes: z.array(attributeSchema).min(1),
     openings: z.array(openingSchema).optional(),
     turnUnit: z.string().default('回合'),
-    maxTurns: z.number().int().positive(),
+    maxTurns: z.number().int().positive().optional(),
     systemPrompt: z.string().min(1),
     endings: z.array(endingSchema).min(1),
     // 可选的建议「野心/目标」，玩家可选其一或自定义；不填则只提供自定义

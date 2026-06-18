@@ -34,7 +34,8 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
   const fresh = (e: LocalEvent) => !usedSummaries.has(e.summary)
   const onceOk = (e: LocalEvent) => !(e.once && usedSummaries.has(e.summary))
   // 里程碑事件只在关键回合出现；普通回合排除它们(为关键回合保留)。
-  const keyTurn = isKeyMoment(turn, sc.maxTurns)
+  // 涌现剧本（无 maxTurns）不产生关键回合，里程碑事件全部不触发。
+  const keyTurn = sc.maxTurns !== undefined && isKeyMoment(turn, sc.maxTurns)
   const phaseOk = (e: LocalEvent) => (keyTurn ? !!e.keyMoment : !e.keyMoment)
 
   // 先在「本阶段」内挑(关键→里程碑、普通→非里程碑),逐步放宽:先松 fresh,再松阶段限制
@@ -54,7 +55,7 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
   }
   // 阶段升格偏置:期望事件量级随回合进度上升(初期小吏小事 → 后期朝堂大事),
   // 贴合期望者加权更高(×0.5~×1.5),但不排除任何事件,保留意外与变数。
-  const progress = sc.maxTurns > 0 ? Math.min(1, turn / sc.maxTurns) : 0.5
+  const progress = sc.maxTurns !== undefined && sc.maxTurns > 0 ? Math.min(1, turn / sc.maxTurns) : 0.5
   const stageBias = (e: LocalEvent) => 0.5 + (1 - Math.abs(Math.min(1, magOf(e) / 14) - progress))
 
   // 连贯性偏置：已解锁的「剧情弧」事件优先推进，避免被通用事件淹没成散乱片段。

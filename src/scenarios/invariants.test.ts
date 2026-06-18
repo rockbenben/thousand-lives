@@ -82,7 +82,7 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
       }
       // B4. 回合窗口：minTurn<=maxTurn 且都在 [1, maxTurns]
       if (e.minTurn !== undefined && e.maxTurn !== undefined && e.minTurn > e.maxTurn) violations.push(`${tag} localEvent#${i} minTurn ${e.minTurn} > maxTurn ${e.maxTurn} → 永不触发`)
-      if (e.minTurn !== undefined && e.minTurn > sc.maxTurns) violations.push(`${tag} localEvent#${i} minTurn ${e.minTurn} > 剧本 maxTurns ${sc.maxTurns} → 永不触发`)
+      if (e.minTurn !== undefined && sc.maxTurns !== undefined && e.minTurn > sc.maxTurns) violations.push(`${tag} localEvent#${i} minTurn ${e.minTurn} > 剧本 maxTurns ${sc.maxTurns} → 永不触发`)
     })
 
     // ── D. 结局优先级遮蔽：generic 循环按数组顺序取首个命中。
