@@ -52,6 +52,21 @@ export function applyItems(inventory: string[], res: TurnResult): string[] {
   return kept.length > MAX_INVENTORY ? kept.slice(kept.length - MAX_INVENTORY) : kept
 }
 
+// 每回合的自动衰减：把声明了 decayPerTurn 的属性转成 -decayPerTurn 的 effect。
+// 衰减是「岁月的硬税」，不参与命运无常缩放，单独叠加在本回合 effect 之上。
+export function decayEffects(sc: Scenario): Record<string, number> {
+  const m: Record<string, number> = {}
+  for (const a of sc.attributes) if (a.decayPerTurn) m[a.key] = -a.decayPerTurn
+  return m
+}
+
+// 合并多组 effect（按 key 求和），用于把本回合 effect 与衰减叠加后一次性 clamp。
+export function mergeEffects(...maps: Record<string, number>[]): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const m of maps) for (const [k, v] of Object.entries(m)) out[k] = (out[k] ?? 0) + v
+  return out
+}
+
 export function clampEffects(
   sc: Scenario,
   attrs: Record<string, number>,
@@ -146,7 +161,8 @@ export function applyChoice(
   const { effects, twist } = rng
     ? rollFortune(choice.effects, rng)
     : { effects: choice.effects, twist: undefined }
-  const attributes = clampEffects(sc, st.attributes, effects)
+  // 本回合 effect（已含命运无常缩放）叠加每回合衰减，一次性结算
+  const attributes = clampEffects(sc, st.attributes, mergeEffects(effects, decayEffects(sc)))
   const history = [
     ...st.history,
     {
@@ -178,7 +194,11 @@ export function resolveCustomAction(
   action: string,
   resolved: TurnResult,
 ): GameState {
-  const attributes = clampEffects(sc, st.attributes, resolved.actionEffects ?? {})
+  const attributes = clampEffects(
+    sc,
+    st.attributes,
+    mergeEffects(resolved.actionEffects ?? {}, decayEffects(sc)),
+  )
   const history = [
     ...st.history,
     { narrative: scene.narrative, choiceText: action, summary: scene.summary },

@@ -17,6 +17,9 @@ export const attributeSchema = z
     initial: z.number(),
     max: z.number().positive(),
     deathBelow: z.number().optional(),
+    // 每回合自动衰减量（>=0）：回合推进时该属性自动 -decayPerTurn，再叠加本回合 effect。
+    // 用于「逆水行舟」式张力——如修仙的寿元随岁月流逝，须主动续命方能久持。不填即不衰减。
+    decayPerTurn: z.number().nonnegative().optional(),
     bands: z.array(bandSchema).min(1).optional(),
   })
   .refine((a) => a.initial >= 0 && a.initial <= a.max, {

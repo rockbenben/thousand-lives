@@ -51,6 +51,72 @@ describe('rollFortune（命运无常）', () => {
   })
 })
 
+describe('decayPerTurn（每回合自动衰减）', () => {
+  const decaySc: Scenario = scenarioSchema.parse({
+    id: 'decay',
+    title: '衰减',
+    emoji: '⌛',
+    intro: '开局',
+    attributes: [
+      { key: 'life', name: '寿元', initial: 60, max: 100, deathBelow: 0, decayPerTurn: 2 },
+      { key: 'power', name: '修为', initial: 10, max: 100 },
+    ],
+    maxTurns: 50,
+    systemPrompt: 'GM',
+    endings: [{ condition: 'maxTurns', tone: '落幕' }],
+  })
+  const t = (effects: Record<string, number>): TurnResult => ({
+    narrative: '剧情', choices: [{ text: '行动', effects }], summary: '摘要',
+  })
+
+  it('每回合在 effect 之外自动扣减衰减量', () => {
+    // 寿元 60，本回合 effect 不动寿元 → 仅衰减 -2 → 58；修为无衰减照常 +5
+    const st = applyChoice(decaySc, initState(decaySc, undefined, undefined, 'local'), t({ power: 5 }), 0)
+    expect(st.attributes.life).toBe(58)
+    expect(st.attributes.power).toBe(15)
+  })
+
+  it('衰减与本回合 effect 叠加结算', () => {
+    // 寿元 effect +6，叠加衰减 -2 → 净 +4 → 64
+    const st = applyChoice(decaySc, initState(decaySc, undefined, undefined, 'local'), t({ life: 6 }), 0)
+    expect(st.attributes.life).toBe(64)
+  })
+
+  it('衰减不受命运无常缩放（仅 effect 被缩放）', () => {
+    // rng 触发正向转折放大 effect，但衰减恒为 -2：power +10 被放大、life 仍只 -2
+    const seq = [0.05, 0.1, 0]
+    let i = 0
+    const st = applyChoice(decaySc, initState(decaySc, undefined, undefined, 'local'), t({ power: 10 }), 0, () => seq[i++])
+    expect(st.attributes.power).toBeGreaterThan(20)
+    expect(st.attributes.life).toBe(58)
+  })
+
+  it('持续衰减可触发死亡结局', () => {
+    let st = initState(decaySc, undefined, undefined, 'local')
+    // 不补寿元，纯衰减：60 / 2 = 30 回合后归零
+    for (let i = 0; i < 30 && !st.ended; i++) st = applyChoice(decaySc, st, t({ power: 1 }), 0)
+    expect(st.attributes.life).toBe(0)
+    expect(st.ended?.tone).toBe('死亡')
+  })
+
+  it('resolveCustomAction 同样施加衰减', () => {
+    const st = resolveCustomAction(
+      decaySc,
+      initState(decaySc, undefined, undefined, 'local'),
+      { narrative: '场景', summary: '摘要' },
+      '自定义行动',
+      { narrative: '', choices: [], summary: '', actionEffects: { power: 3 } },
+    )
+    expect(st.attributes.life).toBe(58)
+    expect(st.attributes.power).toBe(13)
+  })
+
+  it('不设 decayPerTurn 的属性不衰减（向后兼容）', () => {
+    const st = applyChoice(sc, initState(sc), turn({ gold: 10 }), 0)
+    expect(st.attributes.hp).toBe(80) // 无 decayPerTurn，hp 不变
+  })
+})
+
 describe('initState', () => {
   it('按 initial 初始化属性并记录开局身份', () => {
     const st = initState(sc, { name: '商人', prompt: '精明的商人' })
