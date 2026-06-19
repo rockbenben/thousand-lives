@@ -12,6 +12,13 @@ export const liyuan: Scenario = {
       name: '技艺',
       initial: 12,
       max: 100,
+      ceiling: 20,
+      ceilingUnlocks: [
+        { flag: '搭班', max: 45 },
+        { flag: '挑梁', max: 70 },
+        { flag: '名伶', max: 90 },
+        { flag: '泰斗', max: 100 },
+      ],
       bands: [
         { upTo: 20, label: '初学乍练', severity: 'low', directive: '你功底浅薄，唱念做打处处露怯，登台稍难的戏码必砸，只能跑龙套或另寻巧路。' },
         { upTo: 45, label: '小有功底', severity: 'normal' },
