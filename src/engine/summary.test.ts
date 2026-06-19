@@ -17,7 +17,7 @@ describe('buildSummaryCard', () => {
     expect(card).toContain('千世书')
     expect(card).toContain('末世求生')
     expect(card).toContain('死亡')
-    expect(card).toContain('2 天')
+    expect(card).toContain('2 月')
     expect(card).toContain('生命')
     expect(card).toContain('你倒在了黎明前。')
     expect(card).toContain('找到药品')

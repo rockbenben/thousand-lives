@@ -153,10 +153,10 @@ describe('涌现剧本 prompt header', () => {
 
 describe('印记/境界注入（门控）', () => {
   const xian = builtinScenarios.find((s) => s.id === 'xian')!
-  const wasteland = builtinScenarios.find((s) => s.id === 'wasteland')!
+  const noFlag = builtinScenarios.find((s) => s.id === 'book')! // 穿书：尚未铺机缘，作无 flag 题材样本（wasteland 已铺据点印记）
   it('scenarioUsesFlags 仅对带 flag/ceilingUnlocks 的剧本为真', () => {
     expect(scenarioUsesFlags(xian)).toBe(true)
-    expect(scenarioUsesFlags(wasteland)).toBe(false)
+    expect(scenarioUsesFlags(noFlag)).toBe(false)
   })
   it('xian 提示含当前印记、晋阶之序（叙事化，不含数值封顶）、flagsSet/endTone 契约与词表', () => {
     const st = { ...initState(xian, xian.openings!.find((o) => o.flag === '魔道'), undefined, 'ai') }
@@ -184,8 +184,8 @@ describe('印记/境界注入（门控）', () => {
     expect(all).not.toContain('境界')
     expect(all).not.toContain('封顶')
   })
-  it('无 flag 题材（wasteland）提示不含印记/境界/flagsSet 段', () => {
-    const msgs = buildTurnMessages(wasteland, initState(wasteland, undefined, undefined, 'ai'))
+  it('无 flag 题材（book）提示不含印记/境界/flagsSet 段', () => {
+    const msgs = buildTurnMessages(noFlag, initState(noFlag, undefined, undefined, 'ai'))
     const all = msgs.map((m) => m.content).join('\n')
     expect(all).not.toContain('当前印记')
     expect(all).not.toContain('flagsSet')
