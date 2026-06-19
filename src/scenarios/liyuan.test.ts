@@ -15,6 +15,17 @@ describe('liyuan 隐藏 endTone', () => {
     const has = ev.choices.some((c) => (c.outcomes ?? []).some((o) => o.endTone === '开罪权贵·横死乱世'))
     expect(has).toBe(true)
   })
+  it('每个哨兵基调都被某事件 endTone 引用（防 tone 字符串打错）', () => {
+    // 收集所有事件 outcome 里用到的 endTone
+    const used = new Set<string>()
+    for (const ev of liyuan.localEvents ?? []) {
+      for (const c of ev.choices) for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+    }
+    // 三个哨兵隐藏结局的 tone 都须能被某事件触发，否则字符串不匹配、结局永不命中
+    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹', '一夜爆红·伶界天骄']) {
+      expect(used.has(t), t).toBe(true)
+    }
+  })
   it('endTone 强制即终局', () => {
     let st = initState(liyuan, liyuan.openings!.find((o) => o.name === '票友下海'))
     st = { ...st, attributes: { art: 60, fame: 60, safety: 50 }, history: Array(18).fill({ narrative: '', choiceText: '', summary: '' }) }
@@ -62,6 +73,12 @@ describe('liyuan 身份印记', () => {
     expect(byFlag('落魄世家小姐')).toBeGreaterThanOrEqual(1)
     expect(byFlag('票友下海')).toBeGreaterThanOrEqual(1)
     expect(byFlag('戏班学徒')).toBeGreaterThanOrEqual(1)
+  })
+  it('身份门控与既有数值条件合并（不覆盖原 requires）', () => {
+    // 求词文人 原带 art>=55，加身份门控须 & 合并、两者并存
+    const ev = (liyuan.localEvents ?? []).find((e) => e.summary === '求词文人')
+    expect(ev?.requires).toContain('has(落魄世家小姐)')
+    expect(ev?.requires).toContain('art>=55')
   })
 })
 
