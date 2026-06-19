@@ -111,3 +111,17 @@ describe('book AI 模式', () => {
     expect(buildTurnMessages(book, st).map((m) => m.content).join('\n')).not.toContain('undefined')
   })
 })
+
+describe('book 衰减与 sim 健壮性', () => {
+  it('主角好感 decay 经 sim 校准（保持 0：random 追杀死 19% 已是健康第二死亡线，加 decay 会与 safety decay2 双重过罚）', () => {
+    const favor = book.attributes.find((a) => a.key === 'favor')!
+    expect(favor.decayPerTurn ?? 0).toBe(0) // sim-tuned：random 真死 57%（抹杀38%+追杀19%），favor 死已健康；survive 跑满期无早收束短路
+  })
+  it('安全值保持每章衰减 2（被剧情修正力抹杀的悬顶之危）', () => {
+    expect(book.attributes.find((a) => a.key === 'safety')!.decayPerTurn).toBe(2)
+  })
+  it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
+    for (const ev of book.localEvents ?? [])
+      for (const c of ev.choices) expect(c.effects, `${ev.summary}/${c.text}`).toBeDefined()
+  })
+})
