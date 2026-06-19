@@ -36,3 +36,31 @@ describe('spy 身份印记', () => {
     expect(byFlag('觉醒伪职')).toBeGreaterThanOrEqual(1)
   })
 })
+
+describe('spy 升功勋闸门', () => {
+  it('四道升功勋机缘均为 keyMoment、授对应功勋印记、按序串链', () => {
+    const want = [
+      { summary: '舞厅套话', flag: '立功', need: undefined as string | undefined, pick: '步步引话，套取布防' },
+      { summary: '策反译电员', flag: '建功', need: 'has(立功) & cover>=50', pick: '动之以情、济其困厄，徐图策反' },
+      { summary: '日侨名册', flag: '奇功', need: 'has(建功)', pick: '通宵比对，挖出潜藏暗桩' },
+      { summary: '密电草稿', flag: '殊勋', need: 'has(奇功)', pick: '冒险去敌机要室盗取密码本' },
+    ]
+    for (const w of want) {
+      const ev = (spy.localEvents ?? []).find((e) => e.summary === w.summary)
+      expect(ev?.keyMoment, w.summary).toBe(true)
+      const ch = ev!.choices.find((c) => c.text === w.pick)
+      expect((ch?.flagsSet ?? []).includes(w.flag), w.summary).toBe(true)
+      if (w.need) expect(ev!.requires, w.summary).toBe(w.need)
+    }
+  })
+  it('套取布防当回合情报可破 15 上限', () => {
+    let st = initState(spy, spy.openings![0])
+    st = { ...st, attributes: { cover: 60, intel: 15, trust: 45 }, history: Array(4).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (spy.localEvents ?? []).find((e) => e.summary === '舞厅套话')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('立功'))
+    const next = applyChoice(spy, st, tr as any, idx, () => 0.5)
+    expect(next.flags).toContain('立功')
+    expect(next.attributes.intel).toBeGreaterThan(15) // 该支 intel+12，破上限 15（立功上限 50）
+  })
+})
