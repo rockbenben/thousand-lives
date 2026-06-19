@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { liyuan } from './liyuan'
 import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
+import { buildTurnMessages } from '../engine/prompt'
 
 describe('liyuan 隐藏 endTone', () => {
   it('新增致死与天堂隐藏结局存在且为哨兵 safety<=-1', () => {
@@ -102,5 +103,28 @@ describe('liyuan 升艺闸门', () => {
     const next = applyChoice(liyuan, st, tr as any, idx, () => 0)
     expect(next.flags).toContain('搭班')
     expect(next.attributes.art).toBeGreaterThan(20)
+  })
+})
+
+describe('liyuan AI 模式', () => {
+  it('tierLabel=名位，晋阶之序用本剧术语「名位」+ 名位印记序', () => {
+    const st = initState(liyuan, liyuan.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(liyuan, st).map((m) => m.content).join('\n')
+    expect(liyuan.tierLabel).toBe('名位')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('名位')
+    expect(all).toContain('搭班→挑梁→名伶→泰斗')
+    expect(all).not.toContain('封顶')
+    // 隐藏 tone 经词表注入（伶界天骄 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
+    expect(all).toContain('伶界天骄')
+  })
+  it('systemPrompt 含名位晋阶规则与横祸极稀指导', () => {
+    expect(liyuan.systemPrompt).toContain('名位')
+    expect(liyuan.systemPrompt).toContain('横祸')
+  })
+  it('提示不含「共 undefined」', () => {
+    const st = initState(liyuan, liyuan.openings![0], undefined, 'ai')
+    const all = buildTurnMessages(liyuan, st).map((m) => m.content).join('\n')
+    expect(all).not.toContain('undefined')
   })
 })
