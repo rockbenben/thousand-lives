@@ -109,3 +109,17 @@ describe('spy AI 模式', () => {
     expect(buildTurnMessages(spy, st).map((m) => m.content).join('\n')).not.toContain('undefined')
   })
 })
+
+describe('spy 衰减与 sim 健壮性', () => {
+  it('组织信任 decay 经 sim 校准（使被自己人清除成活的第二死亡线，并防 trust>=96 早收束短路功勋）', () => {
+    const trust = spy.attributes.find((a) => a.key === 'trust')!
+    expect(trust.decayPerTurn).toBe(1) // sim-tuned：decay0 时 trust 死≈0 且 survive 早早 trust>=96 收场；decay1 后 survive 活到满期22%→74%、卖友/卖国哨兵 3-4% 可达
+  })
+  it('潜伏掩护保持每月衰减 3（悬顶之危）', () => {
+    expect(spy.attributes.find((a) => a.key === 'cover')!.decayPerTurn).toBe(3)
+  })
+  it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
+    for (const ev of spy.localEvents ?? [])
+      for (const c of ev.choices) expect(c.effects, `${ev.summary}/${c.text}`).toBeDefined()
+  })
+})

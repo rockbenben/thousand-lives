@@ -49,6 +49,8 @@ export const spy: Scenario = {
       initial: 45,
       max: 100,
       deathBelow: 0,
+      // 潜伏日久、猜忌自然累积，组织信任逐月消蚀（sim 校准：使「被自己人清除」成为活的第二死亡线）
+      decayPerTurn: 1,
       bands: [
         { upTo: 12, label: '疑为内奸', severity: 'critical', directive: '组织已怀疑你叛变，叙事中肃反的杀机暗藏于同志之间；至少一个选项面临自己人的清除。' },
         { upTo: 35, label: '受人猜忌', severity: 'low', directive: '上线对你存有戒心，交办的事处处留一手。' },
