@@ -542,6 +542,8 @@ export const sanguo: Scenario = {
       keyMoment: true,
       minTurn: 15,
       weight: 1.2,
+      // 故意不加 once：改投须能在晚期（霸业获于一统在望 minTurn26 之后）再触发、
+      // 清空霸业，使「曾辅主成霸业却改投致功业旁落 → 落算无遗策」的悲剧路径可达。勿擅加 once。
     },
     {
       narrative:

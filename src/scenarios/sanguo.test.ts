@@ -44,6 +44,11 @@ describe('sanguo 身份印记', () => {
     expect(byFlag('世家子弟')).toBeGreaterThanOrEqual(1)
     expect(byFlag('寒门游学士子')).toBeGreaterThanOrEqual(1)
   })
+  it('降将密告 身份门控与既有数值条件合并（不覆盖原 wit>=50）', () => {
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '降将密告')
+    expect(ev?.requires).toContain('has(降将谋臣)')
+    expect(ev?.requires).toContain('wit>=50')
+  })
 })
 
 describe('sanguo 升势闸门', () => {
@@ -77,8 +82,9 @@ describe('sanguo 势力 volatility（升降可逆 + 改投）', () => {
   it('择主投效 设主公印记', () => {
     const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '择主投效')!
     expect(ev.keyMoment).toBe(true)
-    const lordFlags = ev.choices.flatMap((c) => c.flagsSet ?? [])
-    expect(lordFlags.some((f) => ['强主', '明主', '汉室'].includes(f))).toBe(true)
+    // 三选项各授一个不同的主公印记（强主/明主/汉室），不是只有一个有 flag
+    const lordFlags = ev.choices.map((c) => (c.flagsSet ?? [])[0])
+    expect(new Set(lordFlags)).toEqual(new Set(['强主', '明主', '汉室']))
   })
   it('主公丧师失地：有鼎足者失势 flagsClear 掉鼎足', () => {
     const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '主公丧师失地')!
