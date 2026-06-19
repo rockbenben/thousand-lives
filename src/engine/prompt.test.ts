@@ -153,7 +153,18 @@ describe('涌现剧本 prompt header', () => {
 
 describe('印记/境界注入（门控）', () => {
   const xian = builtinScenarios.find((s) => s.id === 'xian')!
-  const noFlag = builtinScenarios.find((s) => s.id === 'book')! // 穿书：尚未铺机缘，作无 flag 题材样本（wasteland 已铺据点印记）
+  // 9 个内置题材现已全部铺了机缘体系，无现成「无 flag」样本，改用手造的最小无 flag 剧本
+  const noFlag = {
+    id: 'noflag-sample',
+    title: '无机缘样本',
+    emoji: '🧪',
+    intro: '一个不带任何印记/晋阶机制的最小剧本，仅用于校验无 flag 分支。',
+    attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
+    turnUnit: '回合',
+    maxTurns: 10,
+    systemPrompt: '你是一个测试用的主持人（GM）。简洁推进剧情。',
+    endings: [{ condition: 'maxTurns', tone: '收场', epilogue: '一局终了。' }],
+  } as unknown as (typeof builtinScenarios)[number]
   it('scenarioUsesFlags 仅对带 flag/ceilingUnlocks 的剧本为真', () => {
     expect(scenarioUsesFlags(xian)).toBe(true)
     expect(scenarioUsesFlags(noFlag)).toBe(false)
@@ -184,7 +195,7 @@ describe('印记/境界注入（门控）', () => {
     expect(all).not.toContain('境界')
     expect(all).not.toContain('封顶')
   })
-  it('无 flag 题材（book）提示不含印记/境界/flagsSet 段', () => {
+  it('无 flag 题材（手造最小样本）提示不含印记/境界/flagsSet 段', () => {
     const msgs = buildTurnMessages(noFlag, initState(noFlag, undefined, undefined, 'ai'))
     const all = msgs.map((m) => m.content).join('\n')
     expect(all).not.toContain('当前印记')
