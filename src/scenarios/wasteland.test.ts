@@ -15,3 +15,19 @@ describe('wasteland 尺度与前提', () => {
     expect(wasteland.systemPrompt).not.toContain('每回合代表一天')
   })
 })
+
+describe('wasteland 物资据点封顶', () => {
+  it('无据点印记时物资封顶 50（= base，≥ initial 不被削）', () => {
+    expect(clampEffects(wasteland, { supplies: 50 }, { supplies: 20 }, []).supplies).toBe(50)
+  })
+  it('落脚点→65 据点→80 堡垒→92 营地→100 逐级解锁', () => {
+    expect(clampEffects(wasteland, { supplies: 60 }, { supplies: 20 }, ['落脚点']).supplies).toBe(65)
+    expect(clampEffects(wasteland, { supplies: 75 }, { supplies: 20 }, ['落脚点', '据点']).supplies).toBe(80)
+    expect(clampEffects(wasteland, { supplies: 90 }, { supplies: 20 }, ['落脚点', '据点', '堡垒']).supplies).toBe(92)
+    expect(clampEffects(wasteland, { supplies: 95 }, { supplies: 20 }, ['落脚点', '据点', '堡垒', '营地']).supplies).toBe(100)
+  })
+  it('生命与理智不设据点封顶', () => {
+    expect(clampEffects(wasteland, { hp: 95 }, { hp: 20 }, []).hp).toBe(100)
+    expect(clampEffects(wasteland, { sanity: 95 }, { sanity: 20 }, []).sanity).toBe(100)
+  })
+})

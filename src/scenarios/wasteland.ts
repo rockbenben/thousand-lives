@@ -41,6 +41,14 @@ export const wasteland: Scenario = {
       name: '物资',
       initial: 50,
       max: 100,
+      // 据点印记逐级解锁物资天花板：孤身流浪屯不住（卡 50），唯建据点方能层层囤积、缓冲生命与理智
+      ceiling: 50,
+      ceilingUnlocks: [
+        { flag: '落脚点', max: 65 },
+        { flag: '据点', max: 80 },
+        { flag: '堡垒', max: 92 },
+        { flag: '营地', max: 100 },
+      ],
       bands: [
         { upTo: 15, label: '枯竭', severity: 'critical', directive: '断粮缺水，叙事体现饥饿与绝望；本回合所有选项的 effects 额外扣减 hp（约 -10）与 sanity（约 -5）。' },
         { upTo: 40, label: '紧张', severity: 'low', directive: '物资见底，必须精打细算，叙事流露匮乏的压力。' },
