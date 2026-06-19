@@ -64,3 +64,28 @@ describe('spy 升功勋闸门', () => {
     expect(next.attributes.intel).toBeGreaterThan(15) // 该支 intel+12，破上限 15（立功上限 50）
   })
 })
+
+describe('spy 隐藏 endTone 哨兵', () => {
+  const tones = ['卖国求荣·遗臭万年', '卖友求生·血债难偿', '策反成功·扭转乾坤']
+  it('三哨兵结局存在且 condition 为 trust<=-1', () => {
+    for (const t of tones) expect(spy.endings.find((x) => x.tone === t)?.condition, t).toBe('trust<=-1')
+  })
+  it('每个哨兵基调都被某事件 outcomes.endTone 引用', () => {
+    const used = new Set<string>()
+    for (const ev of spy.localEvents ?? [])
+      for (const c of ev.choices) {
+        if (c.endTone) used.add(c.endTone)
+        for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+      }
+    for (const t of tones) expect(used.has(t), t).toBe(true)
+  })
+  it('投靠敌营的 endTone 分支被掷中即强制地狱结局', () => {
+    let st = initState(spy, spy.openings![0])
+    st = { ...st, attributes: { cover: 40, intel: 30, trust: 40 }, history: Array(4).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (spy.localEvents ?? []).find((e) => e.summary === '七十六号传唤')!
+    const idx = ev.choices.findIndex((c) => c.text === '献情报投靠七十六号')
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const next = applyChoice(spy, st, tr as any, idx, () => 0.999) // 取末位 = endTone 分支
+    expect(next.ended?.tone).toBe('卖国求荣·遗臭万年')
+  })
+})
