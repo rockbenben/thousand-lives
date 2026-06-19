@@ -20,3 +20,21 @@ describe('book 剧情偏离封顶', () => {
     expect(clampEffects(book, { safety: 95 }, { safety: 20 }, []).safety).toBe(100)
   })
 })
+
+describe('book 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    const want: Record<string, string> = { 恶毒女配: '恶毒女配', 反派之女: '反派之女', 陪嫁婢女: '陪嫁婢女' }
+    for (const [name, flag] of Object.entries(want)) {
+      const op = book.openings!.find((o) => o.name === name)
+      expect(op?.flag).toBe(flag)
+      expect(initState(book, op).flags).toContain(flag)
+    }
+  })
+  it('三道身份专属事件带 has() 门控', () => {
+    const evs = book.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('恶毒女配')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('反派之女')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('陪嫁婢女')).toBeGreaterThanOrEqual(1)
+  })
+})
