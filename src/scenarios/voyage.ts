@@ -16,6 +16,14 @@ export const voyage: Scenario = {
       // 海上颠簸、风浪与蛀蚀使船只逐年损耗（-1/年）；须靠靠港修缮、夺取新船维持船力，
       // 船力耗尽则葬身鱼腹。
       decayPerTurn: 1,
+      // 势力印记逐级解锁船力天花板：无名小卒的旧船难壮大，唯立威、结队、破局、称霸方能层层升级
+      ceiling: 35,
+      ceilingUnlocks: [
+        { flag: '私掠', max: 50 },
+        { flag: '船队', max: 70 },
+        { flag: '海枭', max: 88 },
+        { flag: '霸主', max: 100 },
+      ],
       bands: [
         { upTo: 12, label: '漏水残船', severity: 'critical', directive: '你的船千疮百孔、随时倾覆，叙事中沉没的危机步步紧逼；至少一个选项是孤注一掷的死中求活。' },
         { upTo: 35, label: '老旧帆船', severity: 'low', directive: '船只老旧、火炮稀疏，遇上正规战舰只能避战或智取，硬碰必沉。' },
