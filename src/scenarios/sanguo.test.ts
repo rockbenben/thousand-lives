@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { sanguo } from './sanguo'
-import { clampEffects, initState, applyChoice } from '../engine/state'
+import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
 
 describe('sanguo 谋略势力封顶', () => {
   it('无势力印记时谋略封顶 30（= initial，不被削）', () => {
@@ -107,5 +107,23 @@ describe('sanguo 势力 volatility（升降可逆 + 改投）', () => {
   it('站错主公·身死族灭 结局存在且为哨兵（主公丧师失地的 endTone 落点，本任务自洽）', () => {
     const e = sanguo.endings.find((x) => x.tone === '站错主公·身死族灭')
     expect(e?.condition).toBe('trust<=-1')
+  })
+})
+
+describe('sanguo 巅峰结局须 maxTurns + 经天纬地须霸业', () => {
+  it('满血高谋略在非落幕年不触发巅峰', () => {
+    const r = checkEnding(sanguo, { wit: 98, repute: 98, trust: 98 }, 18, ['据州', '称雄', '鼎足', '霸业'])
+    for (const t of ['经天纬地·名相千古', '算无遗策·智极而孤', '海内名士·万世景仰']) {
+      expect(r?.tone === t, t).toBe(false)
+    }
+  })
+  it('落幕年有霸业+高信任 → 经天纬地', () => {
+    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, 30, ['据州', '称雄', '鼎足', '霸业'])
+    expect(r?.tone).toBe('经天纬地·名相千古')
+  })
+  it('落幕年高谋略但无霸业（失势/改投后）→ 落算无遗策而非经天纬地', () => {
+    // wit 96 但 flags 无霸业（曾有后被清）
+    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, 30, ['据州', '称雄', '鼎足'])
+    expect(r?.tone).toBe('算无遗策·智极而孤')
   })
 })
