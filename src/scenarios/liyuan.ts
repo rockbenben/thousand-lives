@@ -43,7 +43,7 @@ export const liyuan: Scenario = {
     {
       key: 'safety',
       name: '安稳',
-      initial: 70,
+      initial: 80,
       max: 100,
       deathBelow: 0,
       // 梨园人情薄、班社倾轧、贵人易翻脸，安稳随岁月流逝自然消磨（-2/年）；
