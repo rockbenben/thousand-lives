@@ -105,3 +105,23 @@ describe('scifi 隐藏 endTone 哨兵', () => {
     expect(next.ended?.tone).toBe('清洗续命·血债驶向虚空')
   })
 })
+
+describe('scifi AI 模式', () => {
+  it('tierLabel=航程，晋阶之序用本剧术语「航程」+ 航程印记序', () => {
+    const st = initState(scifi, scifi.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(scifi, st).map((m) => m.content).join('\n')
+    expect(scifi.tierLabel).toBe('航程')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('航程')
+    expect(all).toContain('深空→越障→抵近→扎根')
+    expect(all).not.toContain('封顶')
+  })
+  it('systemPrompt 含航程晋阶指引', () => {
+    expect(scifi.systemPrompt).toContain('航程')
+    expect(scifi.systemPrompt).toContain('深空')
+  })
+  it('AI 提示不含「undefined」', () => {
+    const st = initState(scifi, scifi.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(scifi, st).map((m) => m.content).join('\n')).not.toContain('undefined')
+  })
+})
