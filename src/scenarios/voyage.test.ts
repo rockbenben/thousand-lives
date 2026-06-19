@@ -57,14 +57,26 @@ describe('voyage 升势力闸门', () => {
       if (w.need) expect(ev!.requires, w.summary).toBe(w.need)
     }
   })
-  it('升起黑旗当回合船力可破 35 上限', () => {
+  it('海上肥羊「升起黑旗」授私掠印记并把船力上限抬到 50', () => {
+    // 该支 effects 含 ship:-3（劫掠损船），故不验「船力上涨」，而验印记 + 上限抬升
     let st = initState(voyage, voyage.openings![0])
     st = { ...st, attributes: { ship: 35, wealth: 30, crew: 60 }, history: Array(2).fill({ narrative: '', choiceText: '', summary: '' }) }
     const ev = (voyage.localEvents ?? []).find((e) => e.summary === '海上肥羊')!
     const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
     const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('私掠'))
-    const next = applyChoice(voyage, st, tr as any, idx, () => 0)
+    const next = applyChoice(voyage, st, tr as any, idx, () => 0.5) // 0.5>=0.18 不触发命运无常，确定
     expect(next.flags).toContain('私掠')
-    expect(next.attributes.ship).toBeGreaterThan(35)
+    // 私掠 把船力上限 35→50：再给一记 +30 应被压在 50（而非旧上限 35），证明上限已抬升
+    expect(clampEffects(voyage, next.attributes, { ship: 30 }, next.flags!).ship).toBe(50)
+  })
+  it('海盗结盟「歃血结盟」同回合授船队印记且船力可破私掠上限 50', () => {
+    let st = initState(voyage, voyage.openings![0])
+    st = { ...st, attributes: { ship: 50, wealth: 50, crew: 60 }, flags: ['私掠'], history: Array(8).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (voyage.localEvents ?? []).find((e) => e.summary === '海盗结盟')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('船队'))
+    const next = applyChoice(voyage, st, tr as any, idx, () => 0.5)
+    expect(next.flags).toContain('船队')
+    expect(next.attributes.ship).toBeGreaterThan(50) // 破私掠上限 50（船队上限 70）
   })
 })
