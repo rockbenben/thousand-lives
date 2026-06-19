@@ -90,10 +90,9 @@ describe('wasteland 结局重构为三年末世归宿', () => {
     const oldTones = ['从容获救·重建希望', '安稳撤离的幸存者', '油尽灯枯地获救', '获救']
     for (const t of oldTones) expect(wasteland.endings.some((e) => e.tone === t), `旧tone ${t} 应已改名`).toBe(false)
   })
-  it('常规结局 epilogue 不再含「军方救援/救援者/救援点/担架/军旗」等抵达-获救字样（隐藏哨兵除外）', () => {
+  it('所有 epilogue 不再含「军方救援/救援者/救援点/担架/军旗」等抵达-获救字样', () => {
     const banned = ['军方', '军队', '救援者', '救援点', '救援的', '担架', '军旗', '救援车', '撤离']
     for (const e of wasteland.endings) {
-      if (e.condition === 'sanity<=-1') continue // 隐藏哨兵结局叙述黑暗题材，不受此限
       for (const b of banned) expect(e.epilogue?.includes(b), `${e.tone} 含「${b}」`).not.toBe(true)
     }
   })
