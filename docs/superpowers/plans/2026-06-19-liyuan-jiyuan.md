@@ -11,8 +11,8 @@
 ## Global Constraints
 
 - **长度保持 `maxTurns: 30`**（「三十年粉墨春秋」，不改）；`turnUnit` 仍「年」。~19 个 `maxTurns & …` 善终结局条件不变。
-- **名位印记**固定四个、按序：`搭班`→`挑梁`→`名伶`→`宗匠`，不得越级。**只有 `art`（技艺）有名位阶梯**；`safety`（安稳，衰减死亡赛跑）、`fame`（声名，standing，death-at-0）不设封顶。
-- **apex 走 climb（不走赌命）**：3 个 passive 巅峰结局改 `maxTurns &` 门控，名角/宗匠靠攀爬；**survive 登顶不强求 0**。
+- **名位印记**固定四个、按序：`搭班`→`挑梁`→`名伶`→`泰斗`，不得越级。**只有 `art`（技艺）有名位阶梯**；`safety`（安稳，衰减死亡赛跑）、`fame`（声名，standing，death-at-0）不设封顶。
+- **apex 走 climb（不走赌命）**：3 个 passive 巅峰结局改 `maxTurns &` 门控，名角/泰斗靠攀爬；**survive 登顶不强求 0**。
 - **tierLabel: '名位'**。
 - 哨兵 condition 用 `safety<=-1`（`safety.deathBelow===0`，`invariants.test.ts` A2 已豁免）。
 - 测试 Vitest；每个 Task 提交前 `npx tsc --noEmit` 干净、全量 `npx vitest run` 绿。
@@ -31,11 +31,11 @@
 
 ---
 
-## Task 1: 技艺名位封顶阶梯（搭班/挑梁/名伶/宗匠）
+## Task 1: 技艺名位封顶阶梯（搭班/挑梁/名伶/泰斗）
 
 **Files:** Modify `src/scenarios/liyuan.ts`（`art` 属性）；Create `src/scenarios/liyuan.test.ts`
 
-**Interfaces:** Consumes L1 `clampEffects(sc, attrs, effects, flags)`。Produces `art` 带 `ceiling:20` + `ceilingUnlocks:[{flag:'搭班',max:45},{flag:'挑梁',max:70},{flag:'名伶',max:90},{flag:'宗匠',max:100}]`。后续 Task 3 升艺事件靠这些印记抬升封顶。
+**Interfaces:** Consumes L1 `clampEffects(sc, attrs, effects, flags)`。Produces `art` 带 `ceiling:20` + `ceilingUnlocks:[{flag:'搭班',max:45},{flag:'挑梁',max:70},{flag:'名伶',max:90},{flag:'泰斗',max:100}]`。后续 Task 3 升艺事件靠这些印记抬升封顶。
 
 - [ ] **Step 1: 写失败测试** — 新建 `src/scenarios/liyuan.test.ts`：
 
@@ -57,8 +57,8 @@ describe('liyuan 技艺名位封顶', () => {
   it('名伶印记解锁封顶 90', () => {
     expect(clampEffects(liyuan, { art: 85 }, { art: 50 }, ['搭班', '挑梁', '名伶']).art).toBe(90)
   })
-  it('宗匠印记解锁封顶 100', () => {
-    expect(clampEffects(liyuan, { art: 95 }, { art: 50 }, ['搭班', '挑梁', '名伶', '宗匠']).art).toBe(100)
+  it('泰斗印记解锁封顶 100', () => {
+    expect(clampEffects(liyuan, { art: 95 }, { art: 50 }, ['搭班', '挑梁', '名伶', '泰斗']).art).toBe(100)
   })
   it('安稳与声名不设名位封顶', () => {
     expect(clampEffects(liyuan, { safety: 95 }, { safety: 50 }, []).safety).toBe(100)
@@ -82,7 +82,7 @@ describe('liyuan 技艺名位封顶', () => {
     { flag: '搭班', max: 45 },
     { flag: '挑梁', max: 70 },
     { flag: '名伶', max: 90 },
-    { flag: '宗匠', max: 100 },
+    { flag: '泰斗', max: 100 },
   ],
   bands: [ /* 保持原样 */ ],
 },
@@ -92,7 +92,7 @@ describe('liyuan 技艺名位封顶', () => {
 
 - [ ] **Step 4: 跑绿** — `npx vitest run src/scenarios/liyuan.test.ts` → PASS；`npx tsc --noEmit` → 0。
 
-- [ ] **Step 5: Commit** — `feat(liyuan): 技艺名位封顶阶梯（搭班/挑梁/名伶/宗匠 ceilingUnlocks）`
+- [ ] **Step 5: Commit** — `feat(liyuan): 技艺名位封顶阶梯（搭班/挑梁/名伶/泰斗 ceilingUnlocks）`
 
 ---
 
@@ -151,7 +151,7 @@ openings: [
 
 **Files:** Modify `src/scenarios/liyuan.ts`（新增 4 个 keyMoment 升艺事件）；Modify `src/scenarios/liyuan.test.ts`
 
-**Interfaces:** Consumes Task 1 的 ceilingUnlocks；L1 `applyChoice`（同回合先 applyFlags 再 clampEffects，升艺当回合技艺可达新上限）；keyMoment `keyMomentTurns(30)`。Produces 4 个 `keyMoment:true` 专属升艺事件，授印记选项带 `flagsSet:['下一名位']`，按 搭班→挑梁→名伶→宗匠 串链。
+**Interfaces:** Consumes Task 1 的 ceilingUnlocks；L1 `applyChoice`（同回合先 applyFlags 再 clampEffects，升艺当回合技艺可达新上限）；keyMoment `keyMomentTurns(30)`。Produces 4 个 `keyMoment:true` 专属升艺事件，授印记选项带 `flagsSet:['下一名位']`，按 搭班→挑梁→名伶→泰斗 串链。
 
 > **设计说明**：既有 唱对台戏/堂会受辱/研习真传 是两难/风险事件（技艺/声名来源），不适合直接当闸门。故**新建 4 个专属升艺事件**（同 officialdom 做法）。
 
@@ -164,7 +164,7 @@ describe('liyuan 升艺闸门', () => {
       { summary: '出科搭班', flag: '搭班', prev: undefined },
       { summary: '挑梁担纲', flag: '挑梁', prev: '搭班' },
       { summary: '唱红名动', flag: '名伶', prev: '挑梁' },
-      { summary: '开宗立派', flag: '宗匠', prev: '名伶' },
+      { summary: '开宗立派', flag: '泰斗', prev: '名伶' },
     ]
     for (const w of want) {
       const ev = (liyuan.localEvents ?? []).find((e) => e.summary === w.summary)
@@ -235,9 +235,9 @@ describe('liyuan 升艺闸门', () => {
 },
 {
   narrative:
-    '唱戏唱到你这般地步，已不只是演别人的戏，而是要创自己的腔、立自己的派了。你毕生琢磨的唱法、身段、戏路，自成一家气象；门下弟子渐多，戏界元老也来请教。是时候开宗立派，把这一身绝艺凝成一脉传世的戏脉——让后来者唱你创的腔、排你排的戏，把你的名字刻进这门艺术的骨血里。这一步迈出去，你便从一个名伶，成了一代宗匠。',
+    '唱戏唱到你这般地步，已不只是演别人的戏，而是要创自己的腔、立自己的派了。你毕生琢磨的唱法、身段、戏路，自成一家气象；门下弟子渐多，戏界元老也来请教。是时候开宗立派，把这一身绝艺凝成一脉传世的戏脉——让后来者唱你创的腔、排你排的戏，把你的名字刻进这门艺术的骨血里。这一步迈出去，你便从一个名伶，成了一代泰斗。',
   choices: [
-    { text: '开宗立派，自成一家', effects: { art: 14, fame: 6, safety: -2 }, flagsSet: ['宗匠'], reaction: '你创的腔、排的戏被刻进唱片、写进戏考，门下桃李济济、戏脉绵延；梨园中人提起你，无不肃然，知是开了一派的宗匠。' },
+    { text: '开宗立派，自成一家', effects: { art: 14, fame: 6, safety: -2 }, flagsSet: ['泰斗'], reaction: '你创的腔、排的戏被刻进唱片、写进戏考，门下桃李济济、戏脉绵延；梨园中人提起你，无不肃然起敬，尊你一声梨园泰斗。' },
     { text: '守成传艺，不敢称派', effects: { art: 6, fame: 2 }, reaction: '你自谦才疏、只肯本分传艺、不敢妄言立派；后辈虽得你真传，叹你这开宗立派的一步终是没能迈出。' },
   ],
   summary: '开宗立派',
@@ -264,13 +264,13 @@ describe('liyuan 升艺闸门', () => {
 ```ts
 describe('liyuan 巅峰结局须 maxTurns（不中途白嫖）', () => {
   it('满血高位在非落幕年不触发巅峰结局', () => {
-    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 18, ['搭班', '挑梁', '名伶', '宗匠'])
+    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 18, ['搭班', '挑梁', '名伶', '泰斗'])
     for (const t of ['一代宗师·开宗立派', '艺压群伶·曲高和寡', '红透半边天·万人空巷']) {
       expect(r?.tone === t, t).toBe(false)
     }
   })
   it('落幕年（满期）高位触发巅峰结局', () => {
-    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 30, ['搭班', '挑梁', '名伶', '宗匠'])
+    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 30, ['搭班', '挑梁', '名伶', '泰斗'])
     expect(r?.tone).toBeTruthy()
     expect(['一代宗师·开宗立派', '艺压群伶·曲高和寡', '红透半边天·万人空巷', '梨园泰斗·桃李天下']).toContain(r!.tone)
   })
@@ -286,7 +286,7 @@ describe('liyuan 巅峰结局须 maxTurns（不中途白嫖）', () => {
   - `红透半边天·万人空巷`：`condition: 'fame>=96'` → `'maxTurns & fame>=96'`
   > 这 3 个须位于其余 `maxTurns & …` 善终结局**之前**（checkEnding 取首个匹配；它们已在现文件靠前——确认顺序，不移动条目）。负面结局 `safety<=0`（潦倒病故）、`fame<=0`（身败名裂）、`fame<=6`、`safety<=6` 等保持原样（伶人原生倾覆，可中途触发）。
 
-- [ ] **Step 4: 跑绿 + Commit** — `npx vitest run src/scenarios/liyuan.test.ts` → PASS；`npx tsc --noEmit` → 0。`feat(liyuan): 三巅峰结局改maxTurns门控（名角/宗匠靠攀爬，不中途白嫖）`
+- [ ] **Step 4: 跑绿 + Commit** — `npx vitest run src/scenarios/liyuan.test.ts` → PASS；`npx tsc --noEmit` → 0。`feat(liyuan): 三巅峰结局改maxTurns门控（名角/泰斗靠攀爬，不中途白嫖）`
 
 ---
 
@@ -382,7 +382,7 @@ describe('liyuan AI 模式', () => {
     expect(liyuan.tierLabel).toBe('名位')
     expect(all).toContain('晋阶之序')
     expect(all).toContain('名位')
-    expect(all).toContain('搭班→挑梁→名伶→宗匠')
+    expect(all).toContain('搭班→挑梁→名伶→泰斗')
     expect(all).not.toContain('封顶')
     // 隐藏 tone 经词表注入（伶界天骄 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
     expect(all).toContain('伶界天骄')
@@ -405,7 +405,7 @@ describe('liyuan AI 模式', () => {
 (a) 在 liyuan scenario 加 `tierLabel: '名位',`（放在 `turnUnit`/`maxTurns` 附近，schema 字段顺序：…maxTurns, tierLabel, systemPrompt…）。
 (b) 在 liyuan `systemPrompt` 末尾追加规则行（保留原有规则）：
 ```
-- 梨园有名位之别：技艺（art）须积渐精进，欲晋名位须真机缘（出科搭班、临危挑梁、唱红名动、开宗立派）；让玩家晋名位时，在 JSON 里 flagsSet:["下一名位"]，名位印记只能取 搭班→挑梁→名伶→宗匠，须按此序、不得越级
+- 梨园有名位之别：技艺（art）须积渐精进，欲晋名位须真机缘（出科搭班、临危挑梁、唱红名动、开宗立派）；让玩家晋名位时，在 JSON 里 flagsSet:["下一名位"]，名位印记只能取 搭班→挑梁→名伶→泰斗，须按此序、不得越级
 - 未晋名位前技艺不应越级暴涨，晋名位唯凭真机缘（flagsSet 下一名位）
 - 开罪权贵·横死乱世、名节尽毁·封箱绝迹等无视一切的横祸极其凶险，仅在真正万劫不复处偶用 endTone 令本年即终局；乱世无常，绝大多数年份不应出现
 ```
@@ -428,7 +428,7 @@ describe('liyuan AI 模式', () => {
   - **真死亡非零**：safety<=0 流落 + 横祸 endTone 计入；random 死亡合理（乱世凶险，≤~60%）。
   - **坏结局够**（身败/流落/潦倒/默默无闻）。
   - **P(收场<10)≈0**（random/survive；巅峰已 maxTurns 门控）；greedy 早死残余按 wuxia/officialdom 同理接受。
-  - **乱点止步低名位**（无印记/搭班）；宗匠 个位数%。
+  - **乱点止步低名位**（无印记/搭班）；泰斗 个位数%。
   - **升艺闸门 reach 合理**（搭班/挑梁/名伶 达成率不应 ~0）。
   小步、单改单跑。**不改印记链结构与巅峰 maxTurns 门控**。
 - [ ] **Step 3: 控制器亲验** — 控制器（非 agent）重跑 `npx vite-node scripts/sim-balance.ts liyuan 5000`，确认达标，sim block 贴入报告。
@@ -441,6 +441,6 @@ describe('liyuan AI 模式', () => {
 
 - **Spec coverage**：§1 技艺封顶=Task1；§4 身份=Task2；§2 升艺=Task3；§3 apex 改 maxTurns=Task4；§5 隐藏 endTone=Task5；§6 AI tierLabel=Task6；§7 平衡=Task7。全覆盖。
 - **Placeholder 扫描**：Task2/5 要求实现者先 Read 既有事件再按精确模式改（合并 requires / outcomes 转换）——给了精确规则与样例；Task3 给 4 个完整事件对象；Task4 占位兜底 tone 已注明「按实际 endings 替换」。无 TBD/TODO。
-- **Type 一致**：名位印记 `搭班/挑梁/名伶/宗匠` 跨 Task1（ceilingUnlocks）、Task3（flagsSet）、Task6（systemPrompt/词表）一致；哨兵 `safety<=-1` 跨 Task5 一致；致死/天堂 tone 跨 Task5 一致；巅峰 tone 跨 Task4 一致；tierLabel '名位' 跨 Task6 一致。事件 summary（军阀逼伶/小报中伤/灌录唱片/阔少捧角/科班早功 等）均为 liyuan.ts 现存。
+- **Type 一致**：名位印记 `搭班/挑梁/名伶/泰斗` 跨 Task1（ceilingUnlocks）、Task3（flagsSet）、Task6（systemPrompt/词表）一致；哨兵 `safety<=-1` 跨 Task5 一致；致死/天堂 tone 跨 Task5 一致；巅峰 tone 跨 Task4 一致；tierLabel '名位' 跨 Task6 一致。事件 summary（军阀逼伶/小报中伤/灌录唱片/阔少捧角/科班早功 等）均为 liyuan.ts 现存。
 - **顺序依赖**：Task1（封顶）→ Task3（升艺抬封顶）；Task4 独立；Task2/5 相对独立；Task6 依赖 Task1+Task5（词表）；Task7 最后守门。按 1→2→3→4→5→6→7 执行。
 - **范围**：单题材、纯内容、零引擎改动；长度不变（无 officialdom 那样的扩展任务）。
