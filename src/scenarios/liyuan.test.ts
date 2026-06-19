@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { liyuan } from './liyuan'
-import { clampEffects, initState, applyChoice } from '../engine/state'
+import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
 
 describe('liyuan 技艺名位封顶', () => {
   it('无名位印记时技艺封顶 20', () => {
@@ -38,6 +38,20 @@ describe('liyuan 身份印记', () => {
     expect(byFlag('落魄世家小姐')).toBeGreaterThanOrEqual(1)
     expect(byFlag('票友下海')).toBeGreaterThanOrEqual(1)
     expect(byFlag('戏班学徒')).toBeGreaterThanOrEqual(1)
+  })
+})
+
+describe('liyuan 巅峰结局须 maxTurns（不中途白嫖）', () => {
+  it('满血高位在非落幕年不触发巅峰结局', () => {
+    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 18, ['搭班', '挑梁', '名伶', '泰斗'])
+    for (const t of ['一代宗师·开宗立派', '艺压群伶·曲高和寡', '红透半边天·万人空巷']) {
+      expect(r?.tone === t, t).toBe(false)
+    }
+  })
+  it('落幕年（满期）高位触发巅峰结局', () => {
+    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 30, ['搭班', '挑梁', '名伶', '泰斗'])
+    expect(r?.tone).toBeTruthy()
+    expect(['一代宗师·开宗立派', '艺压群伶·曲高和寡', '红透半边天·万人空巷', '艺名双全·梨园泰斗']).toContain(r!.tone)
   })
 })
 
