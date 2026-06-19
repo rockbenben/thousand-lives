@@ -50,6 +50,16 @@ describe('officialdom 身份印记', () => {
     const ev = (officialdom.localEvents ?? []).find((e) => e.summary === '内廷阴影')
     expect(ev?.requires).toContain('has(内廷养子)')
   })
+  it('身份门控与既有数值条件合并（不覆盖原 requires）', () => {
+    // 孤立被构陷/孤臣罗网 原带 power/name 阈值，加身份门控须 & 合并、两者并存
+    const gou = (officialdom.localEvents ?? []).find((e) => e.summary === '孤立被构陷')
+    expect(gou?.requires).toContain('has(寒门进士)')
+    expect(gou?.requires).toContain('power<=18')
+    const gch = (officialdom.localEvents ?? []).find((e) => e.summary === '孤臣罗网')
+    expect(gch?.requires).toContain('has(寒门进士)')
+    expect(gch?.requires).toContain('power<=30')
+    expect(gch?.requires).toContain('name>=50')
+  })
 })
 
 describe('officialdom 升迁闸门', () => {
