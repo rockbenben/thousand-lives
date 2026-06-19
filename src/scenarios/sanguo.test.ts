@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { sanguo } from './sanguo'
 import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
+import { buildTurnMessages } from '../engine/prompt'
 
 describe('sanguo 谋略势力封顶', () => {
   it('无势力印记时谋略封顶 30（= initial，不被削）', () => {
@@ -144,5 +145,26 @@ describe('sanguo 巅峰结局须 maxTurns + 经天纬地须霸业', () => {
     // wit 96 但 flags 无霸业（曾有后被清）
     const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, 30, ['据州', '称雄', '鼎足'])
     expect(r?.tone).toBe('算无遗策·智极而孤')
+  })
+})
+
+describe('sanguo AI 模式', () => {
+  it('tierLabel=势力，晋阶之序用本剧术语「势力」+ 势力印记序', () => {
+    const st = initState(sanguo, sanguo.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(sanguo, st).map((m) => m.content).join('\n')
+    expect(sanguo.tierLabel).toBe('势力')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('势力')
+    expect(all).toContain('据州→称雄→鼎足→霸业')
+    expect(all).not.toContain('封顶')
+    expect(all).toContain('一言定鼎') // 隐藏天堂 tone 经词表注入
+  })
+  it('systemPrompt 含势力沉浮/改投规则与横祸极稀指导', () => {
+    expect(sanguo.systemPrompt).toContain('势力')
+    expect(sanguo.systemPrompt).toContain('改换门庭')
+  })
+  it('提示不含「共 undefined」', () => {
+    const st = initState(sanguo, sanguo.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(sanguo, st).map((m) => m.content).join('\n')).not.toContain('undefined')
   })
 })
