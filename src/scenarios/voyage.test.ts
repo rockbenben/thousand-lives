@@ -81,6 +81,26 @@ describe('voyage 升势力闸门', () => {
   })
 })
 
+describe('voyage AI 模式', () => {
+  it('tierLabel=势力，晋阶之序用本剧术语「势力」+ 势力印记序', () => {
+    const st = initState(voyage, voyage.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(voyage, st).map((m) => m.content).join('\n')
+    expect(voyage.tierLabel).toBe('势力')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('势力')
+    expect(all).toContain('私掠→船队→海枭→霸主')
+    expect(all).not.toContain('封顶')
+  })
+  it('systemPrompt 含势力晋阶与财富引擎指引', () => {
+    expect(voyage.systemPrompt).toContain('势力')
+    expect(voyage.systemPrompt).toContain('私掠')
+  })
+  it('AI 提示不含「undefined」', () => {
+    const st = initState(voyage, voyage.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(voyage, st).map((m) => m.content).join('\n')).not.toContain('undefined')
+  })
+})
+
 describe('voyage 隐藏 endTone 哨兵', () => {
   const tones = ['屠岛劫财·恶贯满盈', '见利忘义·众叛弃尸', '逍遥怒海·自由之王']
   it('三哨兵结局存在且 condition 为 crew<=-1', () => {
