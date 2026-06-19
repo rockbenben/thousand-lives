@@ -62,7 +62,11 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
       if (seenSummary.has(e.summary)) violations.push(`${tag} localEvent#${i} summary "${e.summary}" 重复 → 该事件被去重吞掉、永不触发`)
       seenSummary.add(e.summary)
     })
-    const grantedItems = new Set(ev.flatMap((e) => e.itemsGained ?? []))
+    // 道具可在「事件级」或「选项 outcomes 分支级」发放（引擎 applyChoice 两处都认）；两处都采集，否则移入 outcomes 的发放会被误判为不可达
+    const grantedItems = new Set([
+      ...ev.flatMap((e) => e.itemsGained ?? []),
+      ...ev.flatMap((e) => e.choices.flatMap((c) => (c.outcomes ?? []).flatMap((o) => o.itemsGained ?? []))),
+    ])
     ev.forEach((e, i) => {
       // B1. choices.effects 的 key 必须是已定义属性（否则写入幻影属性、目标属性纹丝不动）
       e.choices.forEach((ch, j) => {

@@ -10,7 +10,11 @@ describe('内置剧本内容完整性', () => {
       const attrKeys = new Set(sc.attributes.map((a) => a.key))
       const events = sc.localEvents ?? []
       const granted = new Set<string>()
-      for (const e of events) (e.itemsGained ?? []).forEach((i) => granted.add(i))
+      // 道具可在「事件级」或「选项 outcomes 分支级」发放（引擎 applyChoice 两处都认，见 state.ts）；两处都采集，否则移入 outcomes 的发放会被误判为不可达
+      for (const e of events) {
+        ;(e.itemsGained ?? []).forEach((i) => granted.add(i))
+        for (const c of e.choices) for (const o of c.outcomes ?? []) (o.itemsGained ?? []).forEach((i) => granted.add(i))
+      }
 
       it('结局条件只引用已定义属性', () => {
         const bad: string[] = []

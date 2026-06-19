@@ -624,7 +624,7 @@ export const scifi: Scenario = {
         { text: '顺其自然，飞船即是家园', effects: { colony: 2, integrity: -2 }, reaction: '新生代乐得自在，舱内一派安稳；可几位记得启航初心的老人坐在角落，望着年轻人无所谓的背影，眼神里说不出的落寞。' },
       ],
       summary: '代际隔阂',
-      minTurn: 17,
+      minTurn: 22,
     },
     {
       narrative:
