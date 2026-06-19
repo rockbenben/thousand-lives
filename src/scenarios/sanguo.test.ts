@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { sanguo } from './sanguo'
-import { clampEffects } from '../engine/state'
+import { clampEffects, initState } from '../engine/state'
 
 describe('sanguo 谋略势力封顶', () => {
   it('无势力印记时谋略封顶 30（= initial，不被削）', () => {
@@ -25,5 +25,22 @@ describe('sanguo 谋略势力封顶', () => {
   it('声望与信任不设封顶；信任带每年衰减', () => {
     expect(clampEffects(sanguo, { repute: 95 }, { repute: 20 }, []).repute).toBe(100)
     expect(sanguo.attributes.find((a) => a.key === 'trust')!.decayPerTurn).toBe(1)
+  })
+})
+
+describe('sanguo 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    for (const n of ['寒门游学士子', '世家子弟', '降将谋臣']) {
+      const op = sanguo.openings!.find((o) => o.name === n)
+      expect(op?.flag).toBe(n)
+      expect(initState(sanguo, op).flags).toContain(n)
+    }
+  })
+  it('身份专属事件带 has() 门控（至少各一）', () => {
+    const evs = sanguo.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('降将谋臣')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('世家子弟')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('寒门游学士子')).toBeGreaterThanOrEqual(1)
   })
 })
