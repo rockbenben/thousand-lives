@@ -91,3 +91,23 @@ describe('book 隐藏 endTone 哨兵', () => {
     expect(next.ended?.tone).toBe('窥破天机·归返现世')
   })
 })
+
+describe('book AI 模式', () => {
+  it('tierLabel=偏离，晋阶之序用本剧术语「偏离」+ 偏离印记序', () => {
+    const st = initState(book, book.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(book, st).map((m) => m.content).join('\n')
+    expect(book.tierLabel).toBe('偏离')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('偏离')
+    expect(all).toContain('撬动→生变→颠覆→改天')
+    expect(all).not.toContain('封顶')
+  })
+  it('systemPrompt 含偏离晋阶与改写损安全的权衡指引', () => {
+    expect(book.systemPrompt).toContain('偏离')
+    expect(book.systemPrompt).toContain('撬动')
+  })
+  it('AI 提示不含「undefined」', () => {
+    const st = initState(book, book.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(book, st).map((m) => m.content).join('\n')).not.toContain('undefined')
+  })
+})
