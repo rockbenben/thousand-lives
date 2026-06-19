@@ -12,6 +12,14 @@ export const bookTransmigration: Scenario = {
       name: '剧情偏离度',
       initial: 10,
       max: 100,
+      // 偏离印记逐级解锁剧情天花板：循原著则偏离卡 10（注定领盒饭），唯改写关键节点方能层层挣脱命运
+      ceiling: 10,
+      ceilingUnlocks: [
+        { flag: '撬动', max: 30 },
+        { flag: '生变', max: 60 },
+        { flag: '颠覆', max: 85 },
+        { flag: '改天', max: 100 },
+      ],
       bands: [
         { upTo: 25, label: '循原著', severity: 'normal', directive: '世界线高度贴合原著，主角光环强大，重大偏离会被强力修正。' },
         { upTo: 60, label: '生变数', severity: 'normal', directive: '剧情开始松动，原著事件出现可被撬动的裂缝。' },
