@@ -73,6 +73,12 @@ export const sanguo: Scenario = {
 - 文风凝练有古意，少用现代词汇，避免冗长说教`,
   endings: [
     {
+      condition: 'trust<=-1',
+      tone: '站错主公·身死族灭',
+      epilogue:
+        '良禽择木，你却押错了那一棵。你倾尽智计辅佐的主公终是败亡，胜者清算旧敌，绝不容你这运筹帷幄的首脑残喘。城破之日，你立于残垣之间，看着自家的旗号被踏入泥中——满门老幼，皆因你当年那一念之差的择主，一同葬送在这逐鹿天下的棋局里。乱世之中，才高八斗，也敌不过站错了队。',
+    },
+    {
       condition: 'trust<=0',
       tone: '见弃问罪·身死狱中',
       epilogue:
@@ -506,9 +512,10 @@ export const sanguo: Scenario = {
       choices: [
         { text: '焚信明志，将此事禀报主公', effects: { trust: 10, repute: 6, wit: 2 }, reaction: '你当着主公的面焚了密信、毫无隐瞒，主公大为动容、执手相谢；这份不为厚利所动的忠贞，传开后士林无不敬重。' },
         { text: '暗留密信，虚与委蛇待价而沽', effects: { wit: 6, trust: -4 }, reaction: '你不动声色地虚应着敌使、把信压在了箱底；这一步留得隐秘，却也让你心底从此多了一根随时可能扎人的刺。' },
-        { text: '挂印而去，另投那势盛之主', effects: { wit: 4, repute: -6, trust: -10 }, reaction: '你终是收拾行装弃旧主而去，新主以礼相待；只是改换门庭的风声传开，旧日同僚啐你反复，士林也议你不忠。' },
+        { text: '挂印而去，另投那势盛之主', effects: { wit: 4, repute: -6, trust: -10 }, flagsClear: ['据州', '称雄', '鼎足', '霸业'], reaction: '你终是收拾行装弃旧主而去，新主以礼相待；只是改换门庭的风声传开，旧日同僚啐你反复，士林也议你不忠。' },
       ],
       summary: '敌国招揽',
+      requires: 'has(据州)',
       keyMoment: true,
       minTurn: 15,
       weight: 1.2,
@@ -1594,6 +1601,37 @@ export const sanguo: Scenario = {
       requires: 'trust>=45',
       minTurn: 21,
       weight: 0.8,
+    },
+    {
+      narrative:
+        '乱世群雄并起，你怀揣一身韬略，终要择一木而栖。摆在面前的有几条路：投那兵强马壮、却也多疑寡恩的强主，从此背靠大树却如履薄冰；投那礼贤下士、起步却弱的明主，赌一个君臣相得、白手成业；或扶保那名分犹在、风雨飘摇的汉室正统，得一身清望却也系于累卵。良禽择木，这一选关乎你往后三十年的荣辱生死。',
+      choices: [
+        { text: '投兵强马壮的强主，背靠大树好乘凉', effects: { repute: 6, trust: -2, wit: 2 }, flagsSet: ['强主'], reaction: '你投入那势大之主帐下，麾下兵精粮足、声势赫赫；只是主上多疑、宿将林立，你这新进谋臣的信任，须一刀一枪去挣。' },
+        { text: '投礼贤下士的明主，赌一个君臣相得', effects: { trust: 8, repute: 2 }, flagsSet: ['明主'], reaction: '你择那礼贤下士的明主而事，他待你如手足、言听计从；只是基业未立、前路艰难，这一注押的是君臣相知、白手成业。' },
+        { text: '扶保汉室正统，求一身清望', effects: { repute: 10, trust: 2, wit: -2 }, flagsSet: ['汉室'], reaction: '你扶保那名分犹在的汉室，得士林清望加身、忠义之名远播；只是大厦将倾、危如累卵，这份正统的招牌底下，是说不尽的步步惊心。' },
+      ],
+      summary: '择主投效',
+      keyMoment: true,
+      once: true,
+      minTurn: 2,
+      maxTurn: 6,
+      weight: 1.4,
+    },
+    {
+      narrative:
+        '一场倾国之战，败了。主公轻信他人、不纳你的持重之谏，贸然与强敌决于野，结果中伏大败，丧师过半、连失数郡。捷报变讣告，三分鼎足的根基一夕动摇，麾下人心惶惶，邻敌闻风蚕食。你站在残破的舆图前，看着那一片片重新染成敌色的疆土，一时心如刀绞——这倾颓之势，已非你一人之力可挽。',
+      choices: [
+        { text: '收拾残局、力保不再崩坏', effects: { wit: 6, repute: 2, trust: 2 }, flagsClear: ['鼎足'], reaction: '你竭力收拢溃兵、稳住要害，总算止住了崩盘之势；可三分鼎足的局面到底是丢了，势力退回偏安一隅，元气大伤、再难一时复振。' },
+        { text: '献险策行反间、赌一把扳回颓势', effects: {}, outcomes: [
+          { weight: 11, effects: { wit: 8, repute: 4 }, flagsClear: ['鼎足'], reaction: '你行险设间、勉力周旋，虽未能挽回失地，倒也让敌军互生猜忌、暂缓了蚕食；可鼎足之势终究丢了，只保住了不致全盘崩溃。' },
+          { weight: 1, effects: {}, endTone: '站错主公·身死族灭', reaction: '你那行险的反间之计被敌方将计就计、反咬一口，主公败亡之际迁怒于你，一道令下——你这押错了势力的谋臣，连同满门，都成了这场大败的殉葬。' },
+        ] },
+      ],
+      summary: '主公丧师失地',
+      requires: 'has(鼎足)',
+      keyMoment: true,
+      minTurn: 18,
+      weight: 1.1,
     },
   ],
 }

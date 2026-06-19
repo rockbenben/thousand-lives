@@ -71,3 +71,41 @@ describe('sanguo 升势闸门', () => {
     expect(next.attributes.wit).toBeGreaterThan(30)
   })
 })
+
+describe('sanguo 势力 volatility（升降可逆 + 改投）', () => {
+  it('择主投效 设主公印记', () => {
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '择主投效')!
+    expect(ev.keyMoment).toBe(true)
+    const lordFlags = ev.choices.flatMap((c) => c.flagsSet ?? [])
+    expect(lordFlags.some((f) => ['强主', '明主', '汉室'].includes(f))).toBe(true)
+  })
+  it('主公丧师失地：有鼎足者失势 flagsClear 掉鼎足', () => {
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '主公丧师失地')!
+    expect(ev.requires).toContain('has(鼎足)')
+    const drops = ev.choices.some((c) => (c.flagsClear ?? []).includes('鼎足') || (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes('鼎足')))
+    expect(drops).toBe(true)
+  })
+  it('失势后谋略上限回落（鼎足→称雄，clampEffects 用清后印记）', () => {
+    // 构造 has(据州,称雄,鼎足) state、取失势选项 → 清掉鼎足 → flags 不含鼎足 → 上限回 70
+    let st = initState(sanguo, sanguo.openings![0])
+    st = { ...st, attributes: { wit: 88, repute: 50, trust: 50 }, flags: ['据州', '称雄', '鼎足'], history: Array(20).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '主公丧师失地')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, flagsClear: c.flagsClear, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsClear ?? []).includes('鼎足') || (c.outcomes ?? []).some((o) => (o.flagsClear ?? []).includes('鼎足')))
+    const next = applyChoice(sanguo, st, tr as any, idx, () => 0.999)
+    expect(next.flags).not.toContain('鼎足')
+    // 上限回 70：再给 wit+20 应被压在 70
+    expect(clampEffects(sanguo, next.attributes, { wit: 20 }, next.flags!).wit).toBe(70)
+  })
+  it('敌国招揽 改投选项清空全部势力印记', () => {
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '敌国招揽')!
+    expect(ev.requires).toContain('has(据州)')
+    const reinvest = ev.choices.find((c) => (c.flagsClear ?? []).includes('据州'))
+    expect(reinvest).toBeTruthy()
+    for (const f of ['据州', '称雄', '鼎足', '霸业']) expect(reinvest!.flagsClear).toContain(f)
+  })
+  it('站错主公·身死族灭 结局存在且为哨兵（主公丧师失地的 endTone 落点，本任务自洽）', () => {
+    const e = sanguo.endings.find((x) => x.tone === '站错主公·身死族灭')
+    expect(e?.condition).toBe('trust<=-1')
+  })
+})
