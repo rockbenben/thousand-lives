@@ -76,3 +76,32 @@ describe('scifi 升程闸门', () => {
     expect(next.attributes.tech).toBeGreaterThan(25)
   })
 })
+
+describe('scifi 隐藏 endTone 哨兵', () => {
+  const tones = ['清洗续命·血债驶向虚空', '屠灭原民·新世罪基', '星海共生·文明永续']
+  it('三哨兵结局存在且 condition 为 colony<=-1', () => {
+    for (const t of tones) {
+      const e = scifi.endings.find((x) => x.tone === t)
+      expect(e?.condition, t).toBe('colony<=-1')
+    }
+  })
+  it('每个哨兵基调都被某事件 outcomes.endTone 引用（防 tone 打错）', () => {
+    const used = new Set<string>()
+    for (const ev of scifi.localEvents ?? [])
+      for (const c of ev.choices) {
+        if (c.endTone) used.add(c.endTone)
+        for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+      }
+    for (const t of tones) expect(used.has(t), t).toBe(true)
+  })
+  it('默许清洗的 endTone 分支被掷中即强制地狱结局', () => {
+    let st = initState(scifi, scifi.openings![0])
+    st = { ...st, attributes: { tech: 50, integrity: 60, colony: 40 }, history: Array(18).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (scifi.localEvents ?? []).find((e) => e.summary === '加密屏前的减员名单')!
+    const idx = ev.choices.findIndex((c) => c.text === '默许 AI 的冷酷算计')
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    // rng=0.999 → rollOutcome 取末位（endTone 分支）
+    const next = applyChoice(scifi, st, tr as any, idx, () => 0.999)
+    expect(next.ended?.tone).toBe('清洗续命·血债驶向虚空')
+  })
+})
