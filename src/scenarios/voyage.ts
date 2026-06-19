@@ -50,6 +50,9 @@ export const voyage: Scenario = {
       initial: 60,
       max: 100,
       deathBelow: 0,
+      // 漫长怒海生涯人心自然消磨（sim 校准 decay1：治「人心 trivially 高」之平淡，使人心成为须经营的第二维——
+      // 不经营则同舟共济跌、落孤家寡人/众叛诸结局；decay2 则过罚、survive 沦平庸，故取 1）
+      decayPerTurn: 1,
       bands: [
         { upTo: 12, label: '众叛亲离', severity: 'critical', directive: '船员离心、哗变在即，叙事中刀斧加身的杀机步步紧逼；至少一个选项面临水手反噬的死局。' },
         { upTo: 35, label: '军心浮动', severity: 'low', directive: '水手们怨气暗生、阳奉阴违，行事处处受掣肘。' },

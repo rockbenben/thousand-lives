@@ -128,3 +128,17 @@ describe('voyage 隐藏 endTone 哨兵', () => {
     expect(next.ended?.tone).toBe('屠岛劫财·恶贯满盈')
   })
 })
+
+describe('voyage 衰减与 sim 健壮性', () => {
+  it('人心 decay 经 sim 校准（治人心 trivially 高，成须经营的第二维）', () => {
+    const crew = voyage.attributes.find((a) => a.key === 'crew')!
+    expect(crew.decayPerTurn).toBe(1) // sim-tuned：decay0 时同舟共济独大55%；decay1 后人心须经营、结局多样；decay2 过罚
+  })
+  it('船力保持每年衰减 1（悬顶之危·船蛀）', () => {
+    expect(voyage.attributes.find((a) => a.key === 'ship')!.decayPerTurn).toBe(1)
+  })
+  it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
+    for (const ev of voyage.localEvents ?? [])
+      for (const c of ev.choices) expect(c.effects, `${ev.summary}/${c.text}`).toBeDefined()
+  })
+})
