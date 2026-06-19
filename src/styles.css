@@ -55,10 +55,16 @@
 
 * { box-sizing: border-box; }
 
-html { background: var(--ink-9); }
+html { background: var(--ink-9); overflow-x: clip; }
 
 body {
   margin: 0;
+  /* 始终撑满视口：body 的星云渐变(background-attachment: fixed)只绘制在 body 盒内，
+     内容偏短时 body 矮于视口，底部会露出 html 的纯色 ink-9 形成色差断层 —— 撑满即消除 */
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* 装饰罗盘/印玺在窄屏会略超出内容盒，禁止由此产生横向滚动（否则右缘露出无渐变的暗条，固定按钮也被顶出可视区） */
+  overflow-x: clip;
   color: var(--paper);
   font-family: var(--font-serif);
   font-weight: 400;
@@ -125,10 +131,14 @@ body::before {
 .app { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
 /* 简繁切换:右上角常驻,低调鎏金 */
 .lang-toggle {
-  position: fixed; top: 12px; right: 12px; z-index: 90;
+  position: fixed; z-index: 90;
+  /* 贴右上角，并避开刘海/圆角安全区，窄屏也始终留在可视区内 */
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
   width: 34px; height: 34px; padding: 0;
   font-family: var(--font-display); font-size: 1.05rem;
-  color: var(--gold); background: rgba(14, 20, 48, 0.7);
+  /* 近实心底色：无论背后是渐变、暗条还是卡片，按钮观感始终一致 */
+  color: var(--gold); background: rgba(16, 22, 52, 0.92);
   border: 1px solid var(--line-strong); border-radius: 50%;
   backdrop-filter: blur(4px); cursor: pointer;
   transition: color 0.2s, border-color 0.2s, transform 0.2s;
