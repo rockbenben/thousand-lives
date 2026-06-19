@@ -66,3 +66,28 @@ describe('book 升偏离闸门', () => {
     expect(next.attributes.plot).toBeGreaterThan(10) // 该支 plot+12，破上限 10（撬动上限 30）
   })
 })
+
+describe('book 隐藏 endTone 哨兵', () => {
+  const tones = ['窥破天机·归返现世', '夺运噬主·堕为新煞', '鸠占凤巢·反噬其身']
+  it('三哨兵结局存在且 condition 为 safety<=-1', () => {
+    for (const t of tones) expect(book.endings.find((x) => x.tone === t)?.condition, t).toBe('safety<=-1')
+  })
+  it('每个哨兵基调都被某事件 outcomes.endTone 引用', () => {
+    const used = new Set<string>()
+    for (const ev of book.localEvents ?? [])
+      for (const c of ev.choices) {
+        if (c.endTone) used.add(c.endTone)
+        for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+      }
+    for (const t of tones) expect(used.has(t), t).toBe(true)
+  })
+  it('掀翻原著的 endTone 分支被掷中即强制天堂结局', () => {
+    let st = initState(book, book.openings![0])
+    st = { ...st, attributes: { plot: 80, favor: 30, safety: 40 }, history: Array(20).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (book.localEvents ?? []).find((e) => e.summary === '世界濒临崩解')!
+    const idx = ev.choices.findIndex((c) => c.text === '顺势而为，将原著彻底掀翻')
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const next = applyChoice(book, st, tr as any, idx, () => 0.999) // 取末位 = endTone 分支
+    expect(next.ended?.tone).toBe('窥破天机·归返现世')
+  })
+})
