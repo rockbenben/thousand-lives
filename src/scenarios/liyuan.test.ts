@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { liyuan } from './liyuan'
-import { clampEffects } from '../engine/state'
+import { clampEffects, initState } from '../engine/state'
 
 describe('liyuan 技艺名位封顶', () => {
   it('无名位印记时技艺封顶 20', () => {
@@ -21,5 +21,22 @@ describe('liyuan 技艺名位封顶', () => {
   it('安稳与声名不设名位封顶', () => {
     expect(clampEffects(liyuan, { safety: 95 }, { safety: 50 }, []).safety).toBe(100)
     expect(clampEffects(liyuan, { fame: 95 }, { fame: 50 }, []).fame).toBe(100)
+  })
+})
+
+describe('liyuan 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    for (const n of ['戏班学徒', '落魄世家小姐', '票友下海']) {
+      const op = liyuan.openings!.find((o) => o.name === n)
+      expect(op?.flag).toBe(n)
+      expect(initState(liyuan, op).flags).toContain(n)
+    }
+  })
+  it('身份专属事件带 has() 门控（至少各一）', () => {
+    const evs = liyuan.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('落魄世家小姐')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('票友下海')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('戏班学徒')).toBeGreaterThanOrEqual(1)
   })
 })
