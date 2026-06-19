@@ -80,3 +80,31 @@ describe('voyage 升势力闸门', () => {
     expect(next.attributes.ship).toBeGreaterThan(50) // 破私掠上限 50（船队上限 70）
   })
 })
+
+describe('voyage 隐藏 endTone 哨兵', () => {
+  const tones = ['屠岛劫财·恶贯满盈', '见利忘义·众叛弃尸', '逍遥怒海·自由之王']
+  it('三哨兵结局存在且 condition 为 crew<=-1', () => {
+    for (const t of tones) {
+      const e = voyage.endings.find((x) => x.tone === t)
+      expect(e?.condition, t).toBe('crew<=-1')
+    }
+  })
+  it('每个哨兵基调都被某事件 outcomes.endTone 引用（防 tone 打错）', () => {
+    const used = new Set<string>()
+    for (const ev of voyage.localEvents ?? [])
+      for (const c of ev.choices) {
+        if (c.endTone) used.add(c.endTone)
+        for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+      }
+    for (const t of tones) expect(used.has(t), t).toBe(true)
+  })
+  it('屠掠土人的 endTone 分支被掷中即强制地狱结局', () => {
+    let st = initState(voyage, voyage.openings![0])
+    st = { ...st, attributes: { ship: 60, wealth: 50, crew: 40 }, history: Array(10).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (voyage.localEvents ?? []).find((e) => e.summary === '孤岛通商')!
+    const idx = ev.choices.findIndex((c) => c.text === '恃强凌弱，巧取豪夺一番')
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const next = applyChoice(voyage, st, tr as any, idx, () => 0.999) // 取末位 = endTone 分支
+    expect(next.ended?.tone).toBe('屠岛劫财·恶贯满盈')
+  })
+})
