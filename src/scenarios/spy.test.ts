@@ -89,3 +89,23 @@ describe('spy 隐藏 endTone 哨兵', () => {
     expect(next.ended?.tone).toBe('卖国求荣·遗臭万年')
   })
 })
+
+describe('spy AI 模式', () => {
+  it('tierLabel=功勋，晋阶之序用本剧术语「功勋」+ 功勋印记序', () => {
+    const st = initState(spy, spy.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(spy, st).map((m) => m.content).join('\n')
+    expect(spy.tierLabel).toBe('功勋')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('功勋')
+    expect(all).toContain('立功→建功→奇功→殊勋')
+    expect(all).not.toContain('封顶')
+  })
+  it('systemPrompt 含功勋晋阶与双面权衡指引', () => {
+    expect(spy.systemPrompt).toContain('功勋')
+    expect(spy.systemPrompt).toContain('立功')
+  })
+  it('AI 提示不含「undefined」', () => {
+    const st = initState(spy, spy.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(spy, st).map((m) => m.content).join('\n')).not.toContain('undefined')
+  })
+})
