@@ -2,6 +2,29 @@ import { describe, it, expect } from 'vitest'
 import { liyuan } from './liyuan'
 import { clampEffects, initState, applyChoice, checkEnding } from '../engine/state'
 
+describe('liyuan 隐藏 endTone', () => {
+  it('新增致死与天堂隐藏结局存在且为哨兵 safety<=-1', () => {
+    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹', '一夜爆红·伶界天骄']) {
+      const e = liyuan.endings.find((x) => x.tone === t)
+      expect(e?.condition, t).toBe('safety<=-1')
+    }
+  })
+  it('军阀逼伶含低权横死 endTone 分支', () => {
+    const ev = (liyuan.localEvents ?? []).find((e) => e.summary === '军阀逼伶')!
+    const has = ev.choices.some((c) => (c.outcomes ?? []).some((o) => o.endTone === '开罪权贵·横死乱世'))
+    expect(has).toBe(true)
+  })
+  it('endTone 强制即终局', () => {
+    let st = initState(liyuan, liyuan.openings!.find((o) => o.name === '票友下海'))
+    st = { ...st, attributes: { art: 60, fame: 60, safety: 50 }, history: Array(18).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (liyuan.localEvents ?? []).find((e) => e.summary === '军阀逼伶')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone === '开罪权贵·横死乱世'))
+    const next = applyChoice(liyuan, st, tr as any, idx, () => 0.999)
+    expect(next.ended?.reason).toBe('forced')
+  })
+})
+
 describe('liyuan 技艺名位封顶', () => {
   it('无名位印记时技艺封顶 20', () => {
     expect(clampEffects(liyuan, { art: 18 }, { art: 50 }, []).art).toBe(20)
