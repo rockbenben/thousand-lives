@@ -126,3 +126,23 @@ describe('wasteland 隐藏 endTone 哨兵', () => {
     expect(next.ended?.tone).toBe('同流合污·食人自保')
   })
 })
+
+describe('wasteland AI 模式', () => {
+  it('tierLabel=据点，晋阶之序用本剧术语「据点」+ 据点印记序', () => {
+    const st = initState(wasteland, wasteland.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(wasteland, st).map((m) => m.content).join('\n')
+    expect(wasteland.tierLabel).toBe('据点')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('据点')
+    expect(all).toContain('落脚点→据点→堡垒→营地')
+    expect(all).not.toContain('封顶')
+  })
+  it('systemPrompt 含据点经营与隐藏结局指引', () => {
+    expect(wasteland.systemPrompt).toContain('落脚点')
+    expect(wasteland.systemPrompt).toContain('据点')
+  })
+  it('AI 提示不含「undefined」', () => {
+    const st = initState(wasteland, wasteland.openings![0], undefined, 'ai')
+    expect(buildTurnMessages(wasteland, st).map((m) => m.content).join('\n')).not.toContain('undefined')
+  })
+})
