@@ -43,3 +43,36 @@ describe('scifi 科技航程封顶', () => {
     expect(clampEffects(scifi, { colony: 95 }, { colony: 20 }, []).colony).toBe(100)
   })
 })
+
+describe('scifi 升程闸门', () => {
+  it('四道升程机缘均为 keyMoment、授对应航程印记、按序串链', () => {
+    const want = [
+      { summary: '水源告急', flag: '深空', prev: undefined, pick: '研发新型水循环装置' },
+      { summary: '陨石带', flag: '越障', prev: '深空', pick: '研发临时护盾再穿越' },
+      { summary: '候选行星', flag: '抵近', prev: '越障', pick: '改道详查，或是新家园' },
+      { summary: '第一座城', flag: '扎根', prev: '抵近', pick: '开放包容，广纳人心' },
+    ]
+    for (const w of want) {
+      const ev = (scifi.localEvents ?? []).find((e) => e.summary === w.summary)
+      expect(ev?.keyMoment, w.summary).toBe(true)
+      const ch = ev!.choices.find((c) => c.text === w.pick)
+      expect((ch?.flagsSet ?? []).includes(w.flag), w.summary).toBe(true)
+      if (w.prev) expect(ev!.requires, w.summary).toContain(`has(${w.prev})`)
+    }
+  })
+  it('扎根闸门保留 colony>=50 数值门控（不被 has 覆盖）', () => {
+    const ev = (scifi.localEvents ?? []).find((e) => e.summary === '第一座城')!
+    expect(ev.requires).toContain('has(抵近)')
+    expect(ev.requires).toContain('colony>=50')
+  })
+  it('助渡深空当回合科技可破 25 上限', () => {
+    let st = initState(scifi, scifi.openings![0])
+    st = { ...st, attributes: { tech: 25, integrity: 60, colony: 50 }, history: Array(3).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (scifi.localEvents ?? []).find((e) => e.summary === '水源告急')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, flagsClear: c.flagsClear, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('深空'))
+    const next = applyChoice(scifi, st, tr as any, idx, () => 0)
+    expect(next.flags).toContain('深空')
+    expect(next.attributes.tech).toBeGreaterThan(25)
+  })
+})
