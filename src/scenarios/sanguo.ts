@@ -12,6 +12,13 @@ export const sanguo: Scenario = {
       name: '谋略',
       initial: 30,
       max: 100,
+      ceiling: 30,
+      ceilingUnlocks: [
+        { flag: '据州', max: 45 },
+        { flag: '称雄', max: 70 },
+        { flag: '鼎足', max: 88 },
+        { flag: '霸业', max: 100 },
+      ],
       bands: [
         { upTo: 20, label: '纸上空谈', severity: 'low', directive: '你方略稚嫩、临机生涩，所献之计多被识破或落空，强出奇谋必招反噬。' },
         { upTo: 45, label: '初露锋芒', severity: 'normal' },
@@ -39,6 +46,7 @@ export const sanguo: Scenario = {
       initial: 40,
       max: 100,
       deathBelow: 0,
+      decayPerTurn: 1,
       bands: [
         { upTo: 10, label: '见疑遭弃', severity: 'critical', directive: '主公已对你起了杀心，叙事中见弃问罪的危机步步紧逼；至少一个选项是身陷囹圄的搏命之举。' },
         { upTo: 35, label: '貌合神离', severity: 'low', directive: '主公待你客气而疏远，言不听计不从，你的方略屡屡被束之高阁。' },
