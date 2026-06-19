@@ -110,6 +110,25 @@ describe('sanguo 势力 volatility（升降可逆 + 改投）', () => {
   })
 })
 
+describe('sanguo 隐藏 endTone', () => {
+  it('新增三哨兵隐藏结局 trust<=-1', () => {
+    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中', '一言定鼎·名动天下']) {
+      const e = sanguo.endings.find((x) => x.tone === t)
+      expect(e?.condition, t).toBe('trust<=-1')
+    }
+  })
+  it('功高震主 含低权赐死 endTone 分支', () => {
+    const ev = (sanguo.localEvents ?? []).find((e) => e.summary === '功高震主')!
+    const has = ev.choices.some((c) => (c.outcomes ?? []).some((o) => o.endTone === '功高震主·赐死狱中'))
+    expect(has).toBe(true)
+  })
+  it('每个哨兵基调都被某事件 endTone 引用（防 tone 打错）', () => {
+    const used = new Set<string>()
+    for (const ev of sanguo.localEvents ?? []) for (const c of ev.choices) for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
+    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中', '一言定鼎·名动天下']) expect(used.has(t), t).toBe(true)
+  })
+})
+
 describe('sanguo 巅峰结局须 maxTurns + 经天纬地须霸业', () => {
   it('满血高谋略在非落幕年不触发巅峰', () => {
     const r = checkEnding(sanguo, { wit: 98, repute: 98, trust: 98 }, 18, ['据州', '称雄', '鼎足', '霸业'])
