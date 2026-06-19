@@ -158,16 +158,31 @@ describe('印记/境界注入（门控）', () => {
     expect(scenarioUsesFlags(xian)).toBe(true)
     expect(scenarioUsesFlags(wasteland)).toBe(false)
   })
-  it('xian 提示含当前印记、境界封顶、flagsSet/endTone 契约与词表', () => {
+  it('xian 提示含当前印记、晋阶之序（叙事化，不含数值封顶）、flagsSet/endTone 契约与词表', () => {
     const st = { ...initState(xian, xian.openings!.find((o) => o.flag === '魔道'), undefined, 'ai') }
     const msgs = buildTurnMessages(xian, st)
     const all = msgs.map((m) => m.content).join('\n')
     expect(all).toContain('当前印记')
     expect(all).toContain('魔道')
-    expect(all).toContain('境界封顶')
+    // 改为叙事化「晋阶之序」，用本剧术语「境界」，不再暴露「封顶/上限 N」数值机制
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('境界') // xian tierLabel
+    expect(all).toContain('筑基→金丹→元婴→化神') // 阶序
+    expect(all).not.toContain('封顶')
+    expect(all).not.toContain('上限')
     expect(all).toContain('flagsSet')
-    expect(all).toContain('金丹') // 境界印记词表
+    expect(all).toContain('金丹') // 印记词表
     expect(all).toContain('endTone')
+  })
+  it('官阶题材（officialdom）晋阶之序用本剧术语「官阶」，不串味「境界」', () => {
+    const officialdom = builtinScenarios.find((s) => s.id === 'officialdom')!
+    const st = initState(officialdom, officialdom.openings!.find((o) => o.flag), undefined, 'ai')
+    const all = buildTurnMessages(officialdom, st).map((m) => m.content).join('\n')
+    expect(all).toContain('晋阶之序')
+    expect(all).toContain('官阶') // officialdom tierLabel
+    expect(all).toContain('知府→封疆→九卿→阁老')
+    expect(all).not.toContain('境界')
+    expect(all).not.toContain('封顶')
   })
   it('无 flag 题材（wasteland）提示不含印记/境界/flagsSet 段', () => {
     const msgs = buildTurnMessages(wasteland, initState(wasteland, undefined, undefined, 'ai'))

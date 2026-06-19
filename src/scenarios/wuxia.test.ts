@@ -4,11 +4,11 @@ import { clampEffects, initState, applyChoice, checkEnding } from '../engine/sta
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('wuxia AI 模式', () => {
-  it('加 ceilingUnlocks+flag 后 scenarioUsesFlags 生效，提示注入印记/境界封顶/词表', () => {
+  it('加 ceilingUnlocks+flag 后 scenarioUsesFlags 生效，提示注入印记/晋阶约束/词表', () => {
     const st = initState(wuxia, wuxia.openings!.find((o) => o.name === '名门弟子'), undefined, 'ai')
     const sys = buildTurnMessages(wuxia, st).find((m) => m.role === 'system')!.content
     expect(sys).toContain('印记')
-    expect(sys).toContain('封顶')
+    expect(sys).toContain('不得越级')
     // 4 境界词表入提示
     for (const f of ['入流', '一流', '绝顶', '宗师']) expect(sys).toContain(f)
     // 走火入魔 由 systemPrompt 文本命中（hiddenTones 词表注入另由 prompt.test.ts 覆盖）

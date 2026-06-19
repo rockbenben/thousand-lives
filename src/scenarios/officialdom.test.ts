@@ -130,11 +130,11 @@ describe('officialdom 隐藏 endTone', () => {
 })
 
 describe('officialdom AI 模式', () => {
-  it('加 ceilingUnlocks+flag 后提示注入官阶印记/封顶/词表', () => {
+  it('加 ceilingUnlocks+flag 后提示注入官阶印记/晋阶约束/词表', () => {
     const st = initState(officialdom, officialdom.openings!.find((o) => o.name === '世家子弟'), undefined, 'ai')
     const sys = buildTurnMessages(officialdom, st).find((m) => m.role === 'system')!.content
     expect(sys).toContain('印记')
-    expect(sys).toContain('封顶')
+    expect(sys).toContain('不得越级')
     for (const f of ['知府', '封疆', '九卿', '阁老']) expect(sys).toContain(f)
     // 隐藏 tone 经词表注入（骤擢入阁 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
     expect(sys).toContain('骤擢入阁')
