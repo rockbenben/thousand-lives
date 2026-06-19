@@ -146,3 +146,27 @@ describe('wasteland AI 模式', () => {
     expect(buildTurnMessages(wasteland, st).map((m) => m.content).join('\n')).not.toContain('undefined')
   })
 })
+
+describe('wasteland 衰减与 sim 健壮性', () => {
+  it('理智 decay 经 sim 校准为 0（末世已极致命，理智作哨兵触发+低理智结局的活轴，不再叠死亡压力）', () => {
+    const sanity = wasteland.attributes.find((a) => a.key === 'sanity')!
+    expect(sanity.decayPerTurn ?? 0).toBe(0) // sim-tuned：hp死亡线已主导(random力竭82%)，理智另加decay会过罚
+  })
+  it('生命保持每回合衰减 1（末世侵蚀）', () => {
+    expect(wasteland.attributes.find((a) => a.key === 'hp')!.decayPerTurn).toBe(1)
+  })
+  it('两地狱哨兵宿主 once 且 endTone 分支为稀有支（治哨兵喧宾夺主）', () => {
+    for (const s of ['尸潮围城', '末日食人']) {
+      const ev = (wasteland.localEvents ?? []).find((e) => e.summary === s)!
+      expect(ev.once, s).toBe(true)
+      const darkChoice = ev.choices.find((c) => (c.outcomes ?? []).some((o) => o.endTone))!
+      const survive = darkChoice.outcomes!.find((o) => !o.endTone)!
+      const hell = darkChoice.outcomes!.find((o) => o.endTone)!
+      expect((survive.weight ?? 1) > (hell.weight ?? 1), s).toBe(true) // 存活支权重 > 哨兵支（稀有）
+    }
+  })
+  it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
+    for (const ev of wasteland.localEvents ?? [])
+      for (const c of ev.choices) expect(c.effects, `${ev.summary}/${c.text}`).toBeDefined()
+  })
+})
