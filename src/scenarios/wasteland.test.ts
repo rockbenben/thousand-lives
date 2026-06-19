@@ -49,3 +49,31 @@ describe('wasteland 身份印记', () => {
     expect(byFlag('高中生')).toBeGreaterThanOrEqual(1)
   })
 })
+
+describe('wasteland 建据点闸门', () => {
+  it('四道建据点机缘均为 keyMoment、授对应据点印记、按序串链', () => {
+    const want = [
+      { summary: '觅一处栖身', flag: '落脚点', prev: undefined as string | undefined, pick: '清场加固，据为巢穴' },
+      { summary: '加固扩建', flag: '据点', prev: '落脚点', pick: '扩建据点，囤粮储水' },
+      { summary: '筑墙设防', flag: '堡垒', prev: '据点', pick: '筑墙设防，严阵以待' },
+      { summary: '聚拢幸存者', flag: '营地', prev: '堡垒', pick: '接纳幸存者，立规矩号令一方' },
+    ]
+    for (const w of want) {
+      const ev = (wasteland.localEvents ?? []).find((e) => e.summary === w.summary)
+      expect(ev?.keyMoment, w.summary).toBe(true)
+      const ch = ev!.choices.find((c) => c.text === w.pick)
+      expect((ch?.flagsSet ?? []).includes(w.flag), w.summary).toBe(true)
+      if (w.prev) expect(ev!.requires, w.summary).toContain(`has(${w.prev})`)
+    }
+  })
+  it('扩建据点当回合物资可破落脚点上限 65', () => {
+    let st = initState(wasteland, wasteland.openings![0])
+    st = { ...st, attributes: { hp: 70, sanity: 60, supplies: 65 }, flags: ['落脚点'], history: Array(8).fill({ narrative: '', choiceText: '', summary: '' }) }
+    const ev = (wasteland.localEvents ?? []).find((e) => e.summary === '加固扩建')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('据点'))
+    const next = applyChoice(wasteland, st, tr as any, idx, () => 0.5) // 0.5>=0.18 不触发命运无常
+    expect(next.flags).toContain('据点')
+    expect(next.attributes.supplies).toBeGreaterThan(65) // 该支 supplies+10，破落脚点上限65（据点上限80）
+  })
+})
