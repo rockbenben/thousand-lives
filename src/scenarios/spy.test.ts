@@ -18,3 +18,21 @@ describe('spy 情报功勋封顶', () => {
     expect(clampEffects(spy, { trust: 95 }, { trust: 20 }, []).trust).toBe(100)
   })
 })
+
+describe('spy 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    const want: Record<string, string> = { 潜伏特工: '潜伏特工', 双面间谍: '双面间谍', 觉醒的伪职: '觉醒伪职' }
+    for (const [name, flag] of Object.entries(want)) {
+      const op = spy.openings!.find((o) => o.name === name)
+      expect(op?.flag).toBe(flag)
+      expect(initState(spy, op).flags).toContain(flag)
+    }
+  })
+  it('三道身份专属事件带 has() 门控', () => {
+    const evs = spy.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('潜伏特工')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('双面间谍')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('觉醒伪职')).toBeGreaterThanOrEqual(1)
+  })
+})
