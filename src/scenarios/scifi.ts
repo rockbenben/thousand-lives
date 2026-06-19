@@ -12,6 +12,14 @@ export const scifi: Scenario = {
       name: '科技',
       initial: 15,
       max: 100,
+      // 航程印记逐级解锁科技天花板：深空航行初期资源匮乏，唯有渡过重大航段方能突破更高科技
+      ceiling: 25,
+      ceilingUnlocks: [
+        { flag: '深空', max: 45 },
+        { flag: '越障', max: 70 },
+        { flag: '抵近', max: 90 },
+        { flag: '扎根', max: 100 },
+      ],
       bands: [
         { upTo: 25, label: '捉襟见肘', severity: 'low', directive: '科技力薄弱，多数故障与异象只能被动应对、勉力维持。' },
         { upTo: 50, label: '稳步发展', severity: 'normal' },
