@@ -28,6 +28,14 @@ export const spy: Scenario = {
       name: '情报功勋',
       initial: 15,
       max: 100,
+      // 功勋印记逐级解锁情报天花板：寸功未立则攒不起功勋（卡 15），唯谍报奇功方能层层晋功
+      ceiling: 15,
+      ceilingUnlocks: [
+        { flag: '立功', max: 50 },
+        { flag: '建功', max: 75 },
+        { flag: '奇功', max: 90 },
+        { flag: '殊勋', max: 100 },
+      ],
       bands: [
         { upTo: 15, label: '寸功未立', severity: 'low', directive: '你尚无拿得出手的情报，组织对你的价值仍在观望。' },
         { upTo: 50, label: '略有建树', severity: 'normal' },
