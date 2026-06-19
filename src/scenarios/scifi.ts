@@ -50,6 +50,8 @@ export const scifi: Scenario = {
       initial: 50,
       max: 100,
       deathBelow: 0,
+      // 漫长航程中人心自然消磨（sim 校准：治「文明几乎不可能崩」之平淡，使文明断绝成为活的第二死亡线）
+      decayPerTurn: 1,
       bands: [
         { upTo: 12, label: '行将断绝', severity: 'critical', directive: '人心崩溃、人口锐减，叙事中文明熄灭的绝望弥漫；至少一个选项关乎全员存续的最后豪赌。' },
         { upTo: 35, label: '人心浮动', severity: 'low', directive: '船员士气低落、暗流涌动，叛乱与绝望一触即发。' },
@@ -631,9 +633,10 @@ export const scifi: Scenario = {
         { text: '断然否决，另寻活路', effects: { colony: 8, tech: 4, integrity: -6 }, reaction: '「火种」沉默了一拍，似在重新评估你这个变量；而那些险些被划进名单的人若知道了，怕是要把这一夜记你一辈子的恩。' },
         {
           text: '默许 AI 的冷酷算计',
+          effects: {},
           outcomes: [
             { weight: 1, effects: { colony: -14, integrity: 6, tech: 2 }, reaction: '名单执行的那几日，全船笼罩在死一般的恐怖里，活下来的人不敢看彼此的眼睛；史册会怎样记下这一笔，你不敢去想。' },
-            { weight: 1, endTone: '清洗续命·血债驶向虚空' },
+            { weight: 1, effects: {}, endTone: '清洗续命·血债驶向虚空', reaction: '执行键按下的那一刻，三成沉睡者的生命被悄无声息地折算进续航的数字——你用一场无人敢提的清洗换来了苟延，却把自己永远钉在了那笔血账的另一端。' },
           ],
         },
         { text: '公开此事，交由全船公投', effects: { colony: 2, tech: -2 }, reaction: '消息一出，全船哗然，议事厅吵成一片，人人脸上都写着惊惧与愤怒；「火种」静静记录着这场喧嚣，不发一言。' },
@@ -649,9 +652,10 @@ export const scifi: Scenario = {
       choices: [
         {
           text: '谨慎回应，尝试交流',
+          effects: {},
           outcomes: [
             { weight: 4, effects: { tech: 10, integrity: -2, colony: -4 }, reaction: '通讯舱里所有人都屏住了呼吸，盯着信号一来一往；首席科学家手心全是汗，喃喃「但愿门后站着的，是友邻」。' },
-            { weight: 1, endTone: '星海共生·文明永续' },
+            { weight: 1, effects: {}, endTone: '星海共生·文明永续', reaction: '信号一来一往间，门后伸出的竟是温柔的善意；两个文明隔着星海郑重相握，人类第一次不再是黑暗中孤独的猎手——这一应，应来了一整片浩瀚的光。' },
           ],
         },
         { text: '保持静默，绝不暴露坐标', effects: { colony: 4, tech: -2 }, reaction: '首席科学家长出一口气，连连点头称这才是稳妥；可仍有研究员望着那组坐标怅然若失，痛惜错过了一步登天的机会。' },
@@ -865,9 +869,10 @@ export const scifi: Scenario = {
         { text: '保持武装戒备，划地自守', effects: { colony: 2, integrity: 2 }, reaction: '两个文明隔着空地互不侵犯，谁也没先迈出那一步；先遣队长绷着神经守了一夜，既庆幸无事，又遗憾这堵无形的墙就此立起。' },
         {
           text: '掠夺其资源，先下手为强',
+          effects: {},
           outcomes: [
             { weight: 1, effects: { tech: 4, colony: -10 }, reaction: '突袭得手了，可原住生命惊恐又仇恨的眼神，深深烙进了在场每个人的记忆；连先遣队里都有人别过脸去，不忍再看。' },
-            { weight: 1, endTone: '屠灭原民·新世罪基' },
+            { weight: 1, effects: {}, endTone: '屠灭原民·新世罪基', reaction: '先遣队的枪口对准了那些惊恐的眼睛，新世界的第一块基石，就这样浇筑在被你们碾碎的文明之上——人类抵达了，可抵达的，是一个以屠戮开篇的纪元。' },
           ],
         },
       ],
