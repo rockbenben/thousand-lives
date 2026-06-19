@@ -18,3 +18,25 @@ describe('voyage 船力势力封顶', () => {
     expect(clampEffects(voyage, { crew: 95 }, { crew: 20 }, []).crew).toBe(100)
   })
 })
+
+describe('voyage 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    const want: Record<string, string> = {
+      破产商人之子: '商人之子',
+      哗变水手: '哗变水手',
+      落魄贵族航海家: '贵族航海家',
+    }
+    for (const [name, flag] of Object.entries(want)) {
+      const op = voyage.openings!.find((o) => o.name === name)
+      expect(op?.flag).toBe(flag)
+      expect(initState(voyage, op).flags).toContain(flag)
+    }
+  })
+  it('三道身份专属事件带 has() 门控', () => {
+    const evs = voyage.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('商人之子')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('哗变水手')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('贵族航海家')).toBeGreaterThanOrEqual(1)
+  })
+})
