@@ -77,3 +77,26 @@ describe('wasteland 建据点闸门', () => {
     expect(next.attributes.supplies).toBeGreaterThan(65) // 该支 supplies+10，破落脚点上限65（据点上限80）
   })
 })
+
+describe('wasteland 结局重构为三年末世归宿', () => {
+  it('结局总数不变（23），两个死亡结局保留', () => {
+    expect(wasteland.endings.length).toBe(23)
+    expect(wasteland.endings.find((e) => e.tone === '力竭身亡')?.condition).toBe('hp<=0')
+    expect(wasteland.endings.find((e) => e.tone === '疯癫失智·消失在废墟')?.condition).toBe('sanity<=0')
+  })
+  it('8 个救援 tone 已改名为长期重建框架', () => {
+    const renamed = ['从容立足·重建有望', '安稳扎根的幸存者', '苟活·却已精神崩坏', '油尽灯枯·勉力撑住', '饿殍边缘·勉强熬过', '体魄尚健·安然立足', '伤痕累累·熬到今日', '熬过末世']
+    for (const t of renamed) expect(wasteland.endings.some((e) => e.tone === t), t).toBe(true)
+    const oldTones = ['从容获救·重建希望', '安稳撤离的幸存者', '油尽灯枯地获救', '获救']
+    for (const t of oldTones) expect(wasteland.endings.some((e) => e.tone === t), `旧tone ${t} 应已改名`).toBe(false)
+  })
+  it('所有 epilogue 不再含「军方救援/救援者/救援点/担架/军旗」等抵达-获救字样', () => {
+    const banned = ['军方', '军队', '救援者', '救援点', '救援的', '担架', '军旗', '救援车', '撤离']
+    for (const e of wasteland.endings)
+      for (const b of banned) expect(e.epilogue?.includes(b), `${e.tone} 含「${b}」`).not.toBe(true)
+  })
+  it('据点/重建类高物资结局仍以 supplies 为门（apex 靠 ceiling 自动门控）', () => {
+    const rebuild = wasteland.endings.find((e) => e.tone === '重建据点·重燃文明')
+    expect(rebuild?.condition).toContain('supplies>=80')
+  })
+})
