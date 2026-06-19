@@ -38,3 +38,31 @@ describe('book 身份印记', () => {
     expect(byFlag('陪嫁婢女')).toBeGreaterThanOrEqual(1)
   })
 })
+
+describe('book 升偏离闸门', () => {
+  it('四道升偏离机缘均为 keyMoment、授对应偏离印记、按序串链', () => {
+    const want = [
+      { summary: '宫宴落水', flag: '撬动', prev: undefined as string | undefined, pick: '反其道行之，当众救下女主' },
+      { summary: '反派密谈', flag: '生变', prev: '撬动', pick: '阳奉阴违，暗中给反派使绊' },
+      { summary: '储位之争', flag: '颠覆', prev: '生变', pick: '押注太子，倾力相助' },
+      { summary: '宫变前夜', flag: '改天', prev: '颠覆', pick: '先发制人，连夜布局逼宫' },
+    ]
+    for (const w of want) {
+      const ev = (book.localEvents ?? []).find((e) => e.summary === w.summary)
+      expect(ev?.keyMoment, w.summary).toBe(true)
+      const ch = ev!.choices.find((c) => c.text === w.pick)
+      expect((ch?.flagsSet ?? []).includes(w.flag), w.summary).toBe(true)
+      if (w.prev) expect(ev!.requires, w.summary).toContain(`has(${w.prev})`)
+    }
+  })
+  it('救女主当回合偏离可破 10 上限', () => {
+    let st = initState(book, book.openings![0])
+    st = { ...st, attributes: { plot: 10, favor: 20, safety: 60 }, history: [] }
+    const ev = (book.localEvents ?? []).find((e) => e.summary === '宫宴落水')!
+    const tr = { narrative: ev.narrative, summary: ev.summary, choices: ev.choices.map((c) => ({ text: c.text, effects: c.effects, outcomes: c.outcomes, flagsSet: c.flagsSet, endTone: c.endTone })) }
+    const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('撬动'))
+    const next = applyChoice(book, st, tr as any, idx, () => 0.5)
+    expect(next.flags).toContain('撬动')
+    expect(next.attributes.plot).toBeGreaterThan(10) // 该支 plot+12，破上限 10（撬动上限 30）
+  })
+})
