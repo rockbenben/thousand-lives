@@ -31,3 +31,21 @@ describe('wasteland 物资据点封顶', () => {
     expect(clampEffects(wasteland, { sanity: 95 }, { sanity: 20 }, []).sanity).toBe(100)
   })
 })
+
+describe('wasteland 身份印记', () => {
+  it('三开局各注入身份印记', () => {
+    const want: Record<string, string> = { 便利店店员: '店员', 退役军医: '军医', 高中生: '高中生' }
+    for (const [name, flag] of Object.entries(want)) {
+      const op = wasteland.openings!.find((o) => o.name === name)
+      expect(op?.flag).toBe(flag)
+      expect(initState(wasteland, op).flags).toContain(flag)
+    }
+  })
+  it('三道身份专属事件带 has() 门控', () => {
+    const evs = wasteland.localEvents ?? []
+    const byFlag = (f: string) => evs.filter((e) => (e.requires ?? '').includes(`has(${f})`)).length
+    expect(byFlag('店员')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('军医')).toBeGreaterThanOrEqual(1)
+    expect(byFlag('高中生')).toBeGreaterThanOrEqual(1)
+  })
+})
