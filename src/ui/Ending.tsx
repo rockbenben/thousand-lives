@@ -13,13 +13,7 @@ import { loadConfig, recordEnding, seenEndings, loadStats, type SaveGame } from 
 import type { Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { computeAchievements } from '../engine/achievements'
-
-// 一个剧本可达结局基调集合（声明的结局 + 有致死属性则加通用「死亡」）
-function endingTones(sc: Scenario): string[] {
-  const tones = sc.endings.map((e) => e.tone)
-  if (sc.attributes.some((a) => a.deathBelow !== undefined)) tones.push('死亡')
-  return [...new Set(tones)]
-}
+import { reachableEndingTones } from '../engine/state'
 
 // 当前已解锁成就（用于分享卡），需在 recordEnding 之后调用以包含本局
 function unlockedAchievements() {
@@ -27,7 +21,7 @@ function unlockedAchievements() {
     scenarios: builtinScenarios.map((sc) => ({
       id: sc.id,
       seen: new Set(seenEndings(sc.id)).size,
-      total: endingTones(sc).length,
+      total: reachableEndingTones(sc).length,
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),

@@ -11,19 +11,12 @@ import {
   loadStats,
 } from '../storage'
 import { computeAchievements } from '../engine/achievements'
-import type { Scenario as ScenarioType } from '../scenarios/schema'
+import { reachableEndingTones } from '../engine/state'
 import { covers } from './covers'
 import { GenerateModal } from './GenerateModal'
 
 // 八卦：作为剧本卡角落的星盘点缀，按序轮替
 const TRIGRAMS = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷']
-
-// 某剧本可达结局基调集合（声明结局 + 有致死属性则加通用「死亡」）
-function endingTones(sc: ScenarioType): string[] {
-  const tones = sc.endings.map((e) => e.tone)
-  if (sc.attributes.some((a) => a.deathBelow !== undefined)) tones.push('死亡')
-  return [...new Set(tones)]
-}
 
 function importErrorMessage(e: unknown): string {
   if (e instanceof ZodError) {
@@ -49,7 +42,7 @@ export function Home({
   const [showGen, setShowGen] = useState(false)
 
   // 收集进度（首页露出留存钩子）：累计解锁结局数 / 总数、已得成就数 / 总数
-  const endingsTotal = builtinScenarios.reduce((s, sc) => s + endingTones(sc).length, 0)
+  const endingsTotal = builtinScenarios.reduce((s, sc) => s + reachableEndingTones(sc).length, 0)
   const endingsSeen = builtinScenarios.reduce(
     (s, sc) => s + new Set(seenEndings(sc.id)).size,
     0,
@@ -58,7 +51,7 @@ export function Home({
     scenarios: builtinScenarios.map((sc) => ({
       id: sc.id,
       seen: new Set(seenEndings(sc.id)).size,
-      total: endingTones(sc).length,
+      total: reachableEndingTones(sc).length,
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),

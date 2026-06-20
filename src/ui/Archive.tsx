@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import type { Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import {
   listSlots,
@@ -12,6 +11,7 @@ import {
   type SaveSlot,
 } from '../storage'
 import { computeAchievements } from '../engine/achievements'
+import { reachableEndingTones } from '../engine/state'
 import { downloadText, safeFilename } from './download'
 import { endingImage } from './endingArt'
 import { achievementImage } from './achievementArt'
@@ -26,12 +26,6 @@ interface EndingDetail {
   epilogue?: string
 }
 
-// 一个剧本可达结局基调集合：声明结局 + 有致死属性则加通用「死亡」
-function endingTones(sc: Scenario): string[] {
-  const tones = sc.endings.map((e) => e.tone)
-  if (sc.attributes.some((a) => a.deathBelow !== undefined)) tones.push('死亡')
-  return [...new Set(tones)]
-}
 
 type Tab = 'saves' | 'achievements' | 'gallery'
 
@@ -73,7 +67,7 @@ export function Archive({
     scenarios: builtinScenarios.map((sc) => ({
       id: sc.id,
       seen: new Set(seenEndings(sc.id)).size,
-      total: endingTones(sc).length,
+      total: reachableEndingTones(sc).length,
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),
@@ -83,7 +77,7 @@ export function Archive({
     (s, sc) => s + new Set(seenEndings(sc.id)).size,
     0,
   )
-  const galleryTotal = builtinScenarios.reduce((s, sc) => s + endingTones(sc).length, 0)
+  const galleryTotal = builtinScenarios.reduce((s, sc) => s + reachableEndingTones(sc).length, 0)
 
   return (
     <div className="archive">
@@ -203,7 +197,7 @@ export function Archive({
       {tab === 'gallery' && (
         <section className="gallery">
           {builtinScenarios.map((sc) => {
-            const tones = endingTones(sc)
+            const tones = reachableEndingTones(sc)
             const seen = new Set(seenEndings(sc.id))
             return (
               <div key={sc.id} className="gallery-row">

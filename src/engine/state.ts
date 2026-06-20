@@ -131,6 +131,25 @@ export function checkEnding(
   return null
 }
 
+// 图鉴/成就口径：剧本「可真正触达」的结局基调全集。
+// 通用「死亡」是 checkEnding 在某致死属性归零、却没有作者写的死亡级结局时的兜底基调；
+// 仅当确有某致死属性缺少 简单 `key<=阈值`（阈值<=deathBelow）结局时它才会被触发——此时才计入。
+// 否则它是一个永不触发的幽灵槽：会让「集齐全部结局」成就与图鉴永远差一格、不可达。
+// 判定口径与上方 checkEnding 死亡分支严格一致（仅 kind==='cmp' 的 <= 简单条件算作死亡级结局）。
+export function reachableEndingTones(sc: Scenario): string[] {
+  const tones = sc.endings.map((e) => e.tone)
+  const deaths = sc.attributes.filter((a) => a.deathBelow !== undefined)
+  const genericDeathReachable = deaths.some(
+    (a) =>
+      !sc.endings.some((e) => {
+        const c = parseCondition(e.condition)
+        return c.kind === 'cmp' && c.op === '<=' && c.attr === a.key && c.value <= a.deathBelow!
+      }),
+  )
+  if (genericDeathReachable) tones.push('死亡')
+  return [...new Set(tones)]
+}
+
 // 「命运无常」：本地模式下同一选择偶有意外转折，结果好于或坏于预期，
 // 使相同抉择也可能走向不同。仅在传入 rng 时启用（AI 模式/测试保持确定性）。
 const FORTUNE_CHANCE = 0.18

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
-import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome, applyFlags } from './state'
+import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome, applyFlags, reachableEndingTones } from './state'
+import { builtinScenarios } from '../scenarios'
 import type { TurnResult } from './types'
 
 const sc: Scenario = scenarioSchema.parse({
@@ -18,6 +19,36 @@ const sc: Scenario = scenarioSchema.parse({
     { condition: 'gold>=100', tone: '暴富' },
     { condition: 'maxTurns', tone: '平凡' },
   ],
+})
+
+describe('reachableEndingTones（图鉴/成就口径：仅计可真正触达的基调）', () => {
+  it('某致死属性无专属死亡级结局时，通用「死亡」会回退触发 → 计入', () => {
+    // sc 的 hp 有死线但无 hp<=0 结局：归零时 checkEnding 回退到通用「死亡」
+    expect(checkEnding(sc, { hp: 0, gold: 50 }, 1, [])?.tone).toBe('死亡')
+    expect(reachableEndingTones(sc)).toContain('死亡')
+  })
+  it('每个致死属性都有专属死亡级结局时，通用「死亡」永不触发 → 不计入（否则集齐成就差一格、永不可达）', () => {
+    const withDeath = scenarioSchema.parse({
+      ...sc,
+      endings: [...sc.endings, { condition: 'hp<=0', tone: '力竭而亡' }],
+    })
+    expect(checkEnding(withDeath, { hp: 0, gold: 50 }, 1, [])?.tone).toBe('力竭而亡')
+    expect(reachableEndingTones(withDeath)).not.toContain('死亡')
+  })
+  it('回归护栏：内置剧本仅在确有致死属性缺专属死局时才计入「死亡」（杜绝幽灵槽）', () => {
+    const hasSimpleDeathEnding = (s: Scenario, key: string, deathBelow: number) =>
+      s.endings.some((e) => {
+        const m = (e.condition || '').trim().match(/^([a-zA-Z]+)<=(-?\d+)$/)
+        return !!m && m[1] === key && Number(m[2]) <= deathBelow
+      })
+    for (const s of builtinScenarios) {
+      const fallbackReachable = s.attributes.some(
+        (a) => a.deathBelow !== undefined && !hasSimpleDeathEnding(s, a.key, a.deathBelow),
+      )
+      // 计入「死亡」当且仅当通用死亡确可回退触发
+      expect(reachableEndingTones(s).includes('死亡'), s.id).toBe(fallbackReachable)
+    }
+  })
 })
 
 const turn = (effects: Record<string, number>): TurnResult => ({
