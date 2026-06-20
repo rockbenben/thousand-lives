@@ -157,6 +157,26 @@ const pushAttr = (key: string, dir: 1 | -1): Pick => (sc, st, tr) => {
   })
   return best
 }
+// 「压低某属性但活到满期」：在不送死(致死属性结算后>=10)的前提下尽量压低 key，触发 `maxTurns & key<=低` 类结局
+const holdLow = (key: string): Pick => (sc, st, tr) => {
+  const dk = deathKeys(sc)
+  let best = -1, bestK = Infinity
+  tr.choices.forEach((c, i) => {
+    const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99
+    if (m < 10) return
+    const kv = (st.attributes[key] ?? 0) + (c.effects?.[key] ?? 0)
+    if (kv < bestK) { bestK = kv; best = i }
+  })
+  if (best >= 0) return best
+  let b = 0, bs = -Infinity
+  tr.choices.forEach((c, i) => { const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 0; if (m > bs) { bs = m; b = i } })
+  return b
+}
+// 「求彩蛋」：优先选带 endTone 分支的选项，触发 `<=-1` 哨兵/强制结局（其余随机以掷中稀有分支）
+const endToneSeeker = (rng: () => number): Pick => (_sc, _st, tr) => {
+  const idx = tr.choices.findIndex((c) => (c.outcomes ?? []).some((o) => o.endTone) || c.endTone)
+  return idx >= 0 ? idx : Math.floor(rng() * tr.choices.length)
+}
 
 let seed = 0xC0FFEE
 function check(scId: string, games: number) {
@@ -169,9 +189,12 @@ function check(scId: string, games: number) {
   // 5 个通用策略 + 每属性的「推高/压低」方向策略（后者各开局少量即可，专为触发阈值结局两端）
   const picks: { name: string; make: () => Pick; runs: number }[] = [
     ...Object.keys(strategies).map((name) => ({ name, make: () => strategies[name](makeRng(seed++)), runs: games })),
+    { name: 'endTone', make: () => endToneSeeker(makeRng(seed++)), runs: games },
     ...sc.attributes.flatMap((a) => [
       { name: `max:${a.key}`, make: () => pushAttr(a.key, 1), runs: Math.ceil(games / 2) },
       { name: `min:${a.key}`, make: () => pushAttr(a.key, -1), runs: Math.ceil(games / 2) },
+      // 压低但活到满期：触发 maxTurns & key<=低 类结局
+      { name: `low:${a.key}`, make: () => holdLow(a.key), runs: Math.ceil(games / 2) },
     ]),
   ]
   for (const op of openings) {
