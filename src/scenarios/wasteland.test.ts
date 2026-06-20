@@ -79,8 +79,8 @@ describe('wasteland 建据点闸门', () => {
 })
 
 describe('wasteland 结局重构为三年末世归宿', () => {
-  it('结局总数为 26（23 基础 + 3 隐藏哨兵），两个死亡结局保留', () => {
-    expect(wasteland.endings.length).toBe(26)
+  it('结局总数为 30（27 基础 + 3 隐藏哨兵），两个死亡结局保留', () => {
+    expect(wasteland.endings.length).toBe(30)
     expect(wasteland.endings.find((e) => e.tone === '力竭身亡')?.condition).toBe('hp<=0')
     expect(wasteland.endings.find((e) => e.tone === '疯癫失智·消失在废墟')?.condition).toBe('sanity<=0')
   })
