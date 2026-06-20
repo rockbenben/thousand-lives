@@ -275,6 +275,16 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   box-shadow: inset 0 0 80px rgba(203, 168, 90, 0.08), 0 0 50px rgba(111, 174, 155, 0.05);
   animation: spin 75s linear infinite;
 }
+/* 盘心金晕：罗盘中央一缕缓缓呼吸的暖光，似命数在芯处流转 */
+.home-banner::after {
+  content: '';
+  position: absolute; inset: 24%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(203, 168, 90, 0.12), rgba(111, 174, 155, 0.045) 48%, transparent 72%);
+  animation: corePulse 6.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes corePulse { from { transform: scale(0.94); opacity: 0.6; } to { transform: scale(1.08); opacity: 1; } }
 /* 命·劫·缘·道：随盘公转，字身反向自转以保持正立 */
 .home-banner .orbit { inset: 0; animation: spin 60s linear infinite; }
 .home-banner .orbit.orbit2 { transform: rotate(90deg); }
@@ -388,34 +398,34 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
 }
 
 /* 收集进度条：把留存钩子（结局/成就收集）摆到首页明面，点击进命书阁 */
+/* 收藏入口条：两道鎏金量表（结局 / 成就）+ 通往命书阁的引线 */
 .collection-strip {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 24px;
   margin: 0 auto 30px;
-  padding: 9px 20px;
-  font-size: 0.86rem;
-  letter-spacing: 0.04em;
-  color: var(--paper-dim);
-  background: rgba(12, 16, 38, 0.5);
+  padding: 11px 22px;
+  background: rgba(12, 16, 38, 0.55);
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  border-radius: 10px;
   backdrop-filter: blur(3px);
   animation: fadeUp 0.7s 0.24s ease-out both;
-  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
-.collection-strip:hover {
-  border-color: var(--gold);
-  background: rgba(203, 168, 90, 0.1);
-  color: var(--paper);
+.collection-strip:hover { border-color: var(--gold); background: rgba(203, 168, 90, 0.09); }
+.cs-gauge { display: flex; flex-direction: column; gap: 5px; min-width: 124px; }
+.cs-top { font-size: 0.82rem; letter-spacing: 0.03em; color: var(--paper-dim); white-space: nowrap; }
+.cs-top b { color: var(--gold-bright); font-variant-numeric: tabular-nums; font-weight: 600; font-size: 0.92rem; }
+.cs-top i { color: var(--muted); font-style: normal; }
+.cs-bar { position: relative; height: 3px; border-radius: 3px; background: rgba(40, 50, 106, 0.6); overflow: hidden; }
+.cs-bar-fill {
+  position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: 3px;
+  background: linear-gradient(to right, var(--cinnabar), var(--gold-bright));
+  box-shadow: 0 0 8px rgba(203, 168, 90, 0.5);
 }
-.collection-strip b {
-  color: var(--gold-bright);
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-.collection-strip .cs-sep { color: var(--line-strong); }
-.collection-strip .cs-go { color: var(--gold); letter-spacing: 0.1em; }
+.cs-bar-fill.ach { background: linear-gradient(to right, var(--gold), var(--gold-bright)); }
+.cs-go { color: var(--gold); letter-spacing: 0.1em; font-size: 0.86rem; white-space: nowrap; align-self: center; }
+.collection-strip:hover .cs-go { color: var(--gold-bright); }
 
 /* 卷尾牌记：开源仓库以朱砂印收束首页，复用 .seal 的视觉词汇（千世在卷首，开源在卷尾） */
 .colophon {
@@ -607,6 +617,21 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   color: var(--muted); font-size: 0.85rem; line-height: 1.7;
   display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
 }
+/* 卡底「阅历此界」量表：该剧本已历结局占比，沿卡底绽一线鎏金；悬停显数 */
+.card-meter { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 3px; background: rgba(8, 11, 24, 0.55); }
+.card-meter-fill {
+  display: block; height: 100%;
+  background: linear-gradient(to right, var(--cinnabar), var(--gold-bright));
+  box-shadow: 0 0 8px rgba(203, 168, 90, 0.55);
+}
+.card-seen {
+  position: absolute; right: 11px; bottom: 10px; z-index: 1;
+  font-size: 0.7rem; color: var(--gold-bright); font-variant-numeric: tabular-nums;
+  padding: 1px 8px; border-radius: 10px; background: rgba(8, 11, 24, 0.72);
+  border: 1px solid var(--line-strong); opacity: 0; transition: opacity 0.25s;
+}
+.scenario-card:hover .card-seen { opacity: 1; }
+
 .import-card { border-style: dashed; justify-content: center; align-items: center; text-align: center; }
 
 /* 存档管理 */
@@ -627,24 +652,53 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
 .slot-act { padding: 6px 12px; font-size: 0.85rem; white-space: nowrap; }
 
 /* 结局图鉴 */
-.achievements { margin-top: 24px; text-align: left; animation: fadeUp 0.6s 0.5s ease-out both; }
+.achievements { margin-top: 20px; text-align: left; animation: fadeUp 0.6s 0.5s ease-out both; }
+
+/* 勋章墙分栏：传说 / 收集 / 精通 / 历练，各起一栏，鎏金题首领衔 */
+.ach-group { margin-bottom: 26px; }
+.ach-group-head { display: flex; align-items: center; gap: 13px; margin: 0 0 13px; }
+.ach-group-label {
+  font-family: var(--font-display);
+  font-size: 1.04rem; letter-spacing: 0.36em; color: var(--gold-bright);
+  text-shadow: 0 0 16px rgba(203, 168, 90, 0.3); white-space: nowrap; padding-left: 1px;
+}
+.ach-group-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--line-strong), transparent); }
+.ach-group-count { font-size: 0.8rem; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: 0.05em; }
+.ach-group-count i { color: var(--muted); font-style: normal; }
+
 .ach-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
   gap: 10px;
-  margin-top: 12px;
 }
 .ach {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 13px;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: var(--radius);
   background: var(--ink-8);
 }
-.ach.done { border-color: var(--cinnabar); background: rgba(201, 80, 58, 0.07); }
-.ach.locked { opacity: 0.55; }
-.ach-icon { font-size: 1.4rem; line-height: 1; }
-/* 成就徽章配图（可点击放大） */
+.ach.done {
+  border-color: rgba(201, 80, 58, 0.5);
+  background: linear-gradient(158deg, rgba(201, 80, 58, 0.1), rgba(14, 20, 48, 0.4) 70%);
+}
+.ach.locked { background: rgba(14, 20, 48, 0.42); }
+.ach.locked .ach-name { color: var(--paper-dim); }
+.ach-icon { flex: none; width: 52px; display: grid; place-items: center; font-size: 1.5rem; line-height: 1; opacity: 0.85; }
+.ach.locked .ach-icon { opacity: 0.4; }
+
+/* 传说一栏：题眼级勋章，放大陈列、鎏金主调 */
+.ach-grid-legend { grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); }
+.ach-group-legend .ach { padding: 13px 14px; }
+.ach-group-legend .ach.done {
+  border-color: var(--gold);
+  background: linear-gradient(158deg, rgba(203, 168, 90, 0.14), rgba(201, 80, 58, 0.05) 72%);
+}
+.ach-group-legend .ach.done .ach-name { color: var(--gold-bright); }
+.ach-group-legend .ach-img, .ach-group-legend .ach-icon { width: 60px; }
+.ach-group-legend .ach-img { height: 60px; }
+
+/* 成就徽章配图（已得可点击放大；未得为朱砂封印下的剪影） */
 .ach-img {
   flex: none;
   width: 52px; height: 52px;
@@ -652,17 +706,26 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   border-radius: 6px;
   border: 1px solid var(--line-strong);
   box-shadow: 0 0 10px rgba(203, 168, 90, 0.18);
-  padding: 0; cursor: zoom-in;
-  transition: transform 0.15s, box-shadow 0.2s;
+  padding: 0;
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
 }
-/* 整张成就卡可点击放大 */
-.ach-clickable {
-  text-align: left; cursor: zoom-in;
-  font: inherit; width: 100%;
-  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+.ach-img.sealed {
+  filter: grayscale(1) brightness(0.46) contrast(0.92);
+  opacity: 0.62; box-shadow: none; border-color: var(--line);
 }
-.ach-clickable:hover { border-color: var(--gold); box-shadow: 0 0 16px rgba(203, 168, 90, 0.22); }
+.ach-clickable { text-align: left; cursor: zoom-in; font: inherit; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
+.ach-clickable:hover { border-color: var(--gold); box-shadow: 0 0 18px rgba(203, 168, 90, 0.24); }
 .ach-clickable:hover .ach-img { transform: scale(1.08); box-shadow: 0 0 16px rgba(203, 168, 90, 0.45); }
+
+/* 进度类成就：鎏金进度条 + 计数 */
+.ach-prog { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.ach-bar { position: relative; flex: 1; height: 4px; border-radius: 3px; background: rgba(40, 50, 106, 0.6); overflow: hidden; }
+.ach-bar-fill {
+  position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: 3px;
+  background: linear-gradient(to right, var(--gold), var(--gold-bright));
+  box-shadow: 0 0 8px rgba(203, 168, 90, 0.55);
+}
+.ach-bar-num { flex: none; font-size: 0.66rem; color: var(--gold); font-variant-numeric: tabular-nums; }
 
 /* 徽章放大展示卡：旋转入场 + 辉光（呼应命运之卡） */
 .badge-overlay {
@@ -699,19 +762,81 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   margin: 0; max-width: 26em; color: var(--paper-dim); line-height: 1.9;
   animation: fadeUp 0.6s 0.65s ease-out both;
 }
-.ach-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ach-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
 .ach-name { font-weight: 600; color: var(--paper); font-size: 0.9rem; }
 .ach.done .ach-name { color: var(--cinnabar-bright); }
-.ach-desc { font-size: 0.74rem; color: var(--muted); }
+.ach-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.5; }
 
-.gallery { margin-top: 24px; text-align: left; animation: fadeUp 0.6s 0.55s ease-out both; }
-.gallery-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.gallery-name { font-weight: 600; min-width: 8em; }
-.gallery-count { color: var(--gold); font-size: 0.85rem; margin-left: 8px; font-variant-numeric: tabular-nums; }
-.gallery-tones { display: flex; flex-wrap: wrap; gap: 6px; }
-.ending-chip { font-size: 0.8rem; padding: 2px 10px; border-radius: 12px; border: 1px solid var(--line-strong); }
-.ending-chip.seen { color: var(--cinnabar-bright); border-color: var(--cinnabar); background: rgba(201, 80, 58, 0.08); }
-.ending-chip.locked { color: var(--muted); border-style: dashed; }
+/* ── 结局图鉴：封印解卷 ──
+   每剧本一壁，结局排作鎏金边的微卡；未历者为朱砂封印剪影，已历者绽为配图绘卷 */
+.gallery { margin-top: 20px; text-align: left; animation: fadeUp 0.6s 0.55s ease-out both; }
+.gal-scene { margin-bottom: 26px; }
+.gal-scene-head { display: flex; align-items: center; gap: 13px; margin: 0 0 12px; }
+.gal-scene-name {
+  display: flex; align-items: baseline; gap: 8px; white-space: nowrap;
+  font-family: var(--font-display); font-size: 1.04rem; letter-spacing: 0.12em; color: var(--paper);
+}
+.gal-scene-emoji { font-size: 1.15rem; }
+.gal-bar { flex: 1; height: 3px; border-radius: 3px; background: rgba(40, 50, 106, 0.55); overflow: hidden; }
+.gal-bar-fill {
+  display: block; height: 100%; border-radius: 3px;
+  background: linear-gradient(to right, var(--cinnabar), var(--gold-bright));
+  box-shadow: 0 0 8px rgba(203, 168, 90, 0.5);
+}
+.gal-scene-count { flex: none; display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.gal-scene-count i { color: var(--muted); font-style: normal; }
+.gal-scene.complete .gal-scene-name { color: var(--gold-bright); }
+.gal-seal-done {
+  font-family: var(--font-script); font-size: 0.7rem; color: #f3e4c8; letter-spacing: 0.1em;
+  padding: 1px 7px; border-radius: 3px; background: var(--cinnabar);
+  box-shadow: 0 0 12px rgba(201, 80, 58, 0.5);
+}
+
+.gal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 9px;
+}
+.gal-tile {
+  position: relative; aspect-ratio: 3 / 4; border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--line); padding: 0; margin: 0;
+  background: var(--ink-8) center / cover no-repeat;
+}
+/* 未历：朱砂封印剪影 */
+.gal-tile.locked {
+  display: grid; place-items: center;
+  border-style: dashed; border-color: rgba(203, 168, 90, 0.28);
+  background:
+    radial-gradient(80% 60% at 50% 38%, rgba(201, 80, 58, 0.1), transparent 70%),
+    repeating-linear-gradient(135deg, rgba(40, 50, 106, 0.18) 0 7px, transparent 7px 14px),
+    var(--ink-8);
+}
+.gal-tile-seal-mark {
+  font-family: var(--font-script); font-size: 1.5rem; color: rgba(201, 80, 58, 0.55);
+  width: 1.7em; height: 1.7em; display: grid; place-items: center;
+  border: 1px solid rgba(201, 80, 58, 0.32); border-radius: 4px;
+  text-shadow: 0 0 12px rgba(201, 80, 58, 0.3);
+}
+/* 已历：配图绘卷，鎏金边 + 底部基调题签 */
+.gal-tile.seen { cursor: pointer; transition: transform 0.16s, box-shadow 0.22s, border-color 0.22s; }
+.gal-tile.seen { border-color: var(--line-strong); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4); }
+.gal-tile.seen:hover { transform: translateY(-3px); border-color: var(--gold-bright); box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5), 0 0 22px rgba(203, 168, 90, 0.3); }
+.gal-tile-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 28%, rgba(8, 11, 24, 0.55) 64%, rgba(8, 11, 24, 0.94));
+}
+.gal-tile-tone {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding: 16px 7px 8px; text-align: center; line-height: 1.3;
+  font-family: var(--font-display); font-size: 0.74rem; letter-spacing: 0.02em; color: #f1e6cf;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.gal-tile-seal {
+  position: absolute; top: 6px; right: 7px; z-index: 2;
+  font-family: var(--font-script); font-size: 0.78rem; color: var(--gold-bright);
+  opacity: 0; transition: opacity 0.22s; text-shadow: 0 0 8px rgba(203, 168, 90, 0.8);
+}
+.gal-tile.seen:hover .gal-tile-seal { opacity: 1; }
 
 
 /* ── 命书阁（存档 / 成就 / 结局图鉴） ── */
@@ -738,7 +863,7 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   font-size: 0.98rem; transition: color 0.2s, border-color 0.2s;
 }
 .archive-tabs button:hover { color: var(--paper); }
-.archive-tabs button.active { color: var(--gold-bright); border-bottom-color: var(--gold); }
+.archive-tabs button.active { color: var(--gold-bright); border-bottom-color: var(--gold); text-shadow: 0 0 12px rgba(203, 168, 90, 0.4); }
 .archive-tabs .tab-num {
   margin-left: 7px; font-size: 0.74rem; color: var(--gold);
   font-variant-numeric: tabular-nums; opacity: 0.85;
@@ -753,8 +878,20 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
   color: var(--gold); font-size: 0.85rem; font-style: italic; margin: 0 0 4px;
   animation: pulse 1.6s ease-in-out infinite;
 }
-.choice.recommended { border-color: var(--gold); }
-.choice.recommended .choice-text { color: var(--gold); }
+.choice.recommended {
+  border-color: var(--gold);
+  background: linear-gradient(100deg, rgba(203, 168, 90, 0.11), var(--ink-8) 58%);
+}
+.choice.recommended .choice-text { color: var(--gold-bright); }
+/* 拟：朱砂小印，点出托管将依角色取向「拟选」之项（仅托管模式显示，非对玩家的推荐） */
+.choice.recommended::after {
+  content: '拟';
+  position: absolute; top: -1px; right: -1px;
+  font-family: var(--font-script); font-size: 0.72rem; line-height: 1;
+  color: #f3e4c8; background: var(--cinnabar);
+  padding: 3px 7px 4px; border-radius: 0 var(--radius) 0 7px;
+  box-shadow: 0 2px 9px rgba(201, 80, 58, 0.4);
+}
 
 /* ── 设置页 ── */
 
@@ -973,6 +1110,9 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
 .intro { color: var(--muted); font-style: italic; }
 
 .turn { margin-bottom: 26px; }
+/* 卷轴节律：往事微敛、当下鲜明，如记忆向眼前的此刻聚拢 */
+.turn:not(.current):not(.key-moment) .narrative { color: var(--paper-dim); }
+.turn.current:not(.key-moment) .narrative { color: var(--paper); }
 .turn-no {
   display: flex; align-items: center; gap: 12px;
   color: var(--gold); font-size: 0.8rem; letter-spacing: 0.3em;
@@ -1029,8 +1169,10 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   text-align: left;
   background: var(--ink-8);
   border: 1px solid var(--line);
+  border-radius: var(--radius);
   padding: 12px 16px 12px 18px;
   animation: fadeUp 0.4s ease-out both;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.22s;
 }
 .choice:nth-child(2) { animation-delay: 0.07s; }
 .choice:nth-child(3) { animation-delay: 0.14s; }
@@ -1043,7 +1185,10 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   opacity: 0;
   transition: opacity 0.2s;
 }
-.choice:hover { background: var(--ink-7); border-color: var(--line-strong); transform: translateX(3px); }
+.choice:hover {
+  background: var(--ink-7); border-color: var(--line-strong); transform: translateX(3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.42), -3px 0 18px rgba(201, 80, 58, 0.12);
+}
 .choice:hover::before { opacity: 1; }
 .choice-text { line-height: 1.7; }
 .choice-fx { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -1460,14 +1605,26 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset;
 }
 .ending-grade { display: flex; gap: 12px; align-items: center; justify-content: center; margin: 4px 0; }
+/* 评级朱印：各品一色一品相，神品(S)灼灼有华、劫数(D)黯然 */
 .grade-badge {
   font-family: var(--font-script);
-  font-size: 1.3rem; padding: 2px 14px; border-radius: 4px;
+  font-size: 1.3rem; padding: 2px 15px; border-radius: 4px;
   color: #1a1208; background: var(--gold); border: 1px solid var(--gold);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset;
 }
-.grade-badge.grade-S { background: var(--cinnabar-bright); border-color: var(--cinnabar-bright); color: #f6ead2; }
-.grade-badge.grade-A { background: var(--gold); }
-.grade-badge.grade-D { background: var(--muted); border-color: var(--muted); }
+.grade-badge.grade-S {
+  background: var(--cinnabar-bright); border-color: var(--cinnabar-bright); color: #f9eed6;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset, 0 0 20px rgba(224, 112, 78, 0.6);
+  animation: gradeShine 2.6s ease-in-out infinite alternate;
+}
+@keyframes gradeShine { to { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset, 0 0 30px rgba(236, 210, 143, 0.8); } }
+.grade-badge.grade-A {
+  background: var(--gold-bright); border-color: var(--gold-bright);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset, 0 0 14px rgba(203, 168, 90, 0.5);
+}
+.grade-badge.grade-B { background: var(--jade); border-color: var(--jade); color: #07140f; }
+.grade-badge.grade-C { background: #5b62a0; border-color: #5b62a0; color: #0c1230; }
+.grade-badge.grade-D { background: var(--muted); border-color: var(--muted); color: #11142e; }
 .grade-title { color: var(--paper-dim); letter-spacing: 0.1em; }
 .ending-meta { color: var(--muted); letter-spacing: 0.2em; }
 /* 结局缘由:点明「为何落幕」(身死/大限),让结束清晰可感 */
@@ -1597,5 +1754,3 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-

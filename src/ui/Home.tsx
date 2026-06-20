@@ -94,9 +94,28 @@ export function Home({
       </div>
 
       <button className="collection-strip" onClick={onOpenArchive}>
-        <span className="cs-item">📖 已历结局 <b>{endingsSeen}</b>/{endingsTotal}</span>
-        <span className="cs-sep" aria-hidden="true">·</span>
-        <span className="cs-item">🏅 成就 <b>{achDone}</b>/{achievements.length}</span>
+        <span className="cs-gauge">
+          <span className="cs-top">📖 已历结局 <b>{endingsSeen}</b><i>/{endingsTotal}</i></span>
+          <span className="cs-bar" aria-hidden="true">
+            {endingsSeen > 0 && (
+              <span
+                className="cs-bar-fill"
+                style={{ width: `${endingsTotal ? Math.round((endingsSeen / endingsTotal) * 100) : 0}%` }}
+              />
+            )}
+          </span>
+        </span>
+        <span className="cs-gauge">
+          <span className="cs-top">🏅 成就 <b>{achDone}</b><i>/{achievements.length}</i></span>
+          <span className="cs-bar" aria-hidden="true">
+            {achDone > 0 && (
+              <span
+                className="cs-bar-fill ach"
+                style={{ width: `${achievements.length ? Math.round((achDone / achievements.length) * 100) : 0}%` }}
+              />
+            )}
+          </span>
+        </span>
         <span className="cs-go" aria-hidden="true">命书阁 →</span>
       </button>
 
@@ -110,6 +129,9 @@ export function Home({
       <div className="scenario-grid">
         {[...builtinScenarios, ...custom].map((sc, i) => {
           const cover = covers[sc.id]
+          const total = reachableEndingTones(sc).length
+          const seen = new Set(seenEndings(sc.id)).size
+          const pct = total ? Math.round((seen / total) * 100) : 0
           return (
             <button
               key={sc.id}
@@ -128,6 +150,12 @@ export function Home({
               <span className="scenario-emoji">{sc.emoji}</span>
               <span className="scenario-title">{sc.title}</span>
               <span className="scenario-intro">{sc.intro}</span>
+              {seen > 0 && <span className="card-seen">已历 {seen}/{total} 结局</span>}
+              {seen > 0 && (
+                <span className="card-meter" aria-hidden="true">
+                  <span className="card-meter-fill" style={{ width: `${pct}%` }} />
+                </span>
+              )}
             </button>
           )
         })}

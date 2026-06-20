@@ -28,7 +28,7 @@ export function StoryCard({
         <div className="storycard-face">
           <span className="storycard-label">{label}</span>
           <button className="primary storycard-go" onClick={onContinue}>
-            临此一抉 →
+            继续 →
           </button>
         </div>
       </div>

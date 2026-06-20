@@ -79,8 +79,11 @@ export function Setup({
     model: model.trim(),
     presetId,
   })
-  // 本地模式无需配置；AI 模式需要 key + model
-  const ready = mode === 'local' || (apiKey.trim() !== '' && model.trim() !== '')
+  // 本地模式无需配置；AI 模式需要 key + model。另：选了「自定义身份」却没写，则不放行——
+  // 否则会以「无身份」静默开局，玩家明明选了自设身份却丢失（finalOpening 此时返回 undefined）。
+  const ready =
+    (mode === 'local' || (apiKey.trim() !== '' && model.trim() !== '')) &&
+    !(customId && customIdText.trim() === '')
 
   const testConnection = async () => {
     const seq = ++testSeq.current

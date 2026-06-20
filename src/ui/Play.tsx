@@ -31,6 +31,8 @@ export function Play({
   const [customOpen, setCustomOpen] = useState(false)
   const [customText, setCustomText] = useState('')
   const [auto, setAuto] = useState(false)
+  const [showMemoir, setShowMemoir] = useState(false)
+  const [lightbox, setLightbox] = useState<string | null>(null)
   const busyRef = useRef(false)
   const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   // 玩家退出后组件卸载，迟到的 AI 响应不能再写回 session，否则会复活已清除的存档
@@ -144,7 +146,8 @@ export function Play({
       clearTimeout(autoTimer.current)
       autoTimer.current = null
     }
-    if (!auto || !pendingTurn || loading || pendingAction || state.ended) return
+    // 托管自动落子；任一浮层（留影/看图）打开时暂停，避免回合在玩家阅读时被悄然推进
+    if (!auto || !pendingTurn || loading || pendingAction || state.ended || showMemoir || lightbox) return
     const n = pendingTurn.choices.length
     const rec = pendingTurn.recommend
     const idx = typeof rec === 'number' && rec >= 0 && rec < n ? rec : Math.floor(Math.random() * n)
@@ -159,7 +162,7 @@ export function Play({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auto, pendingTurn, loading, pendingAction, state.ended])
+  }, [auto, pendingTurn, loading, pendingAction, state.ended, showMemoir, lightbox])
 
   const pick = (idx: number) => {
     if (!pendingTurn || loading || pendingAction) return
@@ -185,8 +188,6 @@ export function Play({
     ? nodeImage(scenario.id, pendingTurn?.summary)
     : undefined
   const keyArt = keyMoment ? curArt : undefined
-  const [showMemoir, setShowMemoir] = useState(false)
-  const [lightbox, setLightbox] = useState<string | null>(null)
   const [cardSeen, setCardSeen] = useState(0) // 已看过弹卡的最高关键回合号
   // 命运抉择独立大卡:本回合是关键节点、剧情已就绪、非托管/结算/加载时弹出一次
   const showStoryCard =

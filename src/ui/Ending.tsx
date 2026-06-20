@@ -156,7 +156,17 @@ export function EndingScreen({
   if (!revealed) {
     return (
       <div className="ending-gate" onClick={() => setRevealed(true)}>
-        <div className="fate-card" role="button" tabIndex={0}>
+        <div
+          className="fate-card"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setRevealed(true)
+            }
+          }}
+        >
           <div className="fate-card-inner">
             {art && (
               <div

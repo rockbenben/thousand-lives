@@ -10,8 +10,14 @@ import {
   type SaveGame,
   type SaveSlot,
 } from '../storage'
-import { computeAchievements } from '../engine/achievements'
+import {
+  computeAchievements,
+  ACH_GROUP_LABELS,
+  ACH_GROUP_ORDER,
+  type Achievement,
+} from '../engine/achievements'
 import { reachableEndingTones } from '../engine/state'
+import { hasEndingArt } from './endingArt'
 import { downloadText, safeFilename } from './download'
 import { endingImage } from './endingArt'
 import { achievementImage } from './achievementArt'
@@ -79,6 +85,52 @@ export function Archive({
   )
   const galleryTotal = builtinScenarios.reduce((s, sc) => s + reachableEndingTones(sc).length, 0)
 
+  // 单枚勋章：已得→鎏金徽章（可放大）；未得有图→朱砂封印下的剪影；进度类附鎏金进度条
+  const renderAch = (a: Achievement) => {
+    const img = achievementImage(a.id)
+    const pct = a.progress && a.progress.total > 0 ? Math.round((a.progress.cur / a.progress.total) * 100) : 0
+    const inner = (
+      <>
+        {img ? (
+          <span
+            className={`ach-img${a.done ? '' : ' sealed'}`}
+            style={{ backgroundImage: `url(${img})` }}
+            aria-hidden="true"
+          />
+        ) : (
+          <span className="ach-icon">{a.done ? a.icon : '🔒'}</span>
+        )}
+        <span className="ach-text">
+          <span className="ach-name">{a.name}</span>
+          <span className="ach-desc">{a.desc}</span>
+          {!a.done && a.progress && a.progress.cur > 0 && a.progress.total > 1 && (
+            <span className="ach-prog">
+              <span className="ach-bar" aria-hidden="true">
+                <span className="ach-bar-fill" style={{ width: `${pct}%` }} />
+              </span>
+              <span className="ach-bar-num">{a.progress.cur}/{a.progress.total}</span>
+            </span>
+          )}
+        </span>
+      </>
+    )
+    return a.done && img ? (
+      <button
+        key={a.id}
+        className="ach done ach-clickable"
+        onClick={() => setBadge({ img, name: a.name, desc: a.desc })}
+        title="点击放大徽章"
+        aria-label={`查看徽章「${a.name}」`}
+      >
+        {inner}
+      </button>
+    ) : (
+      <div key={a.id} className={`ach ${a.done ? 'done' : 'locked'}`} title={a.desc}>
+        {inner}
+      </div>
+    )
+  }
+
   return (
     <div className="archive">
       <button className="ghost archive-back" onClick={onBack}>
@@ -121,7 +173,8 @@ export function Archive({
                     <span className="slot-name">{slot.name}</span>
                     <span className="slot-meta">
                       {slot.game.scenario.emoji} {slot.game.scenario.title} · 第{' '}
-                      {slot.game.state.history.length + 1} {slot.game.scenario.turnUnit}
+                      {slot.game.state.history.length + (slot.game.state.ended ? 0 : 1)}{' '}
+                      {slot.game.scenario.turnUnit}
                       {slot.game.state.ended ? '（已结束）' : ''} ·{' '}
                       {new Date(slot.savedAt).toLocaleString('zh-CN', {
                         month: 'numeric',
@@ -151,46 +204,25 @@ export function Archive({
 
       {tab === 'achievements' && (
         <section className="achievements">
-          <div className="ach-grid">
-            {achievements.map((a) => {
-              const img = a.done ? achievementImage(a.id) : undefined
-              const inner = (
-                <>
-                  {img ? (
-                    <span
-                      className="ach-img"
-                      style={{ backgroundImage: `url(${img})` }}
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <span className="ach-icon">{a.done ? a.icon : '🔒'}</span>
-                  )}
-                  <span className="ach-text">
-                    <span className="ach-name">{a.name}</span>
-                    <span className="ach-desc">
-                      {a.desc}
-                      {!a.done && a.progress ? `（${a.progress.cur}/${a.progress.total}）` : ''}
-                    </span>
+          {ACH_GROUP_ORDER.map((g) => {
+            const items = achievements.filter((a) => a.group === g)
+            if (!items.length) return null
+            const got = items.filter((a) => a.done).length
+            return (
+              <div key={g} className={`ach-group ach-group-${g}`}>
+                <div className="ach-group-head">
+                  <span className="ach-group-label">{ACH_GROUP_LABELS[g]}</span>
+                  <span className="ach-group-rule" aria-hidden="true" />
+                  <span className="ach-group-count">
+                    {got}<i>/{items.length}</i>
                   </span>
-                </>
-              )
-              return img ? (
-                <button
-                  key={a.id}
-                  className="ach done ach-clickable"
-                  onClick={() => setBadge({ img, name: a.name, desc: a.desc })}
-                  title="点击放大徽章"
-                  aria-label={`查看徽章「${a.name}」`}
-                >
-                  {inner}
-                </button>
-              ) : (
-                <div key={a.id} className={`ach ${a.done ? 'done' : 'locked'}`} title={a.desc}>
-                  {inner}
                 </div>
-              )
-            })}
-          </div>
+                <div className={`ach-grid${g === 'legend' ? ' ach-grid-legend' : ''}`}>
+                  {items.map(renderAch)}
+                </div>
+              </div>
+            )
+          })}
         </section>
       )}
 
@@ -199,20 +231,40 @@ export function Archive({
           {builtinScenarios.map((sc) => {
             const tones = reachableEndingTones(sc)
             const seen = new Set(seenEndings(sc.id))
+            const got = tones.filter((t) => seen.has(t)).length
+            const pct = tones.length ? Math.round((got / tones.length) * 100) : 0
+            const complete = got >= tones.length && tones.length > 0
             return (
-              <div key={sc.id} className="gallery-row">
-                <span className="gallery-name">
-                  {sc.emoji} {sc.title}
-                  <span className="gallery-count">
-                    {tones.filter((t) => seen.has(t)).length}/{tones.length}
+              <div key={sc.id} className={`gal-scene${complete ? ' complete' : ''}`}>
+                <div className="gal-scene-head">
+                  <span className="gal-scene-name">
+                    <b className="gal-scene-emoji">{sc.emoji}</b>
+                    {sc.title}
                   </span>
-                </span>
-                <span className="gallery-tones">
-                  {tones.map((t, i) =>
-                    seen.has(t) ? (
+                  <span className="gal-bar" aria-hidden="true">
+                    {pct > 0 && <span className="gal-bar-fill" style={{ width: `${pct}%` }} />}
+                  </span>
+                  <span className="gal-scene-count">
+                    {complete && <span className="gal-seal-done" aria-hidden="true">圆满</span>}
+                    {got}<i>/{tones.length}</i>
+                  </span>
+                </div>
+                <div className="gal-grid">
+                  {tones.map((t, i) => {
+                    if (!seen.has(t)) {
+                      return (
+                        <div key={i} className="gal-tile locked" aria-label="尚未解锁的结局">
+                          <span className="gal-tile-seal-mark" aria-hidden="true">封</span>
+                        </div>
+                      )
+                    }
+                    const art = endingImage(sc.id, t)
+                    const own = hasEndingArt(sc.id, t)
+                    return (
                       <button
                         key={i}
-                        className="ending-chip seen"
+                        className={`gal-tile seen${own ? '' : ' nocover'}`}
+                        style={art ? { backgroundImage: `url(${art})` } : undefined}
                         onClick={() =>
                           setDetail({
                             scId: sc.id,
@@ -223,15 +275,15 @@ export function Archive({
                             epilogue: sc.endings.find((e) => e.tone === t)?.epilogue,
                           })
                         }
-                        title="查看此结局"
+                        title={t}
                       >
-                        {t}
+                        <span className="gal-tile-veil" aria-hidden="true" />
+                        <span className="gal-tile-tone">{t}</span>
+                        <span className="gal-tile-seal" aria-hidden="true">終</span>
                       </button>
-                    ) : (
-                      <span key={i} className="ending-chip locked">？？？</span>
-                    ),
-                  )}
-                </span>
+                    )
+                  })}
+                </div>
               </div>
             )
           })}

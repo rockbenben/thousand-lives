@@ -81,9 +81,10 @@ export function GenerateModal({
     }
   }
 
+  // 仅中断本次生成、退回表单（busy→false 后重现「关闭 / 生成」），保留已填主题与配置供调整重试；
+  // 不再连带关掉整个弹窗——「取消生成」只该取消生成，离开由「关闭」负责
   const cancel = () => {
     abortRef.current?.abort()
-    onClose()
   }
 
   const phaseText = (p: GenProgress) =>

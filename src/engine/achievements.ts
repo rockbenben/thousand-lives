@@ -1,11 +1,38 @@
 import type { RunStats } from '../storage'
 
+export type AchievementGroup = 'legend' | 'collect' | 'mastery' | 'journey'
+
+// 成就分组（命书阁勋章墙按此分栏陈列）：传说居首为题眼，余者收集 / 精通 / 历练
+export const ACH_GROUP_LABELS: Record<AchievementGroup, string> = {
+  legend: '传说',
+  collect: '收集',
+  mastery: '精通',
+  journey: '历练',
+}
+export const ACH_GROUP_ORDER: AchievementGroup[] = ['legend', 'collect', 'mastery', 'journey']
+
+function groupOf(id: string): AchievementGroup {
+  if (id.startsWith('legend-')) return 'legend'
+  if (
+    id.startsWith('seen-') ||
+    id.startsWith('complete-') ||
+    id.startsWith('clear-') ||
+    id === 'first' ||
+    id === 'all-scenarios'
+  )
+    return 'collect'
+  if (id.startsWith('s-rank') || id.startsWith('master') || id === 'all-ranks' || id === 'goal-100')
+    return 'mastery'
+  return 'journey'
+}
+
 export interface Achievement {
   id: string
   name: string
   desc: string
   icon: string
   done: boolean
+  group: AchievementGroup
   progress?: { cur: number; total: number }
 }
 
@@ -71,7 +98,7 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
   const count = (cur: number, total: number) => ({ cur: Math.min(cur, total), total })
 
   // 每剧本专属通关成就（具体、按出现的内置剧本动态生成）
-  const perScenario: Achievement[] = scenarios
+  const perScenario: Omit<Achievement, 'group'>[] = scenarios
     .filter((s) => SCENARIO_ACH[s.id])
     .map((s) => {
       const a = SCENARIO_ACH[s.id]
@@ -79,7 +106,7 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
     })
 
   // 传说结局成就（达成各剧本标志性巅峰结局）
-  const perLegend: Achievement[] = scenarios
+  const perLegend: Omit<Achievement, 'group'>[] = scenarios
     .filter((s) => LEGEND[s.id])
     .map((s) => {
       const l = LEGEND[s.id]
@@ -90,7 +117,7 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
     })
 
   // 每剧本「集齐全部结局」成就
-  const perComplete: Achievement[] = scenarios
+  const perComplete: Omit<Achievement, 'group'>[] = scenarios
     .filter((s) => COMPLETE_ACH[s.id] && s.total > 0)
     .map((s) => {
       const a = COMPLETE_ACH[s.id]
@@ -100,8 +127,9 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
       }
     })
 
-  return [
+  const all: Omit<Achievement, 'group'>[] = [
     { id: 'first', name: '初入千世', desc: '完成第一段人生', icon: '🌱', done: totalSeen >= 1 },
+    ...perScenario,
     {
       id: 'runs-10', name: '江湖阅历', desc: '累计游玩 10 局', icon: '🎲',
       done: stats.runs >= 10, progress: count(stats.runs, 10),
@@ -142,6 +170,7 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
       id: 'seen-200', name: '窥尽千世', desc: '累计解锁 200 种结局', icon: '💫',
       done: totalSeen >= 200, progress: count(totalSeen, 200),
     },
+    ...perComplete,
     { id: 'complete-one', name: '功德圆满', desc: '集齐任一剧本的全部结局', icon: '🏆', done: completedCount >= 1 },
     {
       id: 'complete-three', name: '三生有幸', desc: '集齐三个剧本的全部结局', icon: '🏅',
@@ -195,8 +224,7 @@ export function computeAchievements({ scenarios, stats, seenTones = {} }: Achiev
       id: 'death-30', name: '轮回不息', desc: '累计 30 次死亡结局', icon: '🔁',
       done: stats.deaths >= 30, progress: count(stats.deaths, 30),
     },
-    ...perScenario,
-    ...perComplete,
     ...perLegend,
   ]
+  return all.map((a) => ({ ...a, group: groupOf(a.id) }))
 }
