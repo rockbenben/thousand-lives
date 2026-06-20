@@ -1777,13 +1777,13 @@ export const xian: Scenario = {
           effects: {},
           outcomes: [
             {
-              weight: 4,
+              weight: 2,
               flagsSet: ['化神'],
-              effects: { lifespan: 20, cultivation: 8 },
-              reaction: '你元神与天地道则相撞、相融，那一刹如亿万雷霆同时在识海中炸响，炸开的是最后一道桎梏。天地的气机涌入你身，你已不止是一个修士，而是这方天地道则的一部分。「化神……到了。」',
+              effects: { lifespan: -10, cultivation: 8 },
+              reaction: '你元神与天地道则相撞、相融，那一刹如亿万雷霆同时在识海中炸响，炸开的是最后一道桎梏。天地的气机涌入你身，你已不止是一个修士，而是这方天地道则的一部分——只是这一融，也烧去了你大半寿元。「化神……到了。」',
             },
             {
-              weight: 1,
+              weight: 4,
               effects: { daoHeart: -16 },
               reaction: '道心在天劫最后一击下出现了一道细裂，元神融合道则的过程骤然停滞，那股浩瀚的天地之力反向涌来，将你从化神的门槛上轰了回来。你大口喘息，却已无力再战，只得退回元婴之境，重头积蓄。',
             },
@@ -1811,7 +1811,7 @@ export const xian: Scenario = {
       summary: '化神机缘',
       keyMoment: true,
       once: true,
-      requires: 'has(元婴) & cultivation>=87',
+      requires: 'has(元婴) & cultivation>=89 & daoHeart>=68',
       minTurn: 30,
       weight: 2.5,
     },
