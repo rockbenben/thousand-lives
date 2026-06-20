@@ -1,4 +1,5 @@
 import { covers } from './covers'
+import { builtinScenarios } from '../scenarios'
 
 // 节点配图三层解析：① 专属图(按事件 summary 哈希，名/图/内容同源)
 // ② 主题图(按事件主题归类，每剧本一套，复用；本地+AI 两模式都有画面)
@@ -19,9 +20,15 @@ function hash(s: string): string {
   return h.toString(36)
 }
 
-// 里程碑事件配图文件名（不含扩展名）：{scenarioId}-{hash(summary)}
+// 事件的稳定配图 id：优先取 localEvent.art（与 summary 文案解耦，改名不丢图），缺省回退 hash(summary)。
+function nodeArtId(scenarioId: string, summary: string): string {
+  const ev = builtinScenarios.find((s) => s.id === scenarioId)?.localEvents?.find((e) => e.summary === summary)
+  return ev?.art ?? hash(summary)
+}
+
+// 里程碑事件配图文件名（不含扩展名）：{scenarioId}-{art}
 export function nodeImageName(scenarioId: string, summary: string): string {
-  return `${scenarioId}-${hash(summary)}`
+  return `${scenarioId}-${nodeArtId(scenarioId, summary)}`
 }
 
 // ── 主题归类：按 summary 关键词把任意事件（含 AI 动态事件）归入一个主题，

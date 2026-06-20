@@ -88,7 +88,7 @@ export function Home({
           <span className="hero-div" aria-hidden="true"></span>
           <p className="roman" aria-hidden="true">THOUSAND&nbsp;LIVES</p>
           <p className="tagline">一卷千世，活过千种人生</p>
-          <p className="home-hook">落子无悔，步步皆命运——{endingsTotal} 种结局，等你一一抵达</p>
+          <p className="home-hook">落子无悔，步步皆命运</p>
           <p className="home-hint">无需 API Key · 点开即玩</p>
         </div>
       </div>

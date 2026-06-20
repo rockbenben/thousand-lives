@@ -38,7 +38,10 @@ describe('xian 结局重挂', () => {
   })
   it('寿元将尽按境界分流', () => {
     expect(checkEnding(xian, { cultivation: 70, daoHeart: 60, lifespan: 8 }, 40, ['筑基', '金丹'])?.tone).toBe('金丹寿尽·享寿千载')
-    expect(checkEnding(xian, { cultivation: 15, daoHeart: 50, lifespan: 8 }, 40, [])?.tone).toBe('炼气蹉跎·泯然众生')
+    // 最黯淡者（几乎未修 + 道心枯寂）截在三派结局之上
+    expect(checkEnding(xian, { cultivation: 15, daoHeart: 30, lifespan: 8 }, 40, ['散修'])?.tone).toBe('炼气蹉跎·泯然众生')
+    // 同样低修为但道心尚可者，归各自开局门派结局
+    expect(checkEnding(xian, { cultivation: 15, daoHeart: 50, lifespan: 8 }, 40, ['散修'])?.tone).toBe('散修无名·野鹤闲云')
   })
   it('飞升改为哨兵 condition，高修为高道心也不被动触发', () => {
     // condition 改为 lifespan<=-1，寿元正常时永不自然成立

@@ -89,6 +89,10 @@ export const localEventSchema = z.object({
   keyMoment: z.boolean().optional(),
   // 野事件：意外/奇遇，任何回合可低概率乱入（pickLocalEvent 给保底权重）
   wildcard: z.boolean().optional(),
+  // art：稳定配图 id（与 summary 文案解耦，改名不丢图）；缺省回退 hash(summary)。
+  // gen：出图方式（普通节点 flux、关键节点 gemini）；不确定则省略。
+  art: z.string().optional(),
+  gen: z.enum(['flux', 'gemini']).optional(),
 })
 
 export const endingSchema = z.object({
@@ -96,6 +100,11 @@ export const endingSchema = z.object({
   tone: z.string().min(1),
   // 本地模式的专属结局尾声（一段沉浸式收束文案）；缺省时回退到通用模板
   epilogue: z.string().optional(),
+  // art：稳定的配图 id（与 tone 文案解耦）——文件名取 {scenarioId}-{art}.webp，
+  // 故改 tone 文案不会令配图变孤儿；缺省回退 hash(tone) 向后兼容。
+  // gen：出图方式，便于后期定向重生成；结局图均为 gemini，不确定则省略。
+  art: z.string().optional(),
+  gen: z.enum(['flux', 'gemini']).optional(),
 })
 
 export const scenarioSchema = z

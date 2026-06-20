@@ -77,37 +77,37 @@ export const bookTransmigration: Scenario = {
 - 夺取主角气运取而代之、借信任篡夺女主之位等极端僭越，或把原著彻底掀翻的孤注一掷，皆可能通向隐藏的结局`,
   endings: [
     // —— 中途死亡 / 极端（达成即触发，最具体在前）——
-    { condition: 'favor<=0', tone: '主角死敌·命丧追杀', epilogue: '长街尽头，你被甲士反押跪在青石板上，那双昔日带温度、如今只剩冷意的眼睛居高临下地望着你，风卷起你散乱的发与残破的衣袂，刀光自身后落下。' },
-    { condition: 'safety<=0', tone: '被剧情修正力抹杀', epilogue: '你按住胸口缓缓坐倒在初入此世的那张床榻边，烛火无风自灭，屋内陈设一件件褪成模糊的灰影；最后一缕意识里，窗纸上你写下的字迹正一笔笔淡去，仿佛从未有人来过。' },
-    { condition: 'safety<=-1', tone: '窥破天机·归返现世', epilogue: '当原著被你掀到彻底崩解的那一刻，天地间忽然裂开一道刺目的白光——井水倒涌，星象崩落，那本名为《凤凰劫》的书，连同它所有的字句、人物、命数，在你眼前轰然碎成齑粉。再睁眼时，你躺在自己家中的床上，台灯还亮着，那本看了一半的虐文摊在枕边，一切恍如大梦。你窥破了这世界的虚妄，竟真从书里走了回来——只是往后每次翻开书页，你都会想起那个你曾拼命改写过的、有血有肉的世界。' },
-    { condition: 'safety<=-1', tone: '夺运噬主·堕为新煞', epilogue: '绝境之中，你做了最不该做的事——不只揭破主角的隐秘，更趁势夺了他那一身的气运光环，取而代之。一时间你权势滔天，仿佛成了这本书新的主角。可你很快就懂了：这世界需要的从来不是「主角」，而是一个供它碾碎的「劫」。气运噬主，反噬其身，那曾庇佑主角的修正之力，如今尽数化作绞索朝你收来——你成了《凤凰劫》里，一个比原著炮灰更惨烈的新煞。' },
-    { condition: 'safety<=-1', tone: '鸠占凤巢·反噬其身', epilogue: '你借着女主递来的那点信任，反手将她推进了万劫不复，又一步步爬上了她那本该「天命所归」的位置。凤巢是你的了，可你忘了：这书里的「凤凰」从来不是谁想替就替得了的。你坐上那个位置的当天，原属于女主的所有劫难、所有要她偿命的伏笔，便一桩桩、一件件，尽数转到了你头上。鸠占凤巢，反噬其身——你篡来的荣华，原来是一份催命的契。' },
-    { condition: 'plot>=98', tone: '天翻地覆·命运改写', epilogue: '原著的字句一行行崩解，世界线在你脚下天翻地覆。井水倒涌，星象错乱，连主角的光环也黯了下去。你立在再没有剧本的天地中央，前路混沌一片，无人知晓接下来会写出什么。命运的笔，第一次落进了你手里。是福是祸已无从预料，可这一回，再没有谁能替你翻到最后一页。' },
+    { condition: 'favor<=0', tone: '主角死敌·命丧追杀', art: '1o4rp75', gen: 'gemini', epilogue: '长街尽头，你被甲士反押跪在青石板上，那双昔日带温度、如今只剩冷意的眼睛居高临下地望着你，风卷起你散乱的发与残破的衣袂，刀光自身后落下。' },
+    { condition: 'safety<=0', tone: '被剧情修正力抹杀', art: 'nofy9', gen: 'gemini', epilogue: '你按住胸口缓缓坐倒在初入此世的那张床榻边，烛火无风自灭，屋内陈设一件件褪成模糊的灰影；最后一缕意识里，窗纸上你写下的字迹正一笔笔淡去，仿佛从未有人来过。' },
+    { condition: 'safety<=-1', tone: '窥破天机·归返现世', art: '13mml38', gen: 'gemini', epilogue: '当原著被你掀到彻底崩解的那一刻，天地间忽然裂开一道刺目的白光——井水倒涌，星象崩落，那本名为《凤凰劫》的书，连同它所有的字句、人物、命数，在你眼前轰然碎成齑粉。再睁眼时，你躺在自己家中的床上，台灯还亮着，那本看了一半的虐文摊在枕边，一切恍如大梦。你窥破了这世界的虚妄，竟真从书里走了回来——只是往后每次翻开书页，你都会想起那个你曾拼命改写过的、有血有肉的世界。' },
+    { condition: 'safety<=-1', tone: '夺运噬主·堕为新煞', art: '16lx5pm', gen: 'gemini', epilogue: '绝境之中，你做了最不该做的事——不只揭破主角的隐秘，更趁势夺了他那一身的气运光环，取而代之。一时间你权势滔天，仿佛成了这本书新的主角。可你很快就懂了：这世界需要的从来不是「主角」，而是一个供它碾碎的「劫」。气运噬主，反噬其身，那曾庇佑主角的修正之力，如今尽数化作绞索朝你收来——你成了《凤凰劫》里，一个比原著炮灰更惨烈的新煞。' },
+    { condition: 'safety<=-1', tone: '鸠占凤巢·反噬其身', art: 'feilwc', gen: 'gemini', epilogue: '你借着女主递来的那点信任，反手将她推进了万劫不复，又一步步爬上了她那本该「天命所归」的位置。凤巢是你的了，可你忘了：这书里的「凤凰」从来不是谁想替就替得了的。你坐上那个位置的当天，原属于女主的所有劫难、所有要她偿命的伏笔，便一桩桩、一件件，尽数转到了你头上。鸠占凤巢，反噬其身——你篡来的荣华，原来是一份催命的契。' },
+    { condition: 'plot>=98', tone: '天翻地覆·命运改写', art: '1c0s3sl', gen: 'gemini', epilogue: '原著的字句一行行崩解，世界线在你脚下天翻地覆。井水倒涌，星象错乱，连主角的光环也黯了下去。你立在再没有剧本的天地中央，前路混沌一片，无人知晓接下来会写出什么。命运的笔，第一次落进了你手里。是福是祸已无从预料，可这一回，再没有谁能替你翻到最后一页。' },
     // —— 走完全程的多种结局（maxTurns 变体，子句越多越靠前）——
-    { condition: 'maxTurns & favor>=85 & safety>=70 & plot>=80', tone: '主角生死之交·共写新传奇', epilogue: '这本书早已认不出原来的模样，而你与那曾经的主角，并肩立在亲手打下的新天地里。当年那个第三章便要领盒饭的炮灰，如今成了与主角生死相托的人。你回望来路的刀光与险滩，竟分不清哪些是先知，哪些是真心。无人再为你写定结局——往后的传奇，是你们一笔一划，亲手续下去的。' },
-    { condition: 'maxTurns & plot>=78 & safety>=54', tone: '彻底改写原著·改天换地', epilogue: '《凤凰劫》三个字，已被你撕得粉碎。曾经不可一世的修正力，终究没能拗过你这一路的步步为营。改朝换代，山河易主，原著里那行「炮灰惨死」的结语，被你稳稳踩在脚下。你站在自己改写出的人间，长长地舒了口气——这一回，天是你换的，地是你改的，结局也由你说了算。' },
-    { condition: 'maxTurns & favor>=72 & safety>=60 & plot>=54', tone: '与主角并肩·共改乾坤', epilogue: '你与他并肩走到了最后。曾经横亘在配角与主角之间那道天堑般的鸿沟，被你一步步填平，化作并肩作战的默契与信重。乾坤已改，旧局已破，你不再是谁笔下任人摆布的棋子。暮色四合，他侧身看你，眼里是只有共过生死的人才懂的暖意。往后山长水阔，你们一道走。' },
-    { condition: 'maxTurns & favor>=90 & safety>=70', tone: '母仪天下·宠冠后宫', epilogue: '凤冠加身，六宫俯首，你终是登上了原著里从不属于你的位置。曾经那杯要你性命的毒酒、那一池夺命的碧水，如今都成了遥远的旧梦。他独宠你一人，深宫的风雪再也冻不着你。你立于高处俯瞰这万千宫阙，唇角微扬——这天下的暖，你受得起，也守得住。' },
-    { condition: 'maxTurns & favor>=75 & safety>=70', tone: '赢得主角真心·圆满收场', epilogue: '你终究赢得了那颗最难得的真心。从提防到相熟，从相熟到相知，这一程你走得小心翼翼，却也步步踏实。原著里那些注定的虐与痛，被你一一化解成了眼前的安稳。他握住你的手，再不松开。所有的如履薄冰，都在这一刻有了温柔的回报，圆满得像一场不愿醒来的好梦。' },
-    { condition: 'maxTurns & plot>=75 & favor>=75', tone: '改写情劫·眷属白首', epilogue: '那道写在书里、注定要拆散有情人的情劫，被你亲手解开了。误会冰释，旧恨尽消，原著里满纸的遗憾，到了你这里，都改写成了举案齐眉的圆满。从此朱门之内，你们再不必为命运的捉弄提心吊胆。光阴静好，岁月绵长，愿得一人心，白首不相离——这一回，是真的。' },
-    { condition: 'maxTurns & plot>=62 & safety>=62', tone: '巧避死劫·另开新局', epilogue: '一道道死劫，被你凭着先知一一绕了过去。那些原著里写定要你性命的关口，如今都成了你脚下的垫脚石。世界线偏离了原来的轨迹，前路是从未有人走过的崭新天地。你回首望去，惊觉自己竟当真从那必死的剧本里，硬生生走出了一条活路。往后如何，再没有谁能未卜先知——除了你自己。' },
-    { condition: 'maxTurns & has(墨七) & safety>=45', tone: '患难真心·相守一世', epilogue: '那个在凶险书世界里始终沉默地、暗中护你周全的墨七，陪你走到了最后。在这一切都被剧情写死的世界里，他是你唯一靠真心换来的人。你终于挣脱了炮灰的死局，回头一望，身边还有这么一个为你挡过刀、不离不弃的人——比起改写剧情，比起活下去，这份在书里硬生生长出来的真心，才是你最意外、也最舍不得的收获。' },
-    { condition: 'maxTurns & has(恶毒女配) & favor>=50', tone: '洗白翻身·重塑人设', epilogue: '开局「恶毒女配」——原著里处处针对女主、第三章便该被赐死的角色。可你偏不认这死签，一点点把那个面目可憎的人设撕了重写。到最后，曾经厌你恨你、防你如防贼的人，竟也一个个对你改了观；那个注定领盒饭的恶毒女配，硬是被你洗白翻身、活成了一个谁也没料到的样子。' },
-    { condition: 'maxTurns & has(反派之女) & safety>=50', tone: '逆改父命·阖家得全', epilogue: '开局「反派之女」——注定要陪父亲一族一同覆灭的大反派独女。你不肯认这满门抄斩的剧本，在权斗的漩涡里步步为营、暗暗布局，硬是把那艘注定沉没的船，从覆灭的命数里一点点拽了回来。逆改父命、阖家得全——你救的不只是自己，是整整一族本该断绝的活路。' },
-    { condition: 'maxTurns & has(陪嫁婢女) & plot>=25', tone: '婢女逆袭·自有天地', epilogue: '开局「陪嫁婢女」——原著里替主子挡灾、连个名字都不配有的丫鬟。可你偏偏借着这份没人当回事的卑微，在内宅风波里悄悄改写了一笔又一笔。到最后，那个该默默无闻死去的小婢女，竟在这写死的剧本里，为自己挣出了一方谁也想不到的天地——卑微者的逆袭，才是对这原著最痛快的一记耳光。' },
-    { condition: 'maxTurns & favor<=30 & plot>=70', tone: '孤身逆天·虽叛犹荣', epilogue: '你与主角终是走成了陌路，甚至兵戎相向。可你不悔。这一程，没有谁的光环庇佑，没有谁的真心相托，你只凭着一身孤勇，硬生生把这本书搅了个天翻地覆。世人或许唤你叛逆、唤你异类，但你昂着头站到了最后。逆天而行的路冷清，却也唯有你，敢把命运的剧本撕碎了重写。' },
-    { condition: 'maxTurns & favor<=30 & safety>=80', tone: '看破红尘·青灯古佛', epilogue: '你一袭灰布僧衣跪坐蒲团之上，面前一盏青灯、一尊古佛，窗外山色苍茫，晨钟声里你合十垂目，鬓边已有霜色。' },
-    { condition: 'maxTurns & favor<=30 & safety>=60', tone: '与主角形同陌路·独善其身', epilogue: '你与主角始终隔着一段不远不近的距离，谁也不曾真正走进谁的世界。你不曾扳倒谁，也不曾依附谁，只守着自己那一方小小的安稳，安安静静地走到了最后。这世道的风浪太大，你选择不卷入其中。无人记得你，也无人为难你——独善其身，未尝不是乱世里最难得的清醒。' },
-    { condition: 'maxTurns & safety>=80 & plot<=30', tone: '安分守己·得享善终', epilogue: '你没有去撼动那本书的分毫，只是规规矩矩地，把日子过成了书里从未写过的安稳。当年那个站在朱漆回廊下手心冒汗的人，如今早已远离了所有的杀机与漩涡。无惊无险，无波无澜，你守着这一隅的平静直到最后。原来对一个炮灰而言，能安然终老，本身就是逆天改命。' },
-    { condition: 'maxTurns & favor>=60 & safety>=60', tone: '善缘庇身·平安落幕', epilogue: '你这一路撒下的善因，终在最要紧的关头结出了护身的果。那个被你救济过的宫女、那些被你善待过的人，在你危难时悄悄递来了暖意。深宫吃人，可人心到底还有温处。你平平安安地走到了终章，身边围着的，是一张张因你而记得感恩的脸。善缘庇身，岁月静好。' },
-    { condition: 'maxTurns & favor>=70', tone: '主角挚友·善始善终', epilogue: '你与主角，到底成了一对推心置腹的知己。无关风月，只是那份共过患难、彼此信重的情分，难得而珍贵。从最初的试探戒备，到后来的并肩同行，你们把一段本该敌对的关系，处成了善始善终的佳话。往后山高水远，纵各自天涯，也总有一人记得你的好。' },
-    { condition: 'maxTurns & plot>=70', tone: '偏离原著·走出新路', epilogue: '原著的轨迹早已被你撇在身后，你走出了一条书里从未写过的新路。沿途的风景陌生而新鲜，没有先知可凭，没有结局可依，每一步都踏在未知的土地上。你回望来路，心里竟生出几分畅快——被剧本框死的日子结束了。往后种种，皆是你亲手写下的崭新篇章。' },
-    { condition: 'maxTurns & safety<=20', tone: '九死一生·险死还生', epilogue: '你是从死人堆里爬出来的。那张名为「剧情」的网一次次收紧，刺客的寒光、毒酒的异味、夜半的杀机，一桩桩都曾贴着你的脖颈擦过。你伤痕累累地撑到了最后，连自己都觉得不可思议。命悬一线了那么多回，你终究还是活了下来——这条捡回来的命，往后要替自己好好地过。' },
-    { condition: 'maxTurns & plot<=15', tone: '随波逐流·泯然炮灰', epilogue: '你低着头跟在原著人物身后，立在朱墙一隅的阴影里，旁人谈笑着从你身边走过，没有一个人回头看你一眼，你的身影渐渐融进灰扑扑的回廊背景中。' },
-    { condition: 'maxTurns & safety>=62', tone: '步步为营·安然落幕', epilogue: '你这一路如履薄冰，每一步都掂量得清清楚楚。该避的劫避开了，该藏的锋藏住了，那些虎视眈眈的杀机，被你一一不动声色地化解于无形。终章落幕时，你身上没有一道致命的伤。步步为营换来的，是一份来之不易的安然——在这吃人的深宫里，能全身而退，已是莫大的造化。' },
-    { condition: 'maxTurns & favor>=55', tone: '主角相知·平稳收场', epilogue: '你与主角之间，到底攒下了一份难得的相知之情。算不上生死之交，却也足以让彼此在风浪里多一分照拂、少一分提防。这一程走得不惊不险，平平稳稳。终章合上时，你想，能在这本虐文里求得一个相安无事的收场，已是先知给你的最好馈赠。' },
-    { condition: 'maxTurns & plot>=40', tone: '微澜入海·略改命途', epilogue: '你独自立在长街尽头回望来路，身后是一座你曾悄悄改过几笔的城——一处修好的栏杆、一个被你救下的人正远远朝你拱手，你淡淡一笑，转身没入人流。' },
-    { condition: 'maxTurns', tone: '善终', epilogue: '暮年的你坐在自家小院的藤椅上，膝头一只懒猫，院中石榴正红，夕照把你满头白发染成暖金色，你望着远处宫城方向，长长舒了一口气，眉眼安详。' },
+    { condition: 'maxTurns & favor>=85 & safety>=70 & plot>=80', tone: '主角生死之交·共写新传奇', art: '11flvmb', gen: 'gemini', epilogue: '这本书早已认不出原来的模样，而你与那曾经的主角，并肩立在亲手打下的新天地里。当年那个第三章便要领盒饭的炮灰，如今成了与主角生死相托的人。你回望来路的刀光与险滩，竟分不清哪些是先知，哪些是真心。无人再为你写定结局——往后的传奇，是你们一笔一划，亲手续下去的。' },
+    { condition: 'maxTurns & plot>=78 & safety>=54', tone: '彻底改写原著·改天换地', art: '17gkfjc', gen: 'gemini', epilogue: '《凤凰劫》三个字，已被你撕得粉碎。曾经不可一世的修正力，终究没能拗过你这一路的步步为营。改朝换代，山河易主，原著里那行「炮灰惨死」的结语，被你稳稳踩在脚下。你站在自己改写出的人间，长长地舒了口气——这一回，天是你换的，地是你改的，结局也由你说了算。' },
+    { condition: 'maxTurns & favor>=72 & safety>=60 & plot>=54', tone: '与主角并肩·共改乾坤', art: 'bno3eq', gen: 'gemini', epilogue: '你与他并肩走到了最后。曾经横亘在配角与主角之间那道天堑般的鸿沟，被你一步步填平，化作并肩作战的默契与信重。乾坤已改，旧局已破，你不再是谁笔下任人摆布的棋子。暮色四合，他侧身看你，眼里是只有共过生死的人才懂的暖意。往后山长水阔，你们一道走。' },
+    { condition: 'maxTurns & favor>=90 & safety>=70', tone: '母仪天下·宠冠后宫', art: '1q3xdr4', gen: 'gemini', epilogue: '凤冠加身，六宫俯首，你终是登上了原著里从不属于你的位置。曾经那杯要你性命的毒酒、那一池夺命的碧水，如今都成了遥远的旧梦。他独宠你一人，深宫的风雪再也冻不着你。你立于高处俯瞰这万千宫阙，唇角微扬——这天下的暖，你受得起，也守得住。' },
+    { condition: 'maxTurns & favor>=75 & safety>=70', tone: '赢得主角真心·圆满收场', art: 'sjtdcr', gen: 'gemini', epilogue: '你终究赢得了那颗最难得的真心。从提防到相熟，从相熟到相知，这一程你走得小心翼翼，却也步步踏实。原著里那些注定的虐与痛，被你一一化解成了眼前的安稳。他握住你的手，再不松开。所有的如履薄冰，都在这一刻有了温柔的回报，圆满得像一场不愿醒来的好梦。' },
+    { condition: 'maxTurns & plot>=75 & favor>=75', tone: '改写情劫·眷属白首', art: 'gfv85i', gen: 'gemini', epilogue: '那道写在书里、注定要拆散有情人的情劫，被你亲手解开了。误会冰释，旧恨尽消，原著里满纸的遗憾，到了你这里，都改写成了举案齐眉的圆满。从此朱门之内，你们再不必为命运的捉弄提心吊胆。光阴静好，岁月绵长，愿得一人心，白首不相离——这一回，是真的。' },
+    { condition: 'maxTurns & plot>=62 & safety>=62', tone: '巧避死劫·另开新局', art: 'aj2pq6', gen: 'gemini', epilogue: '一道道死劫，被你凭着先知一一绕了过去。那些原著里写定要你性命的关口，如今都成了你脚下的垫脚石。世界线偏离了原来的轨迹，前路是从未有人走过的崭新天地。你回首望去，惊觉自己竟当真从那必死的剧本里，硬生生走出了一条活路。往后如何，再没有谁能未卜先知——除了你自己。' },
+    { condition: 'maxTurns & has(墨七) & safety>=45', tone: '患难真心·相守一世', art: '2d9rmd', gen: 'gemini', epilogue: '那个在凶险书世界里始终沉默地、暗中护你周全的墨七，陪你走到了最后。在这一切都被剧情写死的世界里，他是你唯一靠真心换来的人。你终于挣脱了炮灰的死局，回头一望，身边还有这么一个为你挡过刀、不离不弃的人——比起改写剧情，比起活下去，这份在书里硬生生长出来的真心，才是你最意外、也最舍不得的收获。' },
+    { condition: 'maxTurns & has(恶毒女配) & favor>=50', tone: '洗白翻身·重塑人设', art: '1qf9bik', gen: 'gemini', epilogue: '开局「恶毒女配」——原著里处处针对女主、第三章便该被赐死的角色。可你偏不认这死签，一点点把那个面目可憎的人设撕了重写。到最后，曾经厌你恨你、防你如防贼的人，竟也一个个对你改了观；那个注定领盒饭的恶毒女配，硬是被你洗白翻身、活成了一个谁也没料到的样子。' },
+    { condition: 'maxTurns & has(反派之女) & safety>=50', tone: '逆改父命·阖家得全', art: 'r4vwzd', gen: 'gemini', epilogue: '开局「反派之女」——注定要陪父亲一族一同覆灭的大反派独女。你不肯认这满门抄斩的剧本，在权斗的漩涡里步步为营、暗暗布局，硬是把那艘注定沉没的船，从覆灭的命数里一点点拽了回来。逆改父命、阖家得全——你救的不只是自己，是整整一族本该断绝的活路。' },
+    { condition: 'maxTurns & has(陪嫁婢女) & plot>=25', tone: '婢女逆袭·自有天地', art: '1fkpw0', gen: 'gemini', epilogue: '开局「陪嫁婢女」——原著里替主子挡灾、连个名字都不配有的丫鬟。可你偏偏借着这份没人当回事的卑微，在内宅风波里悄悄改写了一笔又一笔。到最后，那个该默默无闻死去的小婢女，竟在这写死的剧本里，为自己挣出了一方谁也想不到的天地——卑微者的逆袭，才是对这原著最痛快的一记耳光。' },
+    { condition: 'maxTurns & favor<=30 & plot>=70', tone: '孤身逆天·虽叛犹荣', art: '1rs8yz2', gen: 'gemini', epilogue: '你与主角终是走成了陌路，甚至兵戎相向。可你不悔。这一程，没有谁的光环庇佑，没有谁的真心相托，你只凭着一身孤勇，硬生生把这本书搅了个天翻地覆。世人或许唤你叛逆、唤你异类，但你昂着头站到了最后。逆天而行的路冷清，却也唯有你，敢把命运的剧本撕碎了重写。' },
+    { condition: 'maxTurns & favor<=30 & safety>=80', tone: '看破红尘·青灯古佛', art: '1fk0qtx', gen: 'gemini', epilogue: '你一袭灰布僧衣跪坐蒲团之上，面前一盏青灯、一尊古佛，窗外山色苍茫，晨钟声里你合十垂目，鬓边已有霜色。' },
+    { condition: 'maxTurns & favor<=30 & safety>=60', tone: '与主角形同陌路·独善其身', art: 'usxqb5', gen: 'gemini', epilogue: '你与主角始终隔着一段不远不近的距离，谁也不曾真正走进谁的世界。你不曾扳倒谁，也不曾依附谁，只守着自己那一方小小的安稳，安安静静地走到了最后。这世道的风浪太大，你选择不卷入其中。无人记得你，也无人为难你——独善其身，未尝不是乱世里最难得的清醒。' },
+    { condition: 'maxTurns & safety>=80 & plot<=30', tone: '安分守己·得享善终', art: 'r4nh9u', gen: 'gemini', epilogue: '你没有去撼动那本书的分毫，只是规规矩矩地，把日子过成了书里从未写过的安稳。当年那个站在朱漆回廊下手心冒汗的人，如今早已远离了所有的杀机与漩涡。无惊无险，无波无澜，你守着这一隅的平静直到最后。原来对一个炮灰而言，能安然终老，本身就是逆天改命。' },
+    { condition: 'maxTurns & favor>=60 & safety>=60', tone: '善缘庇身·平安落幕', art: '1bbwcpk', gen: 'gemini', epilogue: '你这一路撒下的善因，终在最要紧的关头结出了护身的果。那个被你救济过的宫女、那些被你善待过的人，在你危难时悄悄递来了暖意。深宫吃人，可人心到底还有温处。你平平安安地走到了终章，身边围着的，是一张张因你而记得感恩的脸。善缘庇身，岁月静好。' },
+    { condition: 'maxTurns & favor>=70', tone: '主角挚友·善始善终', art: '295cg9', gen: 'gemini', epilogue: '你与主角，到底成了一对推心置腹的知己。无关风月，只是那份共过患难、彼此信重的情分，难得而珍贵。从最初的试探戒备，到后来的并肩同行，你们把一段本该敌对的关系，处成了善始善终的佳话。往后山高水远，纵各自天涯，也总有一人记得你的好。' },
+    { condition: 'maxTurns & plot>=70', tone: '偏离原著·走出新路', art: 'xz4mn9', gen: 'gemini', epilogue: '原著的轨迹早已被你撇在身后，你走出了一条书里从未写过的新路。沿途的风景陌生而新鲜，没有先知可凭，没有结局可依，每一步都踏在未知的土地上。你回望来路，心里竟生出几分畅快——被剧本框死的日子结束了。往后种种，皆是你亲手写下的崭新篇章。' },
+    { condition: 'maxTurns & safety<=20', tone: '九死一生·险死还生', art: '2i4b7y', gen: 'gemini', epilogue: '你是从死人堆里爬出来的。那张名为「剧情」的网一次次收紧，刺客的寒光、毒酒的异味、夜半的杀机，一桩桩都曾贴着你的脖颈擦过。你伤痕累累地撑到了最后，连自己都觉得不可思议。命悬一线了那么多回，你终究还是活了下来——这条捡回来的命，往后要替自己好好地过。' },
+    { condition: 'maxTurns & plot<=15', tone: '随波逐流·泯然炮灰', art: '1xy84yp', gen: 'gemini', epilogue: '你低着头跟在原著人物身后，立在朱墙一隅的阴影里，旁人谈笑着从你身边走过，没有一个人回头看你一眼，你的身影渐渐融进灰扑扑的回廊背景中。' },
+    { condition: 'maxTurns & safety>=62', tone: '步步为营·安然落幕', art: '1mswus6', gen: 'gemini', epilogue: '你这一路如履薄冰，每一步都掂量得清清楚楚。该避的劫避开了，该藏的锋藏住了，那些虎视眈眈的杀机，被你一一不动声色地化解于无形。终章落幕时，你身上没有一道致命的伤。步步为营换来的，是一份来之不易的安然——在这吃人的深宫里，能全身而退，已是莫大的造化。' },
+    { condition: 'maxTurns & favor>=55', tone: '主角相知·平稳收场', art: '160pvto', gen: 'gemini', epilogue: '你与主角之间，到底攒下了一份难得的相知之情。算不上生死之交，却也足以让彼此在风浪里多一分照拂、少一分提防。这一程走得不惊不险，平平稳稳。终章合上时，你想，能在这本虐文里求得一个相安无事的收场，已是先知给你的最好馈赠。' },
+    { condition: 'maxTurns & plot>=40', tone: '微澜入海·略改命途', art: 't4xox', gen: 'gemini', epilogue: '你独自立在长街尽头回望来路，身后是一座你曾悄悄改过几笔的城——一处修好的栏杆、一个被你救下的人正远远朝你拱手，你淡淡一笑，转身没入人流。' },
+    { condition: 'maxTurns', tone: '善终', art: '3xs0h', gen: 'gemini', epilogue: '暮年的你坐在自家小院的藤椅上，膝头一只懒猫，院中石榴正红，夕照把你满头白发染成暖金色，你望着远处宫城方向，长长舒了一口气，眉眼安详。' },
   ],
   localEvents: [
     {
@@ -117,7 +117,7 @@ export const bookTransmigration: Scenario = {
         { text: '凑近细问说书人这段从何听来', effects: { plot: 6, safety: -3 }, reaction: '说书人被你问得一愣，支吾着只说是「梦里得来的奇谈」；那双躲闪的眼睛里，藏着你看不懂的惊惶。' },
         { text: '默默记下这处彩蛋，转身离开', effects: { plot: 3, favor: 2 }, reaction: '你不动声色地走开，心头却翻江倒海；原来这本书的剧情，正从你想不到的角落悄悄渗漏出来。' },
       ],
-      summary: '茶肆听书',
+      summary: '茶肆听书', art: '1j2ov0z', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -128,7 +128,7 @@ export const bookTransmigration: Scenario = {
         { text: '只当心神恍惚，按兵不动', effects: { plot: -2, safety: -4 }, reaction: '你疑心是日有所思夜有所梦，翻身又睡；西院火起时你才追悔莫及，那道白送的提示被你亲手错过了。' },
         { text: '半信半疑，先暗中加派人手守夜', effects: { plot: 3, favor: 1, safety: 4 }, reaction: '你不敢全信，只悄悄添了守夜的人；火苗方起便被扑灭，你立在余烬旁，对那神秘的「金手指」又敬又惧。' },
       ],
-      summary: '脑中天音',
+      summary: '脑中天音', art: '1iimgf3', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -138,7 +138,7 @@ export const bookTransmigration: Scenario = {
         { text: '面不改色，胡诌是某本杂书里的偏词', effects: { plot: 2, safety: 5 }, reaction: '你信口扯出一个子虚乌有的书名，神态笃定；众贵女将信将疑，到底没再追究，你后背的冷汗悄悄收了回去。' },
         { text: '掩唇娇笑，自嘲是梦里学来的胡话', effects: { favor: 4, safety: 2 }, reaction: '你一句俏皮的自嘲，把满室凝滞的空气逗松了；贵女们掩唇笑作一团，反觉你憨态可掬，亲近了几分。' },
       ],
-      summary: '言语穿帮',
+      summary: '言语穿帮', art: '1k5yq0v', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -148,7 +148,7 @@ export const bookTransmigration: Scenario = {
         { text: '循信中所指，挖出东墙下旧物', effects: { plot: 6, favor: 3 }, reaction: '你依言挖开东墙，泥土里赫然埋着一物；它牵出的旧线，原著里只字未提，命运的暗格被你撬开了一道缝。' },
         { text: '郑重收好信，默念替原主了愿', effects: { favor: 5, safety: 2 }, reaction: '你将旧信贴身收好，心里默许替她了却此愿；说来也怪，自此你行事竟添了几分莫名的安稳与底气。' },
       ],
-      summary: '原主旧信',
+      summary: '原主旧信', art: '1blrjvr', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -158,7 +158,7 @@ export const bookTransmigration: Scenario = {
         { text: '诚心道谢，郑重收下木牌', effects: { plot: 4, favor: 4, safety: 3 }, reaction: '你郑重收下那枚云纹木牌，中年人颔首而去；一条原著里从未有过的退路，悄然攥进了你手心。' },
         { text: '婉言推辞，只当萍水相逢', effects: { favor: 2, safety: 1 }, reaction: '你笑着婉拒了那枚木牌，他亦不勉强；雨停人散，这段萍水之缘虽淡，却也在他心里替你记下了一笔。' },
       ],
-      summary: '破庙贵人',
+      summary: '破庙贵人', art: '1h91w9t', gen: 'flux',
       weight: 0.4,
       minTurn: 5,
     },
@@ -170,7 +170,7 @@ export const bookTransmigration: Scenario = {
         { text: '惊呼出声，被路过的侍卫一把拽住', effects: { favor: 5, safety: 2 }, reaction: '一声惊呼引来侍卫飞身将你拽离，瓦片砸在二人方才立处；患难之际伸的这只手，叫彼此都记住了对方。' },
         { text: '吓得僵在原地，只胡乱抬手去挡', effects: { plot: 2, safety: -6 }, reaction: '你僵着没躲开，碎瓦划破了手臂，血珠涔涔渗出；这场无中生有的横祸，到底还是在你身上留了道印子。' },
       ],
-      summary: '飞瓦横祸',
+      summary: '飞瓦横祸', art: '1mbhwq3', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -180,7 +180,7 @@ export const bookTransmigration: Scenario = {
         { text: '记下这句警示，今日不再往北', effects: { plot: 4, safety: 6 }, reaction: '你听劝折返，后来才知北街那头当日出了乱子；一支并蒂莲换来的几个字，竟稳稳替你避了一遭。' },
         { text: '追上去想问个明白', effects: { plot: 5, favor: 1, safety: -2 }, reaction: '你挤开人潮去追，那卖花女早没了踪影，只余满街喧嚷；线索断在指缝间，心里那点疑云却越积越浓。' },
       ],
-      summary: '街市赠花',
+      summary: '街市赠花', art: '1jpclxr', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -190,7 +190,7 @@ export const bookTransmigration: Scenario = {
         { text: '强按心绪，把别院每处细节都记牢', effects: { plot: 5, safety: 3 }, reaction: '你强压住悸动，将一砖一瓦尽数记下；这份未雨绸缪，或许能在那场尚未到来的大戏里救你一命。' },
         { text: '只当是错觉，匆匆离了这院子', effects: { plot: -2, safety: 1 }, reaction: '你摇头甩开那股寒意快步离开，既视感渐渐淡去；只是夜深人静时，那院落仍会无端浮上你心头。' },
       ],
-      summary: '别院既视',
+      summary: '别院既视', art: '1bpsgpm', gen: 'flux',
       weight: 0.4,
     },
     {
@@ -201,7 +201,7 @@ export const bookTransmigration: Scenario = {
         { text: '称病避席，远离这桩公案', effects: { plot: -3, safety: 6 }, reaction: '邻座贵女悄悄撇嘴，暗处有人却松了口气；命运的齿轮只稍稍一转，仍冷冷指向那汪夺命碧水。' },
         { text: '依原著行事，再伺机转圜', effects: { plot: -4, favor: -10, safety: 8 }, reaction: '席间老嬷嬷暗暗摇头叹惋，与你结怨的那一方眼底闪过窃喜；剧情修正力安然合拢，死签悄然落定。' },
       ],
-      summary: '宫宴落水',
+      summary: '宫宴落水', art: '1cw8ff9', gen: 'gemini',
       keyMoment: true,
       minTurn: 1,
       maxTurn: 30,
@@ -215,7 +215,7 @@ export const bookTransmigration: Scenario = {
         { text: '佯装糊涂，以柔克刚', effects: { plot: 2, favor: 4, safety: 2 }, reaction: '他眉梢微挑，唇角噙着一丝看穿不点破的笑意；试探落了空，他眼中那点审视却悄悄淡了几分。' },
         { text: '冷脸逐客，保持距离', effects: { favor: -8, safety: 5 }, reaction: '他眸色一沉，玄衣转身没入夜色，留下满阶清冷月光；廊下宫人交换着一个心照不宣的眼神。' },
       ],
-      summary: '太子夜访',
+      summary: '太子夜访', art: '1ci8q3e', gen: 'flux',
       weight: 1.4,
     },
     {
@@ -225,7 +225,7 @@ export const bookTransmigration: Scenario = {
         { text: '顺藤摸瓜，揪出下毒之人', effects: { plot: 8, safety: -6 }, reaction: '暗处那双盯梢的眼睛微微一缩，没料到你竟敢顺势反扑；筹谋多日的下毒者，第一次尝到了惊惶。' },
         { text: '隐忍不发，假装毫不知情', effects: { plot: 3, safety: 4 }, reaction: '席间众人推杯换盏浑然不觉，唯有那双眼睛深深看了你一瞬；这一回的隐忍，被悄悄记进了暗账。' },
       ],
-      summary: '毒酒之劫',
+      summary: '毒酒之劫', art: '1flbwhr', gen: 'flux',
       weight: 1.2,
     },
     {
@@ -243,7 +243,7 @@ export const bookTransmigration: Scenario = {
           ],
         },
       ],
-      summary: '女主示好',
+      summary: '女主示好', art: '1chsbnu', gen: 'flux',
     },
     {
       narrative:
@@ -253,7 +253,7 @@ export const bookTransmigration: Scenario = {
         { text: '虚应其事，先保全自身', effects: { plot: 2, safety: 4 }, reaction: '父亲满意地颔首，门下幕僚却觉哪里不对；你笑着应下，把自己暂时从那覆灭的战车上摘了出来。' },
         { text: '当面顶撞，划清界限', effects: { plot: 8, favor: 8, safety: -10 }, reaction: '书房里檀香一滞，父亲拍案而起；可你昂着头划清界限的模样，竟让满室幕僚一时噤声、忘了喝骂。' },
       ],
-      summary: '反派密谈',
+      summary: '反派密谈', art: '1brus8u', gen: 'gemini',
       requires: 'has(撬动)',
       keyMoment: true,
       weight: 1.3,
@@ -265,7 +265,7 @@ export const bookTransmigration: Scenario = {
         { text: '押注太子，倾力相助', effects: { plot: 12, favor: -6, safety: -16 }, flagsSet: ['颠覆'], reaction: '太子怔了怔，眼底那层提防化作一缕动容；东宫幕僚暗暗心惊：这枚弃子，竟主动押上了全副身家。' },
         { text: '两不相帮，静待尘埃落定', effects: { plot: 2, safety: 2 }, reaction: '两边势力都暗暗皱眉，谁也没把你这骑墙之人放在眼里；尘埃落定那日，无人记得有过你这一票。' },
       ],
-      summary: '储位之争',
+      summary: '储位之争', art: '1b5l1im', gen: 'gemini',
       requires: 'has(生变)',
       keyMoment: true,
       once: true,
@@ -278,7 +278,7 @@ export const bookTransmigration: Scenario = {
         { text: '重赏她，纳为心腹', effects: { plot: 4, favor: 6, safety: 6 }, reaction: '小宫女惊喜得睫毛发颤，扑通跪下叩谢；满院仆从看你的眼神变了——原来这位主子，是肯记恩的。' },
         { text: '不动声色，记下这份恩', effects: { plot: 2, safety: 4 }, reaction: '你不动声色收下这份情，小宫女眼里却亮起死心塌地的光；暗处那只下毒的手，从此多了双眼睛盯着。' },
       ],
-      summary: '宫女回报',
+      summary: '宫女回报', art: '1cvmoxy', gen: 'flux',
       itemsGained: ['一名忠心的眼线'],
     },
     {
@@ -289,7 +289,7 @@ export const bookTransmigration: Scenario = {
         { text: '护着太子退守东宫，以待天明', effects: { plot: 10, favor: 16, safety: -6 }, reaction: '太子在乱军血光里回头望你，眼底翻涌着难以言喻的暖意；那一夜本该惨死的炮灰，成了他的依仗。' },
         { text: '换上素衣混入人群，只求脱身', effects: { plot: -5, safety: 12 }, reaction: '禁军的火把从你低垂的斗篷边掠过；你混入人潮活了下来，只是史册里这一夜，仍没有你的名字。' },
       ],
-      summary: '宫变前夜',
+      summary: '宫变前夜', art: '1cuobht', gen: 'gemini',
       requires: 'has(颠覆) & favor>=78 & safety>=72',
       keyMoment: true,
       once: true,
@@ -303,7 +303,7 @@ export const bookTransmigration: Scenario = {
         { text: '求他指点改命之法', effects: { plot: 6, safety: 4 }, reaction: '老道浑浊的眼睛里精光一闪，压低声音连连点头；他似也惊觉，这命格当真被人从死签上硬挪了开去。' },
         { text: '一笑置之，命由我定', effects: { plot: 4, favor: 2 }, reaction: '老道愣了愣，旋即抚掌而笑；那句命由我定，竟惊得他半晌作不得声——他算过无数人，从未遇此一句。' },
       ],
-      summary: '老道相命',
+      summary: '老道相命', art: '1inx8by', gen: 'flux',
       weight: 0.8,
     },
     {
@@ -321,7 +321,7 @@ export const bookTransmigration: Scenario = {
           ],
         },
       ],
-      summary: '主角翻脸',
+      summary: '主角翻脸', art: '1b29nt1', gen: 'flux',
       requires: 'favor<=12',
       weight: 1.8,
     },
@@ -332,7 +332,7 @@ export const bookTransmigration: Scenario = {
         { text: '以先知抢先布局，化被动为主动', effects: { plot: 12, safety: 10, favor: -4 }, reaction: '暗处磨刀的几方都被打了个措手不及，乱了阵脚；你头一回反客为主，那张死亡之网竟被生生撑开。' },
         { text: '深居简出，避其锋芒', effects: { plot: -3, safety: 8 }, reaction: '政敌见你缩了回去，暗暗冷笑得意；你躲过这一程，可那张网只是暂歇，仍在门外冷冷等着。' },
       ],
-      summary: '死劫临头',
+      summary: '死劫临头', art: '1f92jjn', gen: 'flux',
       requires: 'safety<=15',
       weight: 1.8,
     },
@@ -343,7 +343,7 @@ export const bookTransmigration: Scenario = {
         { text: '呈给太子，借刀剪除外戚羽翼', effects: { plot: 12, favor: 12, safety: -4 }, reaction: '太子接过那叠账册，眼底寒光一闪；那外戚一党尚浑然不觉，权柄已在他们背后悄然松动。' },
         { text: '暗中留作要挟外戚的筹码', effects: { plot: 8, safety: 4, favor: -3 }, reaction: '你将把柄收进袖中，外戚那边隐隐生了警觉；这一手留而不发，反让他们寝食难安、不敢轻举妄动。' },
       ],
-      summary: '外戚把柄',
+      summary: '外戚把柄', art: '1cize9v', gen: 'flux',
       requiresItem: '一名忠心的眼线',
       once: true,
     },
@@ -354,7 +354,7 @@ export const bookTransmigration: Scenario = {
         { text: '彻查到底，借机立威', effects: { plot: 10, favor: 4, safety: -6 }, reaction: '几名涉案官员脸色煞白，没想到你竟敢一查到底；旁观者暗暗咋舌——这炮灰竟借案立起了威。' },
         { text: '大事化小，花钱消灾', effects: { plot: 2, safety: 4, favor: -2 }, reaction: '经手之人如释重负，暗里却看轻了你三分；案子大事化小，那根伸向你的黑手，也悄悄缩了回去。' },
       ],
-      summary: '科场案',
+      summary: '科场案', art: '3rszw8', gen: 'flux',
       minTurn: 12,
       weight: 1.1,
     },
@@ -365,7 +365,7 @@ export const bookTransmigration: Scenario = {
         { text: '力主驰援，搏一个忠直之名', effects: { plot: 8, favor: 8, safety: -6 }, reaction: '几位主战老将眼前一亮，朝你投来赞许目光；主和那一派则暗暗记下了你这个不识时务的名字。' },
         { text: '附和主和，明哲保身', effects: { plot: 2, safety: 5, favor: -4 }, reaction: '皇帝面色微沉，主战将领失望地别开眼；你随了大流保住自身，却也错过了一鸣惊人的良机。' },
       ],
-      summary: '边关急报',
+      summary: '边关急报', art: '1krgzej', gen: 'flux',
       minTurn: 8,
     },
     {
@@ -382,7 +382,7 @@ export const bookTransmigration: Scenario = {
         },
         { text: '稍作收束，免遭修正力反噬', effects: { plot: -6, safety: 12 }, reaction: '暗处窥伺的几方都暗自松气，主角光环重又稳住；你勒马收锋，世界线缓缓滑回了它该有的轨道。' },
       ],
-      summary: '世界濒临崩解',
+      summary: '世界濒临崩解', art: '1epzs2h', gen: 'flux',
       requires: 'plot>=70',
       weight: 1.6,
     },
@@ -393,7 +393,7 @@ export const bookTransmigration: Scenario = {
         { text: '主动出击，清算旧日宿敌', effects: { plot: 10, safety: -6, favor: 4 }, reaction: '昔日对你磨刀霍霍的几方一夕之间噤了声，惶惶不可终日；风水轮流转，这回轮到他们夜不能寐。' },
         { text: '广结善缘，把安稳化为人望', effects: { favor: 10, plot: 2 }, reaction: '受过你恩惠的人奔走相告，人望如春水悄涨；你这一手以德服人，连政敌都挑不出半分错处。' },
       ],
-      summary: '反客为主',
+      summary: '反客为主', art: '1bourrd', gen: 'flux',
       requires: 'safety>=80',
       weight: 1.3,
     },
@@ -404,7 +404,7 @@ export const bookTransmigration: Scenario = {
         { text: '设法落选，远离深宫是非', effects: { plot: 4, safety: 8, favor: -2 }, reaction: '选秀名册悄然划去你的名字，主事太监暗暗纳罕；你这一退，远离了书里那座吞人的深宫牢笼。' },
         { text: '搏一个位份，从内廷改写命运', effects: { plot: 10, favor: 8, safety: -8 }, reaction: '宫人们窃窃私语，谁也没料到你竟主动求那位份；萧宸远远望来一眼，眸底多了几分捉摸不透。' },
       ],
-      summary: '选秀入宫',
+      summary: '选秀入宫', art: '1kzspcu', gen: 'flux',
       minTurn: 6,
     },
     {
@@ -415,7 +415,7 @@ export const bookTransmigration: Scenario = {
         { text: '投其所好，暗示愿为太后所用', effects: { plot: 6, safety: -4, favor: -4 }, reaction: '太后眼神微冷，垂首的宫人都替你捏了把汗；你这献媚之姿落了下乘，反惹她暗暗看轻了几分。' },
         { text: '不卑不亢，暗藏机锋', effects: { plot: 8, safety: -6, favor: 4 }, reaction: '太后拨珠的手一顿，浑浊老眼里精光乍现；满殿噤声——这小小配角竟敢绵里藏针，倒让她起了兴味。' },
       ],
-      summary: '太后召见',
+      summary: '太后召见', art: '1ch0ene', gen: 'flux',
       minTurn: 10,
       weight: 1.2,
     },
@@ -426,7 +426,7 @@ export const bookTransmigration: Scenario = {
         { text: '接下交易，换取那桩秘辛', effects: { plot: 12, safety: -6 }, reaction: '那配角眼中精光一闪，压低声音吐露秘辛；他在书里凡出场必掀血雨，这一回，竟与你结成了同盟。' },
         { text: '不趟浑水，礼送出门', effects: { safety: 6, plot: -2 }, reaction: '他眼底掠过一丝失望，悻悻收起怀中之物；你避开了这趟浑水，却也任那桩搅动乾坤的秘辛擦肩而去。' },
       ],
-      summary: '关键配角',
+      summary: '关键配角', art: '1blverp', gen: 'flux',
       weight: 0.9,
     },
     {
@@ -436,7 +436,7 @@ export const bookTransmigration: Scenario = {
         { text: '主动表功，争一席从龙之位', effects: { plot: 8, favor: 10, safety: -6 }, reaction: '新君目光在你身上停了停，几位从龙旧臣暗暗侧目；这一步险棋，竟让你在新朝挣得一席之地。' },
         { text: '低调蛰伏，避开清算的风头', effects: { safety: 10, plot: -2, favor: -2 }, reaction: '你低头隐入人群，清算的风暴堪堪从头顶刮过；昨日盟友或反目或下狱，唯你不动声色地全身而退。' },
       ],
-      summary: '新君登基',
+      summary: '新君登基', art: '1eds4px', gen: 'gemini',
       keyMoment: true,
       once: true,
       minTurn: 18,
@@ -449,7 +449,7 @@ export const bookTransmigration: Scenario = {
         { text: '当众揭穿内侍', effects: { plot: 8, favor: -3, safety: 3 }, reaction: '满席宾客哗然侧目，那内侍面如死灰、当场跪倒；几位皇子眼底精光闪动，重新掂量起你这个变数。' },
         { text: '继续饮下毒酒', effects: { plot: -2, favor: 0, safety: -10 }, reaction: '席间那双窥伺的眼睛里闪过一丝得逞的快意；毒酒入喉，命运的齿轮冷冷一转，死签稳稳落回你身上。' },
       ],
-      summary: '宫宴毒酒',
+      summary: '宫宴毒酒', art: '1cw47l4', gen: 'flux',
     },
     {
       narrative:
@@ -459,7 +459,7 @@ export const bookTransmigration: Scenario = {
         { text: '装作路过离开', effects: { plot: -1, favor: 0, safety: 2 }, reaction: '太子与女主低声续谈，浑然不觉你来过；你悄然离去，那处足以撬动命运的破绽，便随风散了。' },
         { text: '趁机诬陷女主', effects: { plot: 7, favor: -8, safety: -5 }, reaction: '女主脸色骤变、百口莫辩，太子眉头紧锁审视；你这一咬，结下死仇，命运齿轮也朝凶处冷冷一转。' },
       ],
-      summary: '御园偶遇',
+      summary: '御园偶遇', art: '1dgvqr4', gen: 'flux',
       requires: 'favor<=35',
     },
     {
@@ -470,7 +470,7 @@ export const bookTransmigration: Scenario = {
         { text: '沉默旁观', effects: { plot: 0, favor: -1, safety: 1 }, reaction: '那小宫女绝望地垂下头，泪无声滚落；你沉默旁观，一桩冤狱便照着原著的轨迹，悄然落地生根。' },
         { text: '顺势推卸责任', effects: { plot: 5, favor: -4, safety: -4 }, reaction: '那小宫女惊恐地瞪大双眼，旁人也暗暗鄙夷；你顺势推责，命运的齿轮便冷冷碾向一个无辜之人。' },
       ],
-      summary: '寿宴风波',
+      summary: '寿宴风波', art: '1cy4uvc', gen: 'flux',
     },
     {
       narrative:
@@ -480,7 +480,7 @@ export const bookTransmigration: Scenario = {
         { text: '暗中观察真凶', effects: { plot: 3, favor: 1, safety: 1 }, reaction: '你冷眼记下那鬼祟身影，对方却毫无察觉；好处是按住了真凶的尾巴，悲剧却仍悬在栏杆那一线之间。' },
         { text: '故意不管此事', effects: { plot: -2, favor: -3, safety: -6 }, reaction: '栏杆应声而断，惨叫四起，旁人却只当是意外；你眼睁睁任剧情重演，那只无形之手满意地收了回去。' },
       ],
-      summary: '荷塘惊变',
+      summary: '荷塘惊变', art: '1ixh5na', gen: 'flux',
     },
     {
       narrative:
@@ -490,7 +490,7 @@ export const bookTransmigration: Scenario = {
         { text: '随声附和，不露半分异色', effects: { plot: 2, favor: 1, safety: -8 }, reaction: '你垂首随声附和、不露半分异色，长辈们看不出你眼底的凉意；你这一应，便随全族绑上了抄家灭门的战车。' },
         { text: '会后悄悄笼络几位长辈', effects: { plot: 7, favor: -1, safety: -2 }, reaction: '你散席后悄悄逐一笼络那几位犹疑的长辈，旁人浑然未觉；这一手暗中分化，握住了改命的关窍，也踏上了薄冰。' },
       ],
-      summary: '祠堂议事',
+      summary: '祠堂议事', art: '1hedbhc', gen: 'flux',
     },
     {
       narrative:
@@ -500,7 +500,7 @@ export const bookTransmigration: Scenario = {
         { text: '设伏等待刺客', effects: { plot: 8, favor: 2, safety: 2 }, reaction: '暗夜里翻墙而入的刺客反被你瓮中捉鳖，惊得魂飞魄散；本该死于此夜的炮灰，今夜成了设局的人。' },
         { text: '照常安睡', effects: { plot: -1, favor: 0, safety: -12 }, reaction: '雨声掩去了一切动静，那柄淬寒的刀贴着你脖颈落下；命运的齿轮冷冷一转，死签稳稳应在了你身上。' },
       ],
-      summary: '夜雨刺杀',
+      summary: '夜雨刺杀', art: '1crsl37', gen: 'flux',
     },
     {
       narrative:
@@ -510,7 +510,7 @@ export const bookTransmigration: Scenario = {
         { text: '将史册归位', effects: { plot: 1, favor: 0, safety: 1 }, reaction: '你将赝品归位转身离去，那缕熏香却仍在书架间萦绕；撬动命运的线索，便从你指缝里悄悄溜走了。' },
         { text: '私藏史册', effects: { plot: 8, favor: -2, safety: -5 }, reaction: '你将史册藏进袖中，藏书阁外似有衣袂一闪；这枚惊天筹码握在手，也把一双窥伺的眼睛引到了背后。' },
       ],
-      summary: '藏书异象',
+      summary: '藏书异象', art: '1j8nvct', gen: 'flux',
     },
     {
       narrative:
@@ -520,7 +520,7 @@ export const bookTransmigration: Scenario = {
         { text: '劝书生忍耐', effects: { plot: 0, favor: -1, safety: 2 }, reaction: '书生神色黯然地退下，肩头佝偻得厉害；你劝他忍耐，太子便顺顺当当地踏着此案扶摇直上去了。' },
         { text: '泄露消息牟利', effects: { plot: 7, favor: -5, safety: -7 }, reaction: '你转手泄密牟利，那书生若知真相怕要呕血；命运齿轮冷冷一转，把你也卷向那万劫不复的深渊。' },
       ],
-      summary: '科举疑云',
+      summary: '科举疑云', art: '1hf201i', gen: 'flux',
     },
     {
       narrative:
@@ -530,7 +530,7 @@ export const bookTransmigration: Scenario = {
         { text: '假装没看见', effects: { plot: 0, favor: 0, safety: -1 }, reaction: '你佯作未见转身离去，她绝望的眼神黯了下去；不久那一句草草的自尽，仍照着原著悄然落了笔。' },
         { text: '逼问信笺内容', effects: { plot: 7, favor: -3, safety: -4 }, reaction: '她被你步步紧逼得浑身发抖、几近崩溃；冤情是问出来了，那双暗处威胁她的手，也随之盯上了你。' },
       ],
-      summary: '秘信之谜',
+      summary: '秘信之谜', art: '1hfaedh', gen: 'flux',
     },
     {
       narrative:
@@ -540,7 +540,7 @@ export const bookTransmigration: Scenario = {
         { text: '亲自试吃糕点', effects: { plot: 3, favor: 3, safety: -3 }, reaction: '你以身试毒，旁人惊呼，女主又惊又愧地望着你；这一口下去，险情避了，命运的齿轮却咯噔一滞。' },
         { text: '故意散播谣言', effects: { plot: 8, favor: -5, safety: -5 }, reaction: '谣言四起，膳房人人自危，女主冷冷扫来一眼；你这一搅，结了仇怨，也把杀机引向了自己。' },
       ],
-      summary: '香毒疑案',
+      summary: '香毒疑案', art: '1me1o7d', gen: 'flux',
     },
     {
       narrative:
@@ -550,7 +550,7 @@ export const bookTransmigration: Scenario = {
         { text: '暗中追查马夫', effects: { plot: 7, favor: 2, safety: 0 }, reaction: '你顺着马夫的踪迹暗暗追查，对方尚无知觉；坠马的劫数仍悬着，你却攥住了幕后那只手的尾巴。' },
         { text: '袖手旁观', effects: { plot: -2, favor: -4, safety: -4 }, reaction: '太子疾驰间坠马、命悬一线，旁人乱作一团；你冷眼旁观任剧情重演，那只无形之手满意地缩了回去。' },
       ],
-      summary: '秋猎危机',
+      summary: '秋猎危机', art: '1hkvavd', gen: 'flux',
     },
     {
       narrative:
@@ -560,7 +560,7 @@ export const bookTransmigration: Scenario = {
         { text: '求见太后提醒', effects: { plot: 8, favor: 4, safety: -1 }, reaction: '你冒险直谏，太后病榻边的太医脸色骤变；这一提醒，竟生生把那既定的危局从轨道上撬开了一寸。' },
         { text: '远离此事', effects: { plot: -1, favor: 0, safety: 1 }, reaction: '你转身远离这桩是非，太医院重归一片死寂；那场病便照着原著缠绵下去，无人知你曾来过。' },
       ],
-      summary: '太后病局',
+      summary: '太后病局', art: '1ch6aaq', gen: 'flux',
     },
     {
       narrative:
@@ -570,7 +570,7 @@ export const bookTransmigration: Scenario = {
         { text: '尾随可疑之人', effects: { plot: 7, favor: 2, safety: -1 }, reaction: '你悄然尾随那几道可疑身影，对方尚未察觉；杀局仍悬着，你却已摸到了那暗影伸来的方向。' },
         { text: '借机离开寺院', effects: { plot: -1, favor: -2, safety: 1 }, reaction: '你借故离寺，身后隐隐传来一声压抑的惊呼；你避开了，那场暗杀却仍照着原著，在香烟里悄然落幕。' },
       ],
-      summary: '佛寺暗影',
+      summary: '佛寺暗影', art: '1b0os4i', gen: 'flux',
     },
     {
       narrative:
@@ -580,7 +580,7 @@ export const bookTransmigration: Scenario = {
         { text: '交给官府', effects: { plot: 3, favor: 2, safety: 3 }, reaction: '你将带血玉佩交予官府，差役神色一凛郑重收下；这一手干净利落，也把自己从是非里摘了出来。' },
         { text: '当街丢弃玉佩', effects: { plot: -3, favor: -1, safety: -5 }, reaction: '你随手将玉佩丢入人潮，转眼没了踪影；那枚足以撬动全局的信物就此散佚，命运的线头断在此处。' },
       ],
-      summary: '花灯血玉',
+      summary: '花灯血玉', art: '1ixfwr2', gen: 'flux',
     },
     {
       narrative:
@@ -590,7 +590,7 @@ export const bookTransmigration: Scenario = {
         { text: '秘密通知太子', effects: { plot: 6, favor: 4, safety: 1 }, reaction: '你密信送出，太子那边迅速有了动作；二皇子收买民心的算盘落了空，连他自己都没察觉是谁搅的局。' },
         { text: '趁乱中饱私囊', effects: { plot: 7, favor: -6, safety: -8 }, reaction: '城外饥民嗷嗷待哺，你却趁乱中饱私囊；旁人暗暗鄙夷，命运的齿轮也朝着身败名裂冷冷一转。' },
       ],
-      summary: '赈灾迷局',
+      summary: '赈灾迷局', art: '1kjhote', gen: 'flux',
     },
     {
       narrative:
@@ -600,7 +600,7 @@ export const bookTransmigration: Scenario = {
         { text: '当场揭穿她', effects: { plot: 8, favor: 0, safety: -2 }, reaction: '你当场发难，那秀女花容失色、矢口否认；众人哗然，可剧情之力骤然绷紧，似在警告你出手太急。' },
         { text: '与其合作', effects: { plot: 7, favor: -5, safety: -6 }, reaction: '你竟与那反派秀女暗中合谋，旁人若知必惊掉下巴；命运的齿轮咯噔一转，把你也绑上了她那条贼船。' },
       ],
-      summary: '选秀暗潮',
+      summary: '选秀暗潮', art: '1kzwnf7', gen: 'flux',
     },
     {
       narrative:
@@ -610,7 +610,7 @@ export const bookTransmigration: Scenario = {
         { text: '保持沉默', effects: { plot: 0, favor: 0, safety: 1 }, reaction: '你缄口不言、隔岸观火，三皇子那边照旧栽了跟头；棋局照着原样落子，无人知你曾握有先机。' },
         { text: '协助栽赃', effects: { plot: 8, favor: -4, safety: -7 }, reaction: '你竟出手助纣为虐、协同栽赃，旁人若知必齿冷；命运的齿轮冷冷一转，把祸事悄悄引向了你自己。' },
       ],
-      summary: '伪诏风波',
+      summary: '伪诏风波', art: '1b7u0ku', gen: 'flux',
     },
     {
       narrative:
@@ -620,7 +620,7 @@ export const bookTransmigration: Scenario = {
         { text: '只默记残诗与暗记', effects: { plot: 3, favor: 0, safety: 2 }, reaction: '你默默记下那半阙残诗与拆改过的姓氏，转身离去；老绣娘暗暗松气，那条线索险险从你指间滑过。' },
         { text: '追问老绣娘旧帕来历', effects: { plot: 8, favor: -5, safety: -4 }, reaction: '你步步追问那方旧帕的来历，老绣娘骇得连连摇头、矢口否认；你逼得太急，反惊动了帕子背后那只手。' },
       ],
-      summary: '绣坊残帕',
+      summary: '绣坊残帕', art: '1i8a4b6', gen: 'flux',
     },
     {
       narrative:
@@ -630,7 +630,7 @@ export const bookTransmigration: Scenario = {
         { text: '暗查厨房来源', effects: { plot: 6, favor: 0, safety: 1 }, reaction: '你暗查那碗汤药的来路，府中下人愈发遮掩闪躲；暴毙的剧本仍悬着，你却摸到了藏在汤里的杀机。' },
         { text: '假装不知', effects: { plot: -1, favor: -1, safety: -4 }, reaction: '你佯作不知转身离去，老侯爷的死讯不日便传遍京城；那桩暗藏的杀局，照着原著一字不差地落了幕。' },
       ],
-      summary: '侯府疑毒',
+      summary: '侯府疑毒', art: '1b2zzsj', gen: 'flux',
     },
     {
       narrative:
@@ -640,7 +640,7 @@ export const bookTransmigration: Scenario = {
         { text: '提醒女主小心', effects: { plot: 4, favor: 3, safety: 2 }, reaction: '你直接提醒女主提防，她将信将疑地蹙起了眉；误会的死结松了一线，那只暗中拆信的手却警觉起来。' },
         { text: '故意添油加醋', effects: { plot: 8, favor: -7, safety: -5 }, reaction: '你竟添油加醋、推波助澜，旁人若知必摇头；太子女主就此反目，命运的齿轮冷冷转向那既定的遗憾。' },
       ],
-      summary: '情信误局',
+      summary: '情信误局', art: '1dm917e', gen: 'flux',
     },
     {
       narrative:
@@ -650,7 +650,7 @@ export const bookTransmigration: Scenario = {
         { text: '交给太子查看', effects: { plot: 7, favor: 4, safety: 1 }, reaction: '你将密函呈予太子，他神色骤变、当即下令彻查；那桩本该酿成的冤案，被你抢先一步掀开了盖子。' },
         { text: '焚毁密函', effects: { plot: -2, favor: -1, safety: -3 }, reaction: '你一把将密函投入火盆，灰烬打着旋飘散；那位老将军的冤死，便照着原著悄无声息地落了定。' },
       ],
-      summary: '神秘密函',
+      summary: '神秘密函', art: '1hjpawu', gen: 'flux',
     },
     {
       narrative:
@@ -660,7 +660,7 @@ export const bookTransmigration: Scenario = {
         { text: '追赶可疑黑影', effects: { plot: 7, favor: 1, safety: -1 }, reaction: '你撇下火情紧追那道黑影，对方惊觉回头一瞪；火虽未灭，那只纵火栽赃的手，却被你咬住了尾巴。' },
         { text: '远远避开', effects: { plot: -1, favor: -2, safety: -5 }, reaction: '你远远避开转身就走，火光在身后渐渐窜起；那场冷宫大火便照着原著烧起，你也被它牵连入局。' },
       ],
-      summary: '冷宫火影',
+      summary: '冷宫火影', art: '1bdly83', gen: 'flux',
     },
     {
       narrative:
@@ -670,7 +670,7 @@ export const bookTransmigration: Scenario = {
         { text: '留下信物结缘', effects: { plot: 5, favor: 1, safety: 1 }, reaction: '你留下信物与道人结缘，他郑重收下、连连称奇；这一点善缘，悄悄在那道命运裂缝里埋下了暗手。' },
         { text: '将道人赶走', effects: { plot: -2, favor: -1, safety: -4 }, reaction: '你不耐烦地将道人赶走，他摇头叹息地隐入人海；那道好不容易显露的命运裂缝，便随他一同合上了。' },
       ],
-      summary: '城门道人断命',
+      summary: '城门道人断命', art: '1hxhfw2', gen: 'flux',
     },
     {
       narrative:
@@ -680,7 +680,7 @@ export const bookTransmigration: Scenario = {
         { text: '假作未闻离开', effects: { safety: 2 }, reaction: '你佯作未闻匆匆离去，戏台下的唱腔愈发凄凉；那桩本可避开的死局线索，便随残声一同散在了空院里。' },
         { text: '喝斥他装神弄鬼', effects: { favor: -5, plot: 3 }, reaction: '你出言呵斥，老伶人惊得噤了声、佝偻着退入暗处；那点本可救命的提点，被你亲手堵了回去。' },
       ],
-      summary: '戏台残声',
+      summary: '戏台残声', art: '1dttl33', gen: 'flux',
     },
     {
       narrative:
@@ -690,7 +690,7 @@ export const bookTransmigration: Scenario = {
         { text: '劝他主动认错', effects: { safety: 3, favor: 1 }, reaction: '你劝他主动认错，他犹疑半晌终是松了口；这一步走得稳妥，那桩本要牵连你的横祸便消弭于无形。' },
         { text: '将他赶出门外', effects: { favor: -4, plot: 2 }, reaction: '你将那小厮赶出门外，他绝望地瘫坐在地；旁人暗暗心寒，这一记冷脸，也悄悄削去了几分人望。' },
       ],
-      summary: '旧账波澜',
+      summary: '旧账波澜', art: '1eodqi8', gen: 'flux',
     },
     {
       narrative:
@@ -700,7 +700,7 @@ export const bookTransmigration: Scenario = {
         { text: '顺着暗痕追查主使', effects: { plot: 5 }, reaction: '你顺着轿杠上那几道暗痕暗暗追查，管事神色一凛；这桩藏在车轿里的杀机背后，被你揪出了线头。' },
         { text: '嫌麻烦照旧乘坐', effects: { safety: -4 }, reaction: '你嫌麻烦不以为意、照旧要坐那顶轿子，小厮欲言又止；那处悄然埋下的杀机，便随你的大意一同悬着。' },
       ],
-      summary: '车轿暗痕',
+      summary: '车轿暗痕', art: '1l012nq', gen: 'flux',
       minTurn: 4,
       maxTurn: 10,
     },
@@ -712,7 +712,7 @@ export const bookTransmigration: Scenario = {
         { text: '赠盘缠送客', effects: { favor: 4 }, reaction: '你赠了盘缠送他离去，那书生含泪长揖到地；这一点善意，悄悄在人心里替你种下了一处暖根。' },
         { text: '命人乱棍驱逐', effects: { favor: -6 }, reaction: '你命人将那书生乱棍逐走，他踉跄着回头、满眼凄惶；旁观的下人暗暗摇头，人望就这么折了几分。' },
       ],
-      summary: '寒士来访',
+      summary: '寒士来访', art: '1cwgrye', gen: 'flux',
     },
     {
       narrative:
@@ -722,7 +722,7 @@ export const bookTransmigration: Scenario = {
         { text: '劝嬷嬷莫多事', effects: { safety: 2 }, reaction: '你劝嬷嬷莫多生事，她将信将疑地退了下去；那桩隐秘便照旧埋进了绣房的灰烬里，无人再提。' },
         { text: '将消息外传', effects: { favor: -5, plot: 3 }, reaction: '你竟将消息外传，老嬷嬷骇然失色、悔不当初；她本只信你一人，这一回，连这点信重都被你折了去。' },
       ],
-      summary: '绣房余灰',
+      summary: '绣房余灰', art: '1i9yl4g', gen: 'flux',
       requires: 'favor>=60',
     },
     {
@@ -733,7 +733,7 @@ export const bookTransmigration: Scenario = {
         { text: '记下佩穗样式', effects: { safety: 3 }, reaction: '你默默记下那佩穗的样式，两名侍卫尚自惊魂未定；这点蛛丝马迹，悄悄落进了你日后博弈的底牌里。' },
         { text: '当众揭穿他们', effects: { favor: -3, plot: 5 }, reaction: '你当众揭穿，那两名侍卫面如死灰、当场跪地；众人哗然侧目，可你也就此被卷进了这桩血案的漩涡。' },
       ],
-      summary: '佩穗疑云',
+      summary: '佩穗疑云', art: '1b63m3r', gen: 'flux',
     },
     {
       narrative:
@@ -743,7 +743,7 @@ export const bookTransmigration: Scenario = {
         { text: '亲查贡茶去向', effects: { plot: 4 }, reaction: '你亲自去查那短了的贡茶，几名厨娘面面相觑；这看似寻常的小风波背后，被你揪出了藏着的隐情。' },
         { text: '顺势推责于她', effects: { favor: -5 }, reaction: '你顺势把责任推到那小丫鬟身上，她委屈得浑身发抖；旁人暗暗鄙夷，这一记，悄悄折了你的人望。' },
       ],
-      summary: '贡茶失踪',
+      summary: '贡茶失踪', art: '1klhut3', gen: 'flux',
       maxTurn: 8,
     },
     {
@@ -754,7 +754,7 @@ export const bookTransmigration: Scenario = {
         { text: '彻查缘由', effects: { plot: 3 }, reaction: '你执意彻查那缺角的缘由，守祠老人惴惴不安地跟着；这看似怪事的背后，被你撬开了一段尘封旧事。' },
         { text: '斥其妖言惑众', effects: { favor: -4 }, reaction: '你斥那守祠老人妖言惑众，他惶恐地连连叩头；旁人暗暗摇头，这一记冷言，也折了几分体面与人望。' },
       ],
-      summary: '祠堂裂痕',
+      summary: '祠堂裂痕', art: '1hed072', gen: 'flux',
     },
     {
       narrative:
@@ -764,7 +764,7 @@ export const bookTransmigration: Scenario = {
         { text: '亲自查看痕迹', effects: { plot: 3 }, reaction: '你亲自去查那几行古怪脚印，老兵在旁屏息守候；这点蛛丝马迹，被你顺着摸到了暗处那只手的方向。' },
         { text: '笑他多疑', effects: { safety: -5 }, reaction: '你笑那老兵多疑，挥手让他退下；他忧心忡忡地走了，那道贴着墙根逼近的杀机，却仍在夜色里潜行。' },
       ],
-      summary: '墙外脚印',
+      summary: '墙外脚印', art: '1ceynz2', gen: 'flux',
       requires: 'safety>=70',
     },
     {
@@ -775,7 +775,7 @@ export const bookTransmigration: Scenario = {
         { text: '追查送花人', effects: { plot: 4 }, reaction: '你着意追查那送花之人，几名侍女惴惴地随你查访；这看似风雅的小事背后，被你撬开了一道暗缝。' },
         { text: '当场折断丢弃', effects: { favor: -3 }, reaction: '你当场将白梅折断丢弃，侍女们吓得噤了声；那处或藏善意、或藏深意的暗示，便随残瓣一同碎了。' },
       ],
-      summary: '无名白梅',
+      summary: '无名白梅', art: '1eesv9w', gen: 'flux',
     },
     {
       narrative:
@@ -785,7 +785,7 @@ export const bookTransmigration: Scenario = {
         { text: '先妥善收存', effects: { safety: 2 }, reaction: '你将那把铜锁妥善收存，远房亲戚见状暗暗点头；这桩旧事你按下不表，却也悄悄留了一线后手。' },
         { text: '随手弃置', effects: { plot: -3 }, reaction: '你嫌晦气随手将铜锁弃了，那远房亲戚愕然张口；一段尘封的关窍，便随那把锁一同被你丢进了废墟。' },
       ],
-      summary: '旧锁遗痕',
+      summary: '旧锁遗痕', art: '1epv4nt', gen: 'flux',
       minTurn: 9,
     },
     {
@@ -796,7 +796,7 @@ export const bookTransmigration: Scenario = {
         { text: '道谢收下', effects: { favor: 2, safety: 1 }, reaction: '你含笑道谢收下那香囊，掌柜如释重负地松了口气；这一点善意之交，悄悄替你结下一处暖根。' },
         { text: '怀疑其有诈', effects: { favor: -4 }, reaction: '你疑他有诈、冷脸推拒，掌柜悻悻收回了手；那份本是提点的善意，便随他闪烁的眼神一同缩了回去。' },
       ],
-      summary: '药铺香囊',
+      summary: '药铺香囊', art: '1j7nlht', gen: 'flux',
     },
     {
       narrative:
@@ -806,7 +806,7 @@ export const bookTransmigration: Scenario = {
         { text: '命人喂食黑猫', effects: { favor: 2 }, reaction: '你命人喂食那只瘦骨嶙峋的黑猫，下人们骇得直往后缩；它绿幽幽的眼定定看你，似在记下这点善意。' },
         { text: '驱赶并砸石头', effects: { favor: -5, safety: -2 }, reaction: '你抄起石头驱赶，黑猫凄厉一声没入黑暗；下人连连念着晦气，那条衔来的红绳里藏的指引，也散了。' },
       ],
-      summary: '黑猫衔绳',
+      summary: '黑猫衔绳', art: '1n7y5pk', gen: 'flux',
     },
     {
       narrative:
@@ -816,7 +816,7 @@ export const bookTransmigration: Scenario = {
         { text: '封存旧册', effects: { safety: 2 }, reaction: '你将那本怪异旧册封存入匣，再不去翻；那行凭空多出的批注便锁进黑暗，是警示还是暗示，无从再问。' },
         { text: '直接撕毁', effects: { plot: -5 }, reaction: '你一把将旧册撕得粉碎，纸屑纷飞；那行墨迹犹湿的批注就此湮灭，连同它指向的天机，一并被你毁了。' },
       ],
-      summary: '旧册新墨批注',
+      summary: '旧册新墨批注', art: '1f8oxgx', gen: 'flux',
       requires: 'plot>=55',
     },
     {
@@ -827,7 +827,7 @@ export const bookTransmigration: Scenario = {
         { text: '坚持付钱', effects: { favor: 2 }, reaction: '你执意付了钱，卖糖老者含泪推辞不过；这一点不肯白受的善意，悄悄在街市人心里替你留了个好名声。' },
         { text: '讥笑老人糊涂', effects: { favor: -4 }, reaction: '你讥笑那白发老者糊涂，他怔怔地噤了声；那句脱口而出的关键地名，便随他失望的神色一同咽了回去。' },
       ],
-      summary: '糖摊旧恩',
+      summary: '糖摊旧恩', art: '1hz6emt', gen: 'flux',
     },
     {
       narrative:
@@ -837,7 +837,7 @@ export const bookTransmigration: Scenario = {
         { text: '询问拾得地点', effects: { plot: 2 }, reaction: '你细问那棋子是从何处拾得，孩童们七嘴八舌地指点；顺着这点线头，你摸到了那隐秘指引的来路。' },
         { text: '嫌脏不理会', effects: { plot: -2 }, reaction: '你嫌脏看也不看转身走了，孩童们抢作一团；那枚被世界悄悄递来的奇纹棋子，就这么从你指间溜走了。' },
       ],
-      summary: '奇纹棋子',
+      summary: '奇纹棋子', art: '1cot80w', gen: 'flux',
       maxTurn: 12,
     },
     {
@@ -848,7 +848,7 @@ export const bookTransmigration: Scenario = {
         { text: '记下姓名', effects: { plot: 3 }, reaction: '你默默记下那个被噤声的名字，两个嬷嬷浑然未觉；这桩刻意尘封的旧事，被你攥住了第一个线头。' },
         { text: '讥讽她们啰嗦', effects: { favor: -4 }, reaction: '你讥讽她们啰嗦，两个嬷嬷悻悻低头各自忙去；那段呼之欲出的尘封旧事，便随她们的缄默一同沉了底。' },
       ],
-      summary: '后厨旧名',
+      summary: '后厨旧名', art: '1bp1hsf', gen: 'flux',
     },
     {
       narrative:
@@ -858,7 +858,7 @@ export const bookTransmigration: Scenario = {
         { text: '亲赴城南查看', effects: { plot: 5 }, reaction: '你亲赴城南探查虚实，街巷间隐隐有目光跟来；顺着这点风声，你摸到了那只盯上你的手伸来的方向。' },
         { text: '怀疑他居心', effects: { favor: -5 }, reaction: '你疑那车夫居心叵测、冷言相向，他怔怔地退下；那番本是雪中送炭的警示，便随他失望的背影散了。' },
       ],
-      summary: '车夫警示',
+      summary: '车夫警示', art: '1kr74om', gen: 'flux',
       requires: 'favor>=60 & safety>=50',
     },
     {
@@ -869,7 +869,7 @@ export const bookTransmigration: Scenario = {
         { text: '妥善收藏', effects: { safety: 2 }, reaction: '你将那卷残谱妥善收藏，再不轻动；这桩自行断弦的怪事便按下不表，是凶是吉，你都先留了条后路。' },
         { text: '嫌晦气烧掉', effects: { plot: -4 }, reaction: '你嫌晦气一把将残谱烧了，火舌卷着泛黄的纸页；那段压在断弦下的隐秘，便随青烟一同散得干干净净。' },
       ],
-      summary: '断弦古琴',
+      summary: '断弦古琴', art: '1efdp3k', gen: 'flux',
     },
     {
       narrative:
@@ -879,7 +879,7 @@ export const bookTransmigration: Scenario = {
         { text: '查看家书来历', effects: { plot: 3 }, reaction: '你着意查看那封被死死护着的家书来历，小丫头怯怯抬眼；这桩看似寻常的小事背后，藏着别的隐情。' },
         { text: '随众责骂', effects: { favor: -5 }, reaction: '你随众一同责骂，那小丫头死死护着家书、泪如雨下；旁人暗暗心寒，这一记冷言折了几分你的人望。' },
       ],
-      summary: '井边家书',
+      summary: '井边家书', art: '1b4zemn', gen: 'flux',
       minTurn: 6,
       maxTurn: 15,
     },
@@ -891,7 +891,7 @@ export const bookTransmigration: Scenario = {
         { text: '追问缘故', effects: { plot: 4 }, reaction: '你追问那花种的缘故，老花匠左右张望、欲言又止；顺着这点蹊跷，你撬开了他不愿明言的隐秘。' },
         { text: '当众弃掉', effects: { favor: -4 }, reaction: '你当众将那花种弃了，老花匠愕然、佝偻着背匆匆离去；那份郑重的托付，便随他失望的背影一同碎了。' },
       ],
-      summary: '奇异花种',
+      summary: '奇异花种', art: '1cjokng', gen: 'flux',
     },
     {
       narrative:
@@ -901,7 +901,7 @@ export const bookTransmigration: Scenario = {
         { text: '加强戒备', effects: { safety: 3 }, reaction: '你连夜加强了戒备，门窗紧锁、不留半分破绽；那行凭空浮现的诗句仍悬着，杀机却被你按了下去。' },
         { text: '强行遗忘', effects: { plot: -4 }, reaction: '你强迫自己遗忘那行诗句，只觉太阳穴突突直跳；那来自修正力的警告便被你硬压回心底，隐患仍在。' },
       ],
-      summary: '窗纸题诗',
+      summary: '窗纸题诗', art: '1hriuoz', gen: 'flux',
       requires: 'plot>=65',
     },
     {
@@ -912,7 +912,7 @@ export const bookTransmigration: Scenario = {
         { text: '赏银请他续讲', effects: { favor: 2 }, reaction: '你赏银请他往下讲，说书人眉开眼笑地拍了醒木；这一点慷慨，换来满座路人几分对你的好感与侧目。' },
         { text: '当街斥骂', effects: { favor: -4 }, reaction: '你当街斥骂那说书人，他悻悻收了醒木；那段呼之欲出的家族秘辛，便随围观人群的哄散一同没了下文。' },
       ],
-      summary: '街头评书',
+      summary: '街头评书', art: '1jojbkq', gen: 'flux',
     },
     {
       narrative:
@@ -922,7 +922,7 @@ export const bookTransmigration: Scenario = {
         { text: '记下数字', effects: { plot: 4 }, reaction: '你默默记下那串古怪数字，小书童尚跪在地上瑟瑟发抖；这看似无来由的数字背后，藏着他的秘密。' },
         { text: '严厉责罚', effects: { favor: -5 }, reaction: '你厉声责罚，那小书童吓得伏地痛哭、再不敢出声；那串暗含玄机的数字，便随他的缄默一同咽了回去。' },
       ],
-      summary: '书童怪语',
+      summary: '书童怪语', art: '1b0jw6f', gen: 'flux',
     },
     {
       narrative:
@@ -932,7 +932,7 @@ export const bookTransmigration: Scenario = {
         { text: '归还信使', effects: { safety: 2 }, reaction: '你将请柬归还信使，他愕然接过、转身离去；那场言称事关重大的会面，便随这封笺纸一同与你擦肩。' },
         { text: '当众撕毁', effects: { favor: -2, plot: -2 }, reaction: '你当众将请柬撕得粉碎，信使骇得连连后退；是机缘还是圈套都随碎纸散去，你也错失了背后的因由。' },
       ],
-      summary: '错送请柬',
+      summary: '错送请柬', art: '1lvilmq', gen: 'flux',
       maxTurn: 7,
     },
     {
@@ -943,7 +943,7 @@ export const bookTransmigration: Scenario = {
         { text: '继续封存', effects: { safety: 1 }, reaction: '你将那只木箱继续封存原处，老仆暗暗松了口气；你这具身体不为人知的过往，便仍锁在尘埃里不动。' },
         { text: '命人劈开焚毁', effects: { plot: -5 }, reaction: '你命人将木箱劈开焚毁，老仆骇得连连摆手；箱中那段或关身世的隐秘，便随火舌一同化作了灰烬。' },
       ],
-      summary: '尘封木箱',
+      summary: '尘封木箱', art: '1cyh03b', gen: 'flux',
     },
     {
       narrative:
@@ -953,7 +953,7 @@ export const bookTransmigration: Scenario = {
         { text: '请府医诊治', effects: { favor: 3, safety: 1 }, reaction: '你干脆请了府医为那老厨子诊治，丫鬟们感激涕零；这份善意传开去，悄悄替你攒下几分难得人望。' },
         { text: '冷眼旁观', effects: { favor: -6 }, reaction: '你冷眼旁观、置之不理，几名丫鬟失望地退了下去；那点本可结下的善缘，就这么从你冷脸里溜走了。' },
       ],
-      summary: '病厨求助',
+      summary: '病厨求助', art: '1gtqpdp', gen: 'flux',
       requires: 'favor>=50',
     },
     {
@@ -964,7 +964,7 @@ export const bookTransmigration: Scenario = {
         { text: '留作纪念', effects: { favor: 1 }, reaction: '你只当寻常物件留作纪念，那刻着姓氏的灯座被你随手搁下；那处隐晦的指引，险险从你指间滑过。' },
         { text: '随手丢河里', effects: { plot: -3 }, reaction: '你嫌晦气随手将河灯丢进河里，灯影打着旋沉没；那个借童手递来的姓氏线索，便随水流一同散了。' },
       ],
-      summary: '陌生河灯',
+      summary: '陌生河灯', art: '1lxgtki', gen: 'flux',
     },
     {
       narrative:
@@ -974,7 +974,7 @@ export const bookTransmigration: Scenario = {
         { text: '买下画卷', effects: { favor: 2 }, reaction: '你买下那幅画卷，画师如释重负地连连作揖；这一笔交情之外，那双能梦见素未谋面之人的眼，蹊跷得很。' },
         { text: '当成疯话', effects: { plot: -2 }, reaction: '你把画师的话当成疯语一笑置之，他怔怔地拾起画笔；那场或与书之虚实相关的怪梦，便被你轻轻揭过。' },
       ],
-      summary: '画师怪梦',
+      summary: '画师怪梦', art: '1gsgc1k', gen: 'flux',
       minTurn: 10,
     },
     {
@@ -985,7 +985,7 @@ export const bookTransmigration: Scenario = {
         { text: '追查动土者', effects: { plot: 3 }, reaction: '你顺着那动土的痕迹追查，府中几人面色微变；这坛掺了药的旧酒究竟冲谁而来，被你摸到了线头。' },
         { text: '照旧饮用', effects: { safety: -6 }, reaction: '你不以为意照旧饮下那坛旧酒，旁人浑然不觉；那丝药味顺着喉咙滑下，命运的齿轮冷冷地一转。' },
       ],
-      summary: '桂下旧酒',
+      summary: '桂下旧酒', art: '1eqs1nv', gen: 'flux',
     },
     {
       narrative:
@@ -995,7 +995,7 @@ export const bookTransmigration: Scenario = {
         { text: '查信件来源', effects: { plot: 4 }, reaction: '你着意去查那封信的来路，那少年梗着脖子不肯多言；顺着这点蛛丝，你摸到了他翻墙背后的隐情。' },
         { text: '交官严办', effects: { favor: -5 }, reaction: '你将那少年交官严办，他绝望地回头死死盯你一眼；那段呼之欲出的隐情，便随牢门一同被你关死了。' },
       ],
-      summary: '翻墙少年',
+      summary: '翻墙少年', art: '1ieet5q', gen: 'flux',
       requires: 'safety>=80',
     },
     {
@@ -1006,7 +1006,7 @@ export const bookTransmigration: Scenario = {
         { text: '装作不见绕路离开', effects: { safety: 3 }, reaction: '你装作未见、绕路而去，那内侍慌忙抱起账册没入回廊；那几张诡异盐引牵出的滔天大案，与你擦肩。' },
         { text: '喝斥内侍引人围观', effects: { favor: -4, safety: -3 }, reaction: '你高声呵斥引来一圈围观，那内侍面如死灰、抖作一团；你这一嚷，反把自己卷进了那桩盐案的漩涡。' },
       ],
-      summary: '散落账册',
+      summary: '散落账册', art: '1ek8hyv', gen: 'flux',
     },
     {
       narrative:
@@ -1016,7 +1016,7 @@ export const bookTransmigration: Scenario = {
         { text: '立即上报官府', effects: { favor: 3 }, reaction: '你将此事即刻上报官府，差役神色一凛郑重接下；这一手稳妥利落，也把那桩干系敌国的祸事摘了出去。' },
         { text: '命人直接处死', effects: { plot: -5, favor: -2 }, reaction: '你嫌晦气命人将白隼直接处死，下人惊得连连后退；那枚干系敌国使团的脚环线索，便随它一同断了。' },
       ],
-      summary: '受伤白隼',
+      summary: '受伤白隼', art: '1bn7im1', gen: 'flux',
       minTurn: 4,
       maxTurn: 10,
     },
@@ -1028,7 +1028,7 @@ export const bookTransmigration: Scenario = {
         { text: '封存不问', effects: { safety: 4 }, reaction: '你将那册针谱与名单一并封存，再不去问；那桩牵着织造司朱印的隐秘，便锁进黑暗，无人再去触碰。' },
         { text: '拿去换取人情', effects: { favor: 2, safety: -5 }, reaction: '你转手拿那份名单去换人情，老仆神色复杂地别过脸；好处是攒了交情，命运的齿轮却悄悄朝凶处转。' },
       ],
-      summary: '针谱名单',
+      summary: '针谱名单', art: '1lrhw8w', gen: 'flux',
     },
     {
       narrative:
@@ -1038,7 +1038,7 @@ export const bookTransmigration: Scenario = {
         { text: '安排人护送他', effects: { favor: 4 }, reaction: '你安排人护送那惊魂未定的旧识离去，他感激得几欲落泪；这一手仗义，悄悄替你赚下几分难得人心。' },
         { text: '嫌麻烦直接离席', effects: { plot: -4 }, reaction: '你嫌麻烦起身离席，那旧识绝望地望着你的背影；那桩冒死要告的旧案真相，便随急雨一同没了下文。' },
       ],
-      summary: '旧识来信',
+      summary: '旧识来信', art: '1eo4coo', gen: 'flux',
       requires: 'favor>=40',
     },
     {
@@ -1048,7 +1048,7 @@ export const bookTransmigration: Scenario = {
         { text: '抢先赠裘，把名场面据为己有', effects: { plot: 8, favor: -10, safety: -6 }, reaction: '你抢先一步为女主披上狐裘，雪幕里那本属于太子的名场面骤然失色；他赶到时，脸色铁青得吓人。' },
         { text: '悄悄退场，把机会留给太子', effects: { plot: -4, favor: 10, safety: 4 }, reaction: '你悄然退到雪影里，将那个名垂京华的瞬间原样还给太子；女主依偎进他怀中，剧本稳稳合回了原样。' },
       ],
-      summary: '雪夜赠裘',
+      summary: '雪夜赠裘', art: '1lwd6yr', gen: 'flux',
       weight: 1.2,
     },
     {
@@ -1058,7 +1058,7 @@ export const bookTransmigration: Scenario = {
         { text: '偷服偏方，赌一线生机', effects: { safety: 14, plot: 6, favor: -4 }, reaction: '你不顾医嘱偷服偏方，满室垂泪的家人骇然失色；那只在病榻边等候的死神，竟被你硬生生逼退了半步。' },
         { text: '遵医嘱静养，听天由命', effects: { safety: -8, plot: -2 }, reaction: '你乖乖遵着医嘱静养，御医摇头、香烛已备；命运的齿轮冷冷一转，那既定的死期照旧朝你逼了过来。' },
       ],
-      summary: '疫病偏方',
+      summary: '疫病偏方', art: '1gypk59', gen: 'flux',
       requires: 'safety<=40',
       weight: 1.6,
     },
@@ -1070,7 +1070,7 @@ export const bookTransmigration: Scenario = {
         { text: '攥着调令，待价而沽', effects: { plot: 6, favor: -6, safety: 6 }, reaction: '你将调令攥在手中待价而沽，几方势力暗暗起了忌惮；这一手既稳又险，把自己悬在了风口浪尖。' },
         { text: '烧掉调令，不掺和这趟浑水', effects: { safety: 8, plot: -4 }, reaction: '你一把火烧了那份调令，灰烬打着旋飘散；你彻底置身事外，那场宫变便照着原著的轨迹隆隆碾来。' },
       ],
-      summary: '截获调令',
+      summary: '截获调令', art: '1e2hovh', gen: 'gemini',
       keyMoment: true,
       minTurn: 8,
     },
@@ -1081,7 +1081,7 @@ export const bookTransmigration: Scenario = {
         { text: '点破病根，献上对症之法', effects: { favor: 16, plot: 6, safety: -4 }, reaction: '你点破那旧伤病根、献上对症之法，太子女主又惊又喜、看你如见恩人；这桩雪中送炭，结下天大情分。' },
         { text: '装作不知，明哲保身', effects: { safety: 4, favor: -4 }, reaction: '你佯作不知、缄口明哲保身，女主旧伤复发、痛得死去活来；那只无形之手，满意地看你退回了原位。' },
       ],
-      summary: '女主旧伤',
+      summary: '女主旧伤', art: '1chorni', gen: 'flux',
       requires: 'favor>=30',
     },
     {
@@ -1091,7 +1091,7 @@ export const bookTransmigration: Scenario = {
         { text: '收留孩子，埋下一枚棋子', effects: { plot: 8, safety: -6, favor: 4 }, reaction: '你将那反派遗孤悄悄收留，废园里只你二人知情；这枚凭空冒出的棋子，悄悄落进了你手中的暗格。' },
         { text: '送他远走他乡，斩断牵连', effects: { plot: 4, safety: 6 }, reaction: '你打点盘缠送那孩子远走他乡，斩断了这要命的牵连；好处是干净利落，那处变数也随之被你抹平。' },
       ],
-      summary: '反派遗孤',
+      summary: '反派遗孤', art: '1bs41aj', gen: 'flux',
       requires: 'plot>=40',
       once: true,
     },
@@ -1103,7 +1103,7 @@ export const bookTransmigration: Scenario = {
         { text: '称病早退，避其锋芒', effects: { safety: 6, favor: -2, plot: -2 }, reaction: '你称病早早退席，避开了那盏出丑的酒；政敌窃笑你怯懦，命运的齿轮虽未碾来，你却也失了翻盘良机。' },
         { text: '低头认软，息事宁人', effects: { favor: -2, safety: 2, plot: -4 }, reaction: '你低头认软、息事宁人，满座宾客暗暗惋惜；那盏羞辱你的酒被你咽了下去，剧本稳稳滑回了原样。' },
       ],
-      summary: '中秋宫宴',
+      summary: '中秋宫宴', art: '1az4bto', gen: 'flux',
       minTurn: 6,
       weight: 1.2,
     },
@@ -1114,7 +1114,7 @@ export const bookTransmigration: Scenario = {
         { text: '联名上书弹劾，顺势而为', effects: { plot: 8, favor: 8, safety: -10 }, reaction: '你随族中联名上书弹劾，那权臣的倒台之势愈发汹涌；可你这一脚踩下去，也把全家押上了赌桌。' },
         { text: '按兵不动，静观成败', effects: { safety: 4, plot: -2 }, reaction: '你按兵不动、隔岸观火，那权臣终是在万人唾骂里倒了；旁人暗暗摇头，你这一票，谁也没记得。' },
       ],
-      summary: '弹劾奏章',
+      summary: '弹劾奏章', art: '1de04ff', gen: 'flux',
       minTurn: 12,
     },
     {
@@ -1124,7 +1124,7 @@ export const bookTransmigration: Scenario = {
         { text: '挺身做替身，赴这场险宴', effects: { favor: 18, safety: -12, plot: 8 }, reaction: '你挺身做了替身、亲赴那场鸿门险宴，女主又惊又愧、几欲落泪；这一身孤勇，换来她死心塌地的信重。' },
         { text: '献策破局，却不亲身涉险', effects: { favor: 8, plot: 4, safety: -2 }, reaction: '你献策破局却不亲身犯险，女主感激之余眼底掠过一丝失落；这一步走得稳，情分却也浅了几分。' },
       ],
-      summary: '替身赴宴',
+      summary: '替身赴宴', art: '1eus9x3', gen: 'flux',
       requires: 'favor>=40',
       weight: 1.3,
     },
@@ -1135,7 +1135,7 @@ export const bookTransmigration: Scenario = {
         { text: '追问到底，探这世界的虚实', effects: { plot: 8, safety: -4 }, reaction: '你追问到底、要探这世界的虚实，那说书人神色古怪地压低了嗓；书与现实的边界，被你撬开了一道缝。' },
         { text: '付钱了事，不再深究', effects: { safety: 2, plot: -2 }, reaction: '你付钱了事、不再深究，那说书人合上醒木转身去了；这世界扑朔迷离的底细，便随他的背影一同沉了底。' },
       ],
-      summary: '客栈说书',
+      summary: '客栈说书', art: '1cy4e6h', gen: 'flux',
       requires: 'plot>=50',
     },
     {
@@ -1145,7 +1145,7 @@ export const bookTransmigration: Scenario = {
         { text: '深夜潜入药库，自寻线索', effects: { safety: -8, plot: 6, favor: 2 }, reaction: '你深夜潜入药库自寻线索，黑暗里步步惊心；那桩泼到你头上的脏水背后，被你摸到了真凶的尾巴。' },
         { text: '主动请罪、配合彻查', effects: { favor: 6, safety: -4, plot: -2 }, reaction: '你主动请罪、配合彻查，宫中看你的眼神稍稍松了些；可那张栽赃的网仍在，清白与否，仍悬而未决。' },
       ],
-      summary: '药库失窃',
+      summary: '药库失窃', art: '1iyb263', gen: 'flux',
       weight: 1.1,
     },
     {
@@ -1155,7 +1155,7 @@ export const bookTransmigration: Scenario = {
         { text: '故意输棋，藏锋守拙', effects: { safety: 8, favor: 2, plot: -4 }, reaction: '你故意输了这盘御棋、藏锋守拙，皇帝抚须而笑；那柄悬在风头之上的刀，被你不动声色地避了开去。' },
         { text: '全力以赴，一鸣惊人', effects: { plot: 8, favor: 6, safety: -10 }, reaction: '你全力以赴、一子定乾坤，满殿惊叹，皇帝眼底却掠过一丝忌惮；风头出尽，杀机也随之贴近了你。' },
       ],
-      summary: '御园对弈',
+      summary: '御园对弈', art: '1dgxk2c', gen: 'flux',
       minTurn: 10,
     },
     {
@@ -1165,7 +1165,7 @@ export const bookTransmigration: Scenario = {
         { text: '暗助太子夺标，卖个人情', effects: { favor: 12, plot: 4, safety: 2 }, reaction: '你暗中助太子夺得头标，两岸喝彩震天，他朝你投来一记意味深长的目光；这个人情，他记下了。' },
         { text: '搅乱赛局，制造变数', effects: { plot: 8, favor: -10, safety: -4 }, reaction: '你暗中搅乱赛局，太子的龙舟生生落了后，他眼底寒意陡生；这一搅，结了仇怨，也添了变数。' },
       ],
-      summary: '龙舟夺标',
+      summary: '龙舟夺标', art: '1negwke', gen: 'flux',
       weight: 1.1,
     },
     {
@@ -1175,7 +1175,7 @@ export const bookTransmigration: Scenario = {
         { text: '让他指证大反派，掀翻棋局', effects: { plot: 8, favor: 10, safety: -12 }, reaction: '你让那证人挺身指证大反派，满堂哗然，棋局轰然倾覆；那只布了多年局的手，竟被你一举掀翻。' },
         { text: '命他噤声，保全自身', effects: { safety: 6, favor: -6, plot: -2 }, reaction: '你命那证人闭口噤声，他绝望地垂下眼；你二人是保全了，那盘本可掀翻的大棋，也随之稳回了原样。' },
       ],
-      summary: '春闱舞弊',
+      summary: '春闱舞弊', art: '1er9sbn', gen: 'flux',
       requires: 'plot>=55',
       minTurn: 14,
     },
@@ -1186,7 +1186,7 @@ export const bookTransmigration: Scenario = {
         { text: '提笔续写，亲手定下新结局', effects: { plot: 8, safety: -6, favor: 4 }, reaction: '你提笔在那片空白处续写新结局，烛火下墨迹未干便似有了生气；这世间众人的命运，竟由你执笔定夺。' },
         { text: '合上残稿，不敢僭越天意', effects: { safety: 4, plot: -4 }, reaction: '你不敢僭越天意，合上了那卷残稿；那片悬而未决的空白便仍空着，命运的笔，你到底没敢接过来。' },
       ],
-      summary: '残稿空白',
+      summary: '残稿空白', art: '1fg7jae', gen: 'flux',
       requires: 'plot>=55',
       once: true,
       itemsGained: ['凤凰劫残稿'],
@@ -1198,7 +1198,7 @@ export const bookTransmigration: Scenario = {
         { text: '倾尽盘缠救治众人', effects: { favor: 10, safety: 4, plot: 2 }, reaction: '你倾尽盘缠救治了满镇病者，几位同行的伤者含泪叩谢；风雪封山的孤镇里，你这点善因暖了人心。' },
         { text: '只顾自保，连夜离镇', effects: { safety: 6, favor: -8 }, reaction: '你只顾自保、连夜弃众离镇，身后是病者绝望的咳喘；命运的齿轮冷冷一转，把你也推离了人心。' },
       ],
-      summary: '雪山寒症',
+      summary: '雪山寒症', art: '1lwo0xl', gen: 'flux',
       weight: 1,
     },
     {
@@ -1208,7 +1208,7 @@ export const bookTransmigration: Scenario = {
         { text: '搬出旧谱破绽，反诘族老', effects: { plot: 6, safety: -6, favor: 2 }, reaction: '你搬出旧谱破绽反诘族老，满堂宗亲哗然，那几位老者一时语塞；这一关，你竟硬生生闯了过去。' },
         { text: '叩首认祖，恭顺周全', effects: { safety: 8, favor: 2, plot: -4 }, reaction: '你叩首认祖、恭顺周全，几位族老缓和了脸色；你这具身体赖以庇身的名分，总算稳稳保住了。' },
       ],
-      summary: '宗祠认亲',
+      summary: '宗祠认亲', art: '1d0ri0i', gen: 'flux',
       minTurn: 9,
     },
     {
@@ -1218,7 +1218,7 @@ export const bookTransmigration: Scenario = {
         { text: '抢在火尽前默记天机', effects: { plot: 8, safety: -8 }, reaction: '你抢在火尽前死死默记下那天机，火舌舔着指尖；那只不愿你窥破定局的手，竟被你硬抢了一步。' },
         { text: '任它焚毁，不再逆天而行', effects: { safety: 6, plot: -6, favor: 2 }, reaction: '你任那残稿焚毁殆尽、不再逆天而行，灰烬簌簌而落；那窥破的天机随火湮灭，定局便照旧落了定。' },
       ],
-      summary: '残稿自焚',
+      summary: '残稿自焚', art: '1fg8upf', gen: 'flux',
       requiresItem: '凤凰劫残稿',
       once: true,
     },
@@ -1229,7 +1229,7 @@ export const bookTransmigration: Scenario = {
         { text: '以身挡刀，血溅当场', effects: { favor: 20, safety: -12, plot: 8 }, reaction: '你以血肉之躯硬挡下那一刀，鲜血溅了太子满身，他骇然失色、一把将你抱住；这一刀，换来刻骨信重。' },
         { text: '高呼示警，自己先避', effects: { favor: 6, safety: -2, plot: 2 }, reaction: '你高呼示警、自己先避，太子虽避过却也挂了彩，眼底掠过一丝难辨的复杂；情分浅了，命也保住了。' },
       ],
-      summary: '边城遇刺',
+      summary: '边城遇刺', art: '1ksrl1p', gen: 'flux',
       requires: 'favor>=50',
       minTurn: 16,
       weight: 1.3,
@@ -1241,7 +1241,7 @@ export const bookTransmigration: Scenario = {
         { text: '坦白自己穿书者的身份', effects: { plot: 8, favor: -8, safety: -6 }, reaction: '你坦白了穿书者的身份，女主骇然瞪大双眼、半晌作不得声；这桩天机出口，那只无形之手骤然警觉。' },
         { text: '只叙旧情，藏起秘密', effects: { favor: 10, plot: 2, safety: 2 }, reaction: '你只叙旧情、把秘密深深藏起，女主推心置腹、愈发信你；这一步走得稳妥，情分与安稳都保住了。' },
       ],
-      summary: '家宴密谈',
+      summary: '家宴密谈', art: '1cw9qyl', gen: 'flux',
       requires: 'favor>=60',
       minTurn: 18,
     },
@@ -1252,7 +1252,7 @@ export const bookTransmigration: Scenario = {
         { text: '逆流强行唤醒众人记忆', effects: { plot: 8, safety: -12, favor: -4 }, reaction: '你逆流而上强行唤醒众人被改的记忆，那本无形的剧本剧烈震颤；满天修正力被你这一搅，霍然惊动。' },
         { text: '顺势隐忍，等反噬过去', effects: { safety: 6, plot: -6 }, reaction: '你顺势隐忍、暂避那阵反噬，身边人仍一个个把你忘去；你忍下了这口气，存在的痕迹却被悄悄抹淡。' },
       ],
-      summary: '身边人忘了你',
+      summary: '身边人忘了你', art: 'bc4o75', gen: 'flux',
       requires: 'plot>=75',
       weight: 1.4,
     },
@@ -1263,7 +1263,7 @@ export const bookTransmigration: Scenario = {
         { text: '与主角并肩，写下圆满新局', effects: { favor: 12, plot: 8, safety: 8 }, reaction: '你与主角并肩写下圆满新局，亲手改得面目全非的世界在你脚下重新生长；再没有谁能替你们翻页。' },
         { text: '功成身退，悄然离开这方天地', effects: { safety: 12, plot: 4, favor: -4 }, reaction: '你功成身退、悄然离去，主角在身后久久望着你的背影；这方再无眷恋的天地，被你轻轻放下了。' },
       ],
-      summary: '改写终章',
+      summary: '改写终章', art: '1eav6hr', gen: 'gemini',
       keyMoment: true,
       minTurn: 24,
       weight: 1.5,
@@ -1275,7 +1275,7 @@ export const bookTransmigration: Scenario = {
         { text: '替他出头，状告大反派', effects: { plot: 6, favor: 6, safety: -8 }, reaction: '你替那寒士出头、状告大反派，满堂愕然——这书里连名字都不配有的草芥，竟被你扶上了公堂。' },
         { text: '赠些银两打发，不愿生事', effects: { safety: 2, favor: -2, plot: -2 }, reaction: '你赠了银两将那寒士打发，他含泪叩谢、踉跄而去；你避开了是非，那桩血泪冤情也随之沉入尘埃。' },
       ],
-      summary: '寒士喊冤',
+      summary: '寒士喊冤', art: '1cwd834', gen: 'flux',
       weight: 1,
     },
     {
@@ -1285,7 +1285,7 @@ export const bookTransmigration: Scenario = {
         { text: '趁世界「卡住」，从容布置后手', effects: { plot: 10, safety: 8 }, reaction: '你趁着这卡住的间隙从容布下后手，凝固的世界里只你一人能动；命运的剧本被按下暂停，机在你手。' },
         { text: '对着虚空喊话，催更兼吐槽', effects: { plot: 6, favor: -4, safety: -2 }, reaction: '你对着虚空喊话催更兼吐槽，那行金字闪了几闪、似被你气着；这一闹痛快，却也搅得局面平添变数。' },
       ],
-      summary: '作者卡文',
+      summary: '作者卡文', art: '1b6lh2m', gen: 'flux',
       weight: 0.4,
       once: true,
     },
@@ -1296,7 +1296,7 @@ export const bookTransmigration: Scenario = {
         { text: '故意演给「读者」看，赚波好感', effects: { favor: 8, plot: 6, safety: -4 }, reaction: '你刻意演给那群看不见的读者看，满天弹幕霎时炸出一片叫好；这波好感，连旁人都莫名觉得你顺眼。' },
         { text: '我行我素，不被剧本绑架', effects: { plot: 8, favor: -2 }, reaction: '你我行我素、绝不被剧本牵着走，弹幕里一片惊呼连连；你这副不肯认命的模样，看得众读者直拍案。' },
       ],
-      summary: '读者弹幕',
+      summary: '读者弹幕', art: '1kep5sj', gen: 'flux',
       weight: 0.4,
       once: true,
     },
@@ -1307,7 +1307,7 @@ export const bookTransmigration: Scenario = {
         { text: '管它的，崩得彻底才能改命', effects: { plot: 12, safety: -10 }, reaction: '你索性破罐破摔、崩得彻彻底底，那行血红警告疯狂闪烁；修正力被你这一崩激得震动，改命就在此举。' },
         { text: '赶紧找补，演回该有的样子', effects: { plot: -4, safety: 8, favor: 4 }, reaction: '你赶紧找补、规规矩矩演回原样，那行预警渐渐淡去；你退回了安全线后，与世界的正面相撞也化解了。' },
       ],
-      summary: '崩人设预警',
+      summary: '崩人设预警', art: '1kfdlo0', gen: 'flux',
       weight: 0.4,
       once: true,
     },
@@ -1318,7 +1318,7 @@ export const bookTransmigration: Scenario = {
         { text: '带着现代人的清醒重返书中', effects: { plot: 8, safety: 4, favor: 2 }, reaction: '你带着现代人的清醒重返书中，眼底比谁都亮；这一回，你比满书的角色都更明白自己要走的路。' },
         { text: '贪恋片刻安宁，差点误了书里大事', effects: { safety: -8, plot: -2 }, reaction: '你贪恋那片刻安宁、险些误了书里大事，醒来时一身冷汗；命运的齿轮冷冷一转，差点把你甩下了车。' },
       ],
-      summary: '一梦回现实',
+      summary: '一梦回现实', art: '1j19dbr', gen: 'flux',
       weight: 0.4,
       once: true,
     },
@@ -1330,7 +1330,7 @@ export const bookTransmigration: Scenario = {
         { text: '将计就计，反咬构陷者一口', effects: { plot: 10, favor: 4, safety: -10 }, reaction: '你将计就计反咬构陷者一口，满朝文武倒抽冷气，那暗处设局的人当场僵住；这一反将，凶险却痛快。' },
         { text: '从容受验，赌那盆水未必有诈', effects: { safety: -6, favor: 2 }, reaction: '你从容受验、赌那盆水未必有诈，满殿屏息；血滴入水的刹那，命运的齿轮悬在了那只设局的手心。' },
       ],
-      summary: '滴血认亲',
+      summary: '滴血认亲', art: '1g1aj9r', gen: 'flux',
       requires: 'safety>=30',
       minTurn: 12,
       weight: 1.2,
@@ -1343,7 +1343,7 @@ export const bookTransmigration: Scenario = {
         { text: '锦上添花，与女主合舞', effects: { plot: 4, favor: 6 }, reaction: '你与女主合舞一曲、锦上添花，满座喝彩，她朝你递来一缕真切的暖意；这一退一让，反成了佳话。' },
         { text: '甘当绿叶，把风光让给女主', effects: { plot: -4, favor: 10, safety: 4 }, reaction: '你甘当绿叶、把泼天风光尽数让给女主，她登台一舞惊艳全场；剧本稳稳合回原样，无人记得你来过。' },
       ],
-      summary: '惊鸿一舞',
+      summary: '惊鸿一舞', art: '1dz259o', gen: 'flux',
       minTurn: 8,
       weight: 1.1,
     },
@@ -1355,7 +1355,7 @@ export const bookTransmigration: Scenario = {
         { text: '徐徐布局，断其羽翼', effects: { plot: 6, safety: -4, favor: 4 }, reaction: '你徐徐布局、先断其羽翼，那宠妃身边的人一个个悄然失势；她尚未察觉，棋局已在脚下松动。' },
         { text: '隐忍蛰伏，不打草惊蛇', effects: { safety: 6, plot: -2 }, reaction: '你隐忍蛰伏、不打草惊蛇，那宠妃依旧盛气凌人；你按下了这口气，复仇的火也随之埋进了更深处。' },
       ],
-      summary: '扳倒宠妃',
+      summary: '扳倒宠妃', art: '1dv8mh9', gen: 'flux',
       requires: 'safety>=35',
       minTurn: 14,
       weight: 1.2,
@@ -1367,7 +1367,7 @@ export const bookTransmigration: Scenario = {
         { text: '才情扬名，做这京城第一才女', effects: { plot: 8, favor: 4, safety: -6 }, reaction: '你借这葬花词扬名立万、做了京城第一才女，满城争相传抄；暗处却也有无数双眼睛因嫉恨盯紧了你。' },
         { text: '低调收敛，才华不外露', effects: { safety: 6, plot: -2 }, reaction: '你低调收敛、才华深藏不露，那阙绝艳词作便悄然散佚；你避开了风头，也藏起了那点惊世的锋芒。' },
       ],
-      summary: '葬花成名',
+      summary: '葬花成名', art: '1j9r533', gen: 'flux',
       minTurn: 9,
       weight: 0.9,
     },
@@ -1378,7 +1378,7 @@ export const bookTransmigration: Scenario = {
         { text: '力劝家族盛极思危、收敛锋芒', effects: { plot: 6, safety: 8, favor: 2 }, reaction: '你力劝家族盛极思危、收敛锋芒，几位长辈将信将疑地皱起了眉；那场盛极而衰的崩塌，被你按住一线。' },
         { text: '随波逐流，享尽这场富贵', effects: { plot: -2, safety: -8, favor: 4 }, reaction: '你随波逐流、痛快享尽这场泼天富贵，省亲的烈火烹油愈发耀眼；衰败的开端，便照着原著悄然埋下。' },
       ],
-      summary: '贵妃省亲',
+      summary: '贵妃省亲', art: '1kf5580', gen: 'flux',
       minTurn: 11,
     },
     {
@@ -1389,7 +1389,7 @@ export const bookTransmigration: Scenario = {
         { text: '坦然受检，赌他们搜不出', effects: { safety: -8, favor: 2 }, reaction: '你坦然受检、赌他们搜不出蹊跷，那粗暴的脚步声步步逼近；命运的齿轮悬在了那只翻箱倒柜的手上。' },
         { text: '买通搜检之人，大事化小', effects: { safety: 4, favor: -4, plot: -2 }, reaction: '你悄悄买通搜检之人、大事化小，搜检的风暴堪堪从你院落绕过；你这一手稳妥，却也折了几分气节。' },
       ],
-      summary: '抄检宫闱',
+      summary: '抄检宫闱', art: '1dzpiyt', gen: 'flux',
       requires: 'safety>=30',
       minTurn: 13,
       weight: 1.2,
@@ -1402,7 +1402,7 @@ export const bookTransmigration: Scenario = {
         { text: '自请祈福清修，避开风浪', effects: { safety: 10, favor: -4, plot: -2 }, reaction: '你自请祈福清修、避开风浪，朱门紧闭、青灯古佛；你这一退，远离了纷争，也按下了翻身的心气。' },
         { text: '心灰意冷，听天由命', effects: { safety: -6, favor: -4 }, reaction: '你心灰意冷、听天由命，冷宫的寒意一寸寸漫上心头；命运的齿轮冷冷一转，那既定的沉沦悄然落定。' },
       ],
-      summary: '打入冷宫',
+      summary: '打入冷宫', art: '1duq3tr', gen: 'flux',
       requires: 'favor<=40',
       minTurn: 13,
       weight: 1.2,
@@ -1415,7 +1415,7 @@ export const bookTransmigration: Scenario = {
         { text: '当众服软告饶，保住性命', effects: { safety: 4, favor: -6, plot: -2 }, reaction: '你当众服软告饶、保住了性命，那宠妃志得意满地冷笑；你这一跪，命是留住了，颜面却跌进了尘里。' },
         { text: '搬出更大的靠山反制', effects: { plot: 6, favor: 6, safety: -6 }, reaction: '你搬出更大的靠山强行反制，那宠妃脸色骤变、行刑太监的水火棍僵在半空；满宫屏息，杀局当场反转。' },
       ],
-      summary: '当众重责',
+      summary: '当众重责', art: '1de8nkv', gen: 'flux',
       requires: 'safety>=30',
       minTurn: 15,
       weight: 1.2,
@@ -1428,7 +1428,7 @@ export const bookTransmigration: Scenario = {
         { text: '攥住秘密，待价而沽', effects: { plot: 6, favor: -4, safety: 4 }, reaction: '你攥住那要命的秘密待价而沽，几方势力暗暗起了忌惮；这一手稳中藏险，把你悬在了刀尖之上。' },
         { text: '装聋作哑，远离是非', effects: { safety: 8, plot: -4 }, reaction: '你装聋作哑、远远避开这天大是非，那桩阴谋便照着原著悄然推进；你保住了自身，也错过了翻盘良机。' },
       ],
-      summary: '狸猫换子',
+      summary: '狸猫换子', art: '1gjl5y2', gen: 'gemini',
       keyMoment: true,
       minTurn: 16,
       weight: 1.2,
@@ -1441,7 +1441,7 @@ export const bookTransmigration: Scenario = {
         { text: '散尽家财、广结善缘以图东山', effects: { plot: 4, favor: 6, safety: -4 }, reaction: '你散尽家财、广结善缘以图东山，落魄之际仍有人念你的好；这点善因，悄悄在乱世里替你留了后路。' },
         { text: '随大厦倾覆，听天由命', effects: { safety: -10, favor: -2 }, reaction: '你随那大厦一并倾覆、听天由命，墙倒众人推、落井下石者无数；命运的齿轮冷冷一转，碾过了一切。' },
       ],
-      summary: '树倒猢狲散',
+      summary: '树倒猢狲散', art: '148omv3', gen: 'flux',
       requires: 'safety<=45',
       minTurn: 18,
       weight: 1.2,
@@ -1454,7 +1454,7 @@ export const bookTransmigration: Scenario = {
         { text: '以诚相待，化情敌为知己', effects: { plot: 4, favor: 6 }, reaction: '你以诚相待、化情敌为知己，那旧人怔了怔、眼底化开几分暖意；这一手化干戈，连太子都另眼相看。' },
         { text: '抽身退让，成全他们', effects: { plot: -4, favor: -6, safety: 6 }, reaction: '你抽身退让、成全他二人这段旧情，太子回头深深看了你一眼；剧本稳稳合回原样，你悄然退到了局外。' },
       ],
-      summary: '白月光归来',
+      summary: '白月光归来', art: '18yf356', gen: 'flux',
       requires: 'favor>=40',
       minTurn: 14,
       weight: 1.1,
@@ -1467,7 +1467,7 @@ export const bookTransmigration: Scenario = {
         { text: '不卑不亢，以才德服人', effects: { favor: 4, plot: 4 }, reaction: '你不卑不亢、以才德服人，老祖宗深不见底的眼里掠过一丝赞许；这一关，你竟挣得了她几分真心看重。' },
         { text: '言语失了分寸，惹她不快', effects: { favor: -8, safety: -4 }, reaction: '你言语间一时失了分寸、惹得老祖宗不快，满殿宫人都替你捏了把汗；这一句失言，断了你后宫的退路。' },
       ],
-      summary: '老祖宗召见',
+      summary: '老祖宗召见', art: 'oj7dfk', gen: 'flux',
       minTurn: 10,
     },
     {
@@ -1478,7 +1478,7 @@ export const bookTransmigration: Scenario = {
         { text: '顺应原著、成全门第良配', effects: { plot: -6, favor: 2, safety: 4 }, reaction: '你顺应原著成全了那门第良配，青梅旧约的有情人黯然分离；剧本稳稳落定，那段遗憾照旧写进了书里。' },
         { text: '自己横插一脚，另结良缘', effects: { plot: 10, favor: -8, safety: -4 }, reaction: '你自己横插一脚、另结一段良缘，太子女主皆愕然侧目；这一搅，搅乱了既定姻缘，也结下了新的怨。' },
       ],
-      summary: '情劫抉择',
+      summary: '情劫抉择', art: '1dmi8mf', gen: 'flux',
       requires: 'plot>=45',
       minTurn: 17,
       weight: 1.1,
@@ -1490,7 +1490,7 @@ export const bookTransmigration: Scenario = {
         { text: '顺藤摸瓜，引火烧向政敌', effects: { plot: 8, favor: 2, safety: -8 }, reaction: '你顺藤摸瓜、把这把火巧妙引向政敌，那香囊烧出的流言反噬了对手；你借势点火，烧得不动声色。' },
         { text: '悄悄毁证，平息这场风波', effects: { safety: 8, plot: -2 }, reaction: '你悄悄毁去那枚香囊、平息了这场风波，满园流言渐渐歇了下去；你按下了火头，也按住了一桩祸事。' },
       ],
-      summary: '绣春香囊',
+      summary: '绣春香囊', art: '1iaz6nk', gen: 'flux',
       minTurn: 12,
     },
     {
@@ -1500,7 +1500,7 @@ export const bookTransmigration: Scenario = {
         { text: '郑重收下，许他一句肝胆相照', effects: { plot: 6, favor: 12, safety: 2 }, reaction: '萧宸眼底那点不安霎时化作动容；那枚他至死都不曾托付旁人的玉佩，竟稳稳落进了你掌心。' },
         { text: '推辞再三，终究拗他不过收下', effects: { plot: -2, favor: 4, safety: 4 }, reaction: '你推辞再三，萧宸却硬是将玉佩塞进你手；拗不过他那份执拗，你到底还是收下了这份太重的情。' },
       ],
-      summary: '太子赠佩',
+      summary: '太子赠佩', art: '1cihuvc', gen: 'flux',
       requires: 'favor>=45',
       minTurn: 8,
       once: true,
@@ -1513,7 +1513,7 @@ export const bookTransmigration: Scenario = {
         { text: '借东宫旧部之力，雷霆破局', effects: { plot: 8, favor: 14, safety: 6 }, reaction: '东宫死士闻令而动、为你一举破局，那桩泼天大祸竟被生生压下；萧宸闻讯，看你的眼神彻底变了。' },
         { text: '按而不发，留作日后杀手锏', effects: { plot: 4, favor: 6, safety: 10 }, reaction: '你按下这股力量、不轻动分毫，为首之人郑重抱拳退下；这枚藏在袖中的杀手锏，让你头一回睡得安稳。' },
       ],
-      summary: '凭佩借兵',
+      summary: '凭佩借兵', art: '1bckdin', gen: 'flux',
       requiresItem: '太子赠的玉佩',
       once: true,
     },
@@ -1524,7 +1524,7 @@ export const bookTransmigration: Scenario = {
         { text: '剖心置腹，与他共谋大棋', effects: { plot: 10, favor: 12, safety: -4 }, reaction: '你与萧宸推心置腹、共谋大棋，他眼底是只有生死之交才有的暖意；这盘倾覆朝局的棋，你二人一同执。' },
         { text: '借这份信任，为自己谋退路', effects: { plot: 6, favor: -2, safety: 10 }, reaction: '你借这份泼天信任暗为自己谋了条退路，萧宸浑然未觉、愈发倚重你；这一手，把根基扎得更深了。' },
       ],
-      summary: '生死相托',
+      summary: '生死相托', art: '1gu783z', gen: 'flux',
       requires: 'favor>=70',
       minTurn: 16,
       weight: 1.3,
@@ -1536,7 +1536,7 @@ export const bookTransmigration: Scenario = {
         { text: '誊成手札妥善藏好，留作底牌', effects: { plot: 6, safety: -2 }, reaction: '你将那一处处死劫誊成手札、妥善藏好，烛火映着满纸先机；这册剧透在手，命运的脉络第一次清晰可见。' },
         { text: '只录关窍精要，藏得更隐秘些', effects: { plot: 4, safety: 2 }, reaction: '你只将那几处最要命的关窍誊成精要手札、藏得极隐秘，先机虽简，却也轻便稳妥，不易被人窥破。' },
       ],
-      summary: '誊录剧透',
+      summary: '誊录剧透', art: '1k1bkje', gen: 'flux',
       minTurn: 5,
       weight: 1.1,
       itemsGained: ['原著剧透手札'],
@@ -1548,7 +1548,7 @@ export const bookTransmigration: Scenario = {
         { text: '凭先知抢先落子，布下天罗地网', effects: { plot: 12, safety: -4, favor: 4 }, reaction: '你凭那册手札推演出的先机抢先落子、布下天罗地网，主谋之人扑入彀中尚不自知；棋局已被你执在手里。' },
         { text: '暗中留证，静待时机', effects: { plot: 6, safety: 6 }, reaction: '你按着手札推演的脉络暗中留证、静待时机，主谋浑然未觉；这一手稳妥，让你立于了不败之地。' },
       ],
-      summary: '推演巨变',
+      summary: '推演巨变', art: '1e70ao1', gen: 'flux',
       requiresItem: '原著剧透手札',
       weight: 1.2,
     },
@@ -1559,7 +1559,7 @@ export const bookTransmigration: Scenario = {
         { text: '破釜沉舟，将这本书改得面目全非', effects: { plot: 14, safety: -8, favor: -2 }, reaction: '你索性破釜沉舟、将这本书改得面目全非，满天修正力轰然反扑；可那盘大棋，已被你掀得再难复原。' },
         { text: '暂敛锋芒，收一收过盛的偏离', effects: { plot: -8, safety: 10 }, reaction: '你暂敛锋芒、收了收那过盛的偏离，酝酿的雷霆反扑悄然平息；你退回安全线后，世界线缓缓稳住。' },
       ],
-      summary: '招摇遭反扑',
+      summary: '招摇遭反扑', art: 'ha6e36', gen: 'flux',
       requires: 'plot>=60',
       weight: 1.3,
     },
@@ -1570,7 +1570,7 @@ export const bookTransmigration: Scenario = {
         { text: '当机立断，收下这条暗线', effects: { plot: 6, safety: -4, favor: 2 }, reaction: '你当机立断收下这条暗线，眼线压低声音应下；慈宁宫深处那双属于你的眼睛，悄然睁开了。' },
         { text: '步步谨慎，只先搭上线、按而不用', effects: { plot: 2, safety: 2 }, reaction: '你步步谨慎，只先把这条暗线搭上、按而不用；那双慈宁宫深处的眼睛悄然睁开，却始终蛰伏不动。' },
       ],
-      summary: '慈宁暗线',
+      summary: '慈宁暗线', art: '1dqsts4', gen: 'flux',
       requiresItem: '一名忠心的眼线',
       minTurn: 11,
       once: true,
@@ -1583,7 +1583,7 @@ export const bookTransmigration: Scenario = {
         { text: '顺太后棋路提前布局，借东风谋利', effects: { plot: 8, safety: 6, favor: 2 }, reaction: '你顺着暗线探来的棋路提前布局、巧借东风，几方势力还在乱作一团，你已稳稳落子；这先机赚得漂亮。' },
         { text: '递上投名状，攀上太后这座靠山', effects: { plot: 4, safety: 12, favor: -2 }, reaction: '你借暗线递上一份投名状，太后那深不见底的眼里掠过一丝意味深长的赞许；这座撼不动的靠山，你攀上了。' },
       ],
-      summary: '凤旨先机',
+      summary: '凤旨先机', art: '1bg46z7', gen: 'flux',
       requiresItem: '太后宫里的暗线',
       weight: 1.2,
     },
@@ -1594,7 +1594,7 @@ export const bookTransmigration: Scenario = {
         { text: '设法攥住女主的把柄，留作底牌', effects: { plot: 8, favor: -4, safety: 4 }, reaction: '你设法将那桩把柄牢牢攥到手中，苏婉儿尚浑然不觉；这把足以反制她的利刃，悄然落进了你袖中。' },
         { text: '隐忍藏锋，先把铁证悄悄誊一份副本', effects: { plot: 4, favor: -2, safety: 6 }, reaction: '你不动声色地将那铁证悄悄誊了一份副本收好，苏婉儿浑然不觉；这把利刃在手，你却按而不发、藏得极深。' },
       ],
-      summary: '女主把柄',
+      summary: '女主把柄', art: '1choald', gen: 'flux',
       requiresItem: '一名忠心的眼线',
       minTurn: 9,
       once: true,
@@ -1607,7 +1607,7 @@ export const bookTransmigration: Scenario = {
         { text: '当众亮出把柄，反将她一军', effects: { plot: 10, favor: -6, safety: 4 }, reaction: '你当众亮出那桩把柄、反将苏婉儿一军，她温婉的笑意当场冻成惨白；满座哗然，攻守之势霎时倒转。' },
         { text: '隐而不发，暗中要挟逼她退让', effects: { plot: 6, favor: 2, safety: 8 }, reaction: '你隐而不发、只暗中以把柄要挟，苏婉儿脸色数变、终是悻悻收了手；这一手留而不发，逼得她寝食难安。' },
       ],
-      summary: '反制女主',
+      summary: '反制女主', art: '1bnci5y', gen: 'flux',
       requiresItem: '女主的把柄',
       weight: 1.2,
     },
@@ -1618,7 +1618,7 @@ export const bookTransmigration: Scenario = {
         { text: '趁热打铁，彻底绑定太后一党', effects: { plot: 4, favor: 6, safety: 8 }, reaction: '你趁热打铁、彻底绑定为太后一党，老祖宗慈眉一舒、待你如自家晚辈；这座牢不可破的靠山，稳了。' },
         { text: '与她保持一线，留几分进退余地', effects: { plot: 6, safety: 4, favor: -2 }, reaction: '你不动声色地与太后保持一线、留足余地，她眼底掠过一丝了然却并不点破；这分寸，你拿捏得恰到好处。' },
       ],
-      summary: '太后器重',
+      summary: '太后器重', art: '1ch0wfm', gen: 'flux',
       requires: 'safety>=75',
       minTurn: 14,
       weight: 1.2,
@@ -1630,7 +1630,7 @@ export const bookTransmigration: Scenario = {
         { text: '买下凤纹玉佩，贴身收好', effects: { plot: 6, safety: 2 }, reaction: '你不动声色买下那枚凤纹玉佩、贴身收好，掌柜神色古怪地收了银；这条颠覆全局的身世线索，攥住了。' },
         { text: '高价连同来历一并买断', effects: { plot: 8, safety: -2 }, reaction: '你出高价将凤纹玉佩连同它的来历一并买断，掌柜骇了一跳、终是和盘托出；这条身世线索，连根攥进了你手。' },
       ],
-      summary: '当铺凤玉',
+      summary: '当铺凤玉', art: '1dpijbz', gen: 'flux',
       minTurn: 7,
       once: true,
       itemsGained: ['凤纹玉佩'],
@@ -1642,7 +1642,7 @@ export const bookTransmigration: Scenario = {
         { text: '当众揭破女主身世，搅动大棋', effects: { plot: 14, favor: -6, safety: -6 }, reaction: '你携那凤纹玉佩当众揭破女主身世，满朝哗然、震动国本；这本书最核心的暗线，被你一举翻上了明面。' },
         { text: '将秘辛悄悄递给女主，换一份情分', effects: { plot: 8, favor: 14, safety: -2 }, reaction: '你将那桩身世秘辛悄悄递给女主，她骇然失色继而泪盈于睫；这份雪中送炭，换来她生死不渝的信重。' },
       ],
-      summary: '揭破身世',
+      summary: '揭破身世', art: '1ea8rl3', gen: 'flux',
       requiresItem: '凤纹玉佩',
       weight: 1.3,
     },
@@ -1653,7 +1653,7 @@ export const bookTransmigration: Scenario = {
         { text: '照人设使坏，图眼前安稳', effects: { plot: -3, safety: 8, favor: -6 }, reaction: '你照着「恶毒女配」的本分磋磨了人，旁人见怪不怪、剧情安稳滑过；可那第三章的死签，又冷冷地贴近了一分。' },
         { text: '反其道行善，撬动既定人设', effects: { plot: 8, favor: 8, safety: -4 }, reaction: '你做了件「恶毒女配」绝不会做的善事，旁人面面相觑、议论纷纷；那钉死你人设的剧情，竟被生生撬开一道缝。' },
       ],
-      summary: '恶女人设',
+      summary: '恶女人设', art: '1dlujom', gen: 'flux',
       requires: 'has(恶毒女配)',
       minTurn: 3,
       weight: 0.9,
@@ -1665,7 +1665,7 @@ export const bookTransmigration: Scenario = {
         { text: '随父族行事，恪守本分', effects: { plot: -3, safety: 6 }, reaction: '你恪守反派之女的本分替父亲办了事，府里上下安心，父亲也未起疑；可你与那艘注定沉没的船，又绑紧了一分。' },
         { text: '暗中另留一手，挪开半步', effects: { plot: 8, safety: -4, favor: 4 }, reaction: '你不动声色地替自己留了条后路，悄悄从父族那覆灭的命数里挪开半步；旁人未觉，命运的绳索却松了一丝。' },
       ],
-      summary: '反女宿命',
+      summary: '反女宿命', art: '1bok7ep', gen: 'flux',
       requires: 'has(反派之女)',
       minTurn: 3,
       weight: 0.9,
@@ -1677,7 +1677,7 @@ export const bookTransmigration: Scenario = {
         { text: '安做透明背景，藏身要紧', effects: { plot: -2, safety: 8 }, reaction: '你垂手立在角落做回那透明的背景，没人多看你一眼；安稳是安稳了，那桩你本可撬动的端倪，也从眼前溜了过去。' },
         { text: '借近身之便，暗中插手', effects: { plot: 8, favor: 6, safety: -4 }, reaction: '你借着「没人当回事」的近身之便悄悄动了手脚，贵人们浑然不觉；一介婢女，竟在内宅风波里改写了一笔旁人想不到的剧情。' },
       ],
-      summary: '婢女近身',
+      summary: '婢女近身', art: '1covtyu', gen: 'flux',
       requires: 'has(陪嫁婢女)',
       minTurn: 3,
       weight: 0.9,
@@ -1689,7 +1689,7 @@ export const bookTransmigration: Scenario = {
         { text: '施恩结纳，引为心腹', effects: { safety: 6, favor: -2 }, flagsSet: ['墨七'], reaction: '你以恩义结纳墨七，他单膝叩地，从此暗处多了一个为你挡灾的人，命悬一线时也多了几分倚仗；只是你与他的走近，也悄悄落进了主角一方的眼里。' },
         { text: '保持距离，不愿牵连', effects: { safety: 2 }, reaction: '你不愿节外生枝、与墨七保持了距离，他默默垂首退回阴影里，再不曾多看你一眼；你少惹了一桩闲事，也少了一条可托性命的暗线。' },
       ],
-      summary: '结纳墨七', minTurn: 4, weight: 1,
+      summary: '结纳墨七', art: '1iedrx2', gen: 'flux', minTurn: 4, weight: 1,
     },
     {
       narrative:
@@ -1698,7 +1698,7 @@ export const bookTransmigration: Scenario = {
         { text: '委以机密，倚为暗手', effects: { plot: 3, safety: 4, favor: -4 }, reaction: '你把改写剧情的隐秘谋划交托墨七，他低声应「赴汤蹈火」，在暗处替你穿针引线、撬动着原著的走向；只是这般深的牵连，也让你在主角眼里愈发可疑。' },
         { text: '只用其力，不交底细', effects: { safety: 2 }, reaction: '你只用墨七的身手、不交底细，他依旧尽心护你周全，却不知你心底那盘搅动乾坤的棋；稳妥是稳妥，却也没能把他变成真正撬动剧情的助力。' },
       ],
-      summary: '托付墨七', requires: 'has(墨七)', minTurn: 10, weight: 1.1,
+      summary: '托付墨七', art: '1dufwbk', gen: 'flux', requires: 'has(墨七)', minTurn: 10, weight: 1.1,
     },
     {
       narrative:
@@ -1708,7 +1708,7 @@ export const bookTransmigration: Scenario = {
         { text: '助他脱身，就此别过', effects: { plot: 2, safety: 4 }, reaction: '你设法替墨七引开追兵、助他远走高飞、就此别过，他抱拳深深望你一眼，转身没入沉沉夜色；人是散了，那份以命相护的情，却结结实实留了下来。' },
         { text: '弃卒保身，斩断牵连', effects: { plot: 2 }, flagsClear: ['墨七'], reaction: '你权衡再三，终是狠心斩断了与墨七的牵连，保全了自己在剧情里那来之不易的安稳；可那双曾为你挡刀的眼睛里渐渐熄了光，再不会望向你了。' },
       ],
-      summary: '墨七赴危', requires: 'has(墨七)', minTurn: 18, weight: 1.2,
+      summary: '墨七赴危', art: '1cdia8l', gen: 'flux', requires: 'has(墨七)', minTurn: 18, weight: 1.2,
     },
   ],
 }
