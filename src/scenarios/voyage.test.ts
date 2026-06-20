@@ -47,7 +47,7 @@ describe('voyage 升势力闸门', () => {
       { summary: '海上肥羊', flag: '私掠', need: undefined as string | undefined, pick: '升起黑旗，登船劫掠' },
       { summary: '海盗结盟', flag: '船队', need: 'has(私掠) & wealth>=40', pick: '歃血结盟，借势纵横怒海' },
       { summary: '老提督甲板献策', flag: '海枭', need: 'has(船队) & wealth>=55', pick: '主动挑战列强舰队，破而后立' },
-      { summary: '决战在即', flag: '霸主', need: 'has(海枭) & wealth>=70', pick: '设伏火攻，险中求一场大胜' },
+      { summary: '决战在即', flag: '霸主', need: 'has(海枭) & wealth>=68 & crew>=40', pick: '设伏火攻，险中求一场大胜' },
     ]
     for (const w of want) {
       const ev = (voyage.localEvents ?? []).find((e) => e.summary === w.summary)

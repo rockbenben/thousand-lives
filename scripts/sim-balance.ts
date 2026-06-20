@@ -84,6 +84,32 @@ const strategies: Record<string, (rng: () => number) => Strategy> = {
     })
     return best
   },
+  // 精算登顶者：成心冲境界——只要结算后致死属性仍留缓冲(>=14)，就抢「授未持有境界印记」的闸门选项；
+  // 否则避死求稳、积累资源等下一道闸门。代表「真心要登顶、且会权衡生死」的最优玩家，其登顶率≈apex 真实可达性。
+  climber: () => (sc, st, tr) => {
+    const ladderFlags = new Set<string>()
+    for (const a of sc.attributes) for (const u of a.ceilingUnlocks ?? []) ladderFlags.add(u.flag)
+    const held = new Set(st.flags ?? [])
+    const dk = deathAttrs(sc).map((a) => a.key)
+    const minD = (c: { effects: Record<string, number> }) => (dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99)
+    let gate = -1, gScore = -Infinity
+    tr.choices.forEach((c, i) => {
+      const grantsNew = (c.flagsSet ?? []).some((f) => ladderFlags.has(f) && !held.has(f)) ||
+        (c.outcomes ?? []).some((o) => (o.flagsSet ?? []).some((f) => ladderFlags.has(f) && !held.has(f)))
+      if (!grantsNew || minD(c) < 14) return
+      const s = Object.values(c.effects).reduce((a, v) => a + v, 0)
+      if (s > gScore) { gScore = s; gate = i }
+    })
+    if (gate >= 0) return gate
+    let best = 0, bestScore = -Infinity
+    tr.choices.forEach((c, i) => {
+      const risky = (c.outcomes ?? []).some((o) => o.endTone && LETHAL.test(o.endTone)) || (c.endTone && LETHAL.test(c.endTone))
+      if (risky) return
+      const score = minD(c) * 100 + Object.values(c.effects).reduce((a, v) => a + v, 0)
+      if (score > bestScore) { bestScore = score; best = i }
+    })
+    return best
+  },
 }
 
 function playOne(sc: Scenario, strat: Strategy, rng: () => number) {
