@@ -57,3 +57,30 @@ export function conditionAttrs(c: Condition): string[] {
   const clauses = c.kind === 'and' ? c.parts : [c]
   return clauses.flatMap((p) => (p.kind === 'cmp' ? [p.attr] : []))
 }
+
+// 把条件归一为各维度约束集合，用于「蕴含/区域包含」判断。
+type Norm = { mt: boolean; ge: Map<string, number>; le: Map<string, number>; hasReq: Set<string>; hasNeg: Set<string> }
+function normalize(c: Condition): Norm {
+  const n: Norm = { mt: false, ge: new Map(), le: new Map(), hasReq: new Set(), hasNeg: new Set() }
+  for (const p of c.kind === 'and' ? c.parts : [c]) {
+    if (p.kind === 'maxTurns') n.mt = true
+    else if (p.kind === 'cmp') {
+      if (p.op === '>=') n.ge.set(p.attr, Math.max(n.ge.get(p.attr) ?? -Infinity, p.value))
+      else n.le.set(p.attr, Math.min(n.le.get(p.attr) ?? Infinity, p.value))
+    } else if (p.kind === 'has') (p.neg ? n.hasNeg : n.hasReq).add(p.flag)
+  }
+  return n
+}
+
+// a 成立则 b 必成立（a 的满足区域 ⊆ b）——即 a「至少和 b 一样严格」。保守可靠（只认必要条件，不会误判蕴含）。
+// 用途：结局择优——满足的结局里取「最具体」者（不被更严结局严格蕴含者），使数组顺序不再造成遮蔽。
+export function conditionImplies(a: Condition, b: Condition): boolean {
+  const A = normalize(a)
+  const B = normalize(b)
+  if (B.mt && !A.mt) return false
+  for (const [k, v] of B.ge) if (!(A.ge.has(k) && A.ge.get(k)! >= v)) return false
+  for (const [k, v] of B.le) if (!(A.le.has(k) && A.le.get(k)! <= v)) return false
+  for (const f of B.hasReq) if (!A.hasReq.has(f)) return false
+  for (const f of B.hasNeg) if (!A.hasNeg.has(f)) return false
+  return true
+}

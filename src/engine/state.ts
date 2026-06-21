@@ -1,5 +1,5 @@
 import type { Scenario, Opening, Attribute } from '../scenarios/schema'
-import { parseCondition, evalCondition } from './condition'
+import { parseCondition, evalCondition, conditionImplies } from './condition'
 import type { GameState, TurnResult, Ending, Choice, Outcome } from './types'
 
 export function initState(
@@ -118,10 +118,16 @@ export function checkEnding(
     if (custom) return { tone: custom.tone, reason: custom.condition }
     return { tone: '死亡', reason: `${dead[0].name}耗尽` }
   }
-  for (const e of sc.endings) {
-    if (evalCondition(parseCondition(e.condition), attrs, completedTurns, sc.maxTurns, flags)) {
-      return { tone: e.tone, reason: e.condition }
-    }
+  // 非死亡：在所有满足条件的结局中取「最具体」者——不被任何更严格（严格蕴含）的满足结局压制者；
+  // 各自独立（互不蕴含）时按数组顺序取靠前。于是更具体的结局永不被过宽的结局遮蔽，数组顺序仅作并列次序。
+  const satisfied = sc.endings
+    .map((e) => ({ e, cond: parseCondition(e.condition) }))
+    .filter((x) => evalCondition(x.cond, attrs, completedTurns, sc.maxTurns, flags))
+  for (const x of satisfied) {
+    const dominated = satisfied.some(
+      (y) => y !== x && conditionImplies(y.cond, x.cond) && !conditionImplies(x.cond, y.cond),
+    )
+    if (!dominated) return { tone: x.e.tone, reason: x.e.condition }
   }
   // 软上限剧本：到 maxTurns 兜底收束
   if (sc.maxTurns !== undefined && completedTurns >= sc.maxTurns) return { tone: '落幕', reason: 'maxTurns' }

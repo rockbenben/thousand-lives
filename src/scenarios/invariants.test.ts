@@ -93,58 +93,16 @@ describe('内容逻辑审查：跨剧本引用完整性与可达性', () => {
       if (e.minTurn !== undefined && sc.maxTurns !== undefined && e.minTurn > sc.maxTurns) violations.push(`${tag} localEvent#${i} minTurn ${e.minTurn} > 剧本 maxTurns ${sc.maxTurns} → 永不触发`)
     })
 
-    // ── D. 结局优先级遮蔽：generic 循环按数组顺序取首个命中。
-    // 排除死亡型结局（attr<=deathBelow，由 checkEnding 的 dead 分支单独处理，不走 generic 循环）。
-    // 若较晚的结局 B 蕴含较早的结局 A（B 成立则 A 必成立），则 B 永不可达（A 先命中）。
-    // Norm 包含 has/!has 标记集合：hasReq = 必须持有的印记，hasNeg = 必须不持有的印记。
-    // implies(B, A) 含义：B 成立则 A 必成立（A 是 B 的必要条件）。
-    // 对标记而言：若 A 要求某印记但 B 不要求，则 B 可在不持该印记时成立，A 不一定成立 → 不蕴含。
-    type Norm = { mt: boolean; ge: Map<string, number>; le: Map<string, number>; hasReq: Set<string>; hasNeg: Set<string> }
-    const norm = (cond: Condition): Norm => {
-      const n: Norm = { mt: false, ge: new Map(), le: new Map(), hasReq: new Set(), hasNeg: new Set() }
-      for (const c of clausesOf(cond)) {
-        if (c.kind === 'maxTurns') n.mt = true
-        else if (c.kind === 'cmp') {
-          if (c.op === '>=') n.ge.set(c.attr, Math.max(n.ge.get(c.attr) ?? -Infinity, c.value))
-          else n.le.set(c.attr, Math.min(n.le.get(c.attr) ?? Infinity, c.value))
-        } else if (c.kind === 'has') {
-          // 记录 has()/!has() 约束，用于蕴含判断
-          if (c.neg) n.hasNeg.add(c.flag)
-          else n.hasReq.add(c.flag)
-        }
-      }
-      return n
-    }
-    const implies = (B: Norm, A: Norm): boolean => {
-      if (A.mt && !B.mt) return false
-      for (const [k, v] of A.ge) if (!(B.ge.has(k) && B.ge.get(k)! >= v)) return false
-      for (const [k, v] of A.le) if (!(B.le.has(k) && B.le.get(k)! <= v)) return false
-      // 若 A 要求持有某印记，但 B 未要求持有（或 B 明确否定该印记），则 B 不蕴含 A
-      for (const f of A.hasReq) if (!B.hasReq.has(f)) return false
-      // 若 A 要求不持有某印记，但 B 未要求不持有（或 B 明确要求持有），则 B 不蕴含 A
-      for (const f of A.hasNeg) if (!B.hasNeg.has(f)) return false
-      return true
-    }
+    // ── D.（已退役）结局排序遮蔽校验。
+    // checkEnding 已改为「满足的结局中取最具体者」（用 conditionImplies 择优，不再按数组顺序首中），
+    // 过宽的结局不再遮蔽更具体的，作者也无须再为防遮蔽手工排序——故此校验取消。
+    // isDeathEnding 保留供 E 节使用。
     const isDeathEnding = (cond: Condition): boolean => {
       const cs = clausesOf(cond)
       return cs.some(
         (c) => c.kind === 'cmp' && c.op === '<=' && (attrByKey.get(c.attr)?.deathBelow ?? -Infinity) >= c.value,
       )
     }
-    const generic = sc.endings
-      .map((e, idx) => ({ e, idx, cond: parseCondition(e.condition) }))
-      .filter((x) => !isDeathEnding(x.cond))
-    for (let bi = 0; bi < generic.length; bi++) {
-      for (let ai = 0; ai < bi; ai++) {
-        if (implies(norm(generic[bi].cond), norm(generic[ai].cond))) {
-          violations.push(
-            `${tag} ending#${generic[bi].idx}(${generic[bi].e.tone}) 被更靠前的 ending#${generic[ai].idx}(${generic[ai].e.tone}) 遮蔽 → 永不可达（应把更严格的结局排在前面）`,
-          )
-          break
-        }
-      }
-    }
-
     // ── C. 本地模式可玩性：有事件池则至少要有非门控事件可抽（避免开局无事件可选）──
     if (ev.length > 0) {
       const ungated = ev.filter((e) => !e.requires && !e.requiresItem && (e.minTurn ?? 1) <= 1)
