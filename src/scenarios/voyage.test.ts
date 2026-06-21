@@ -134,8 +134,12 @@ describe('voyage 衰减与 sim 健壮性', () => {
     const crew = voyage.attributes.find((a) => a.key === 'crew')!
     expect(crew.decayPerTurn).toBe(1) // sim-tuned：decay0 时同舟共济独大55%；decay1 后人心须经营、结局多样；decay2 过罚
   })
-  it('船力保持每年衰减 1（悬顶之危·船蛀）', () => {
-    expect(voyage.attributes.find((a) => a.key === 'ship')!.decayPerTurn).toBe(1)
+  it('船力 sim 校准：起手 50、每年衰减 2（怒海之凶·船蛀）', () => {
+    const ship = voyage.attributes.find((a) => a.key === 'ship')!
+    // 原 init35/decay1 使避险者 100% 满期、几无怒海之险；上调至 init50/decay2，
+    // careful 坏结局 2.6%→30%、随性玩法贴大航海史实地凶（≈麦哲伦船队九成损耗），高船力结局仍可达
+    expect(ship.initial).toBe(50)
+    expect(ship.decayPerTurn).toBe(2)
   })
   it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
     for (const ev of voyage.localEvents ?? [])

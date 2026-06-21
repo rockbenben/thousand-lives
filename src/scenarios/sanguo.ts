@@ -49,7 +49,9 @@ export const sanguo: Scenario = {
       initial: 40,
       max: 100,
       deathBelow: 0,
-      decayPerTurn: 4,
+      // 主公多疑，信任逐年消蚀（-3/年）；原 -4 过陡，逼得连用心经营的谋士也常被迫君臣离心，
+      // 下调后用心辅佐者可留住主公，「君臣离心」回归为疏于经营的代价而非默认结局。
+      decayPerTurn: 3,
       bands: [
         { upTo: 10, label: '见疑遭弃', severity: 'critical', directive: '主公已对你起了杀心，叙事中见弃问罪的危机步步紧逼；至少一个选项是身陷囹圄的搏命之举。' },
         { upTo: 35, label: '貌合神离', severity: 'low', directive: '主公待你客气而疏远，言不听计不从，你的方略屡屡被束之高阁。' },

@@ -25,7 +25,7 @@ describe('sanguo 谋略势力封顶', () => {
   })
   it('声望与信任不设封顶；信任带每年衰减', () => {
     expect(clampEffects(sanguo, { repute: 95 }, { repute: 20 }, []).repute).toBe(100)
-    expect(sanguo.attributes.find((a) => a.key === 'trust')!.decayPerTurn).toBe(4) // sim-tuned（治旧0%死亡：伴君如伴虎）
+    expect(sanguo.attributes.find((a) => a.key === 'trust')!.decayPerTurn).toBe(3) // sim 校准：原 4 过陡，用心辅佐也常被迫君臣离心；下调至 3 后 careful 玩法坏结局 41%→32%
   })
 })
 

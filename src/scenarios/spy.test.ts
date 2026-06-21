@@ -111,12 +111,15 @@ describe('spy AI 模式', () => {
 })
 
 describe('spy 衰减与 sim 健壮性', () => {
-  it('组织信任 decay 经 sim 校准（使被自己人清除成活的第二死亡线，并防 trust>=96 早收束短路功勋）', () => {
+  it('组织信任 decay 经史实校准（被自己人清除为第二死亡线，压力上调至 2/月）', () => {
     const trust = spy.attributes.find((a) => a.key === 'trust')!
-    expect(trust.decayPerTurn).toBe(1) // sim-tuned：decay0 时 trust 死≈0 且 survive 早早 trust>=96 收场；decay1 后 survive 活到满期22%→74%、卖友/卖国哨兵 3-4% 可达
+    expect(trust.decayPerTurn).toBe(2) // 史实校准：肃反/内鬼互咬下信任消蚀更快，与暴露并立为活死亡线
   })
-  it('潜伏掩护保持每月衰减 3（悬顶之危）', () => {
-    expect(spy.attributes.find((a) => a.key === 'cover')!.decayPerTurn).toBe(3)
+  it('潜伏掩护按史实校准：起手 52、每月衰减 4（悬顶最锋利的一刃）', () => {
+    const cover = spy.attributes.find((a) => a.key === 'cover')!
+    // 孤岛 1940-41 军统上海区损失约九成，掩护起手薄(52)、衰减快(4)，呼应史实高暴露率
+    expect(cover.initial).toBe(52)
+    expect(cover.decayPerTurn).toBe(4)
   })
   it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
     for (const ev of spy.localEvents ?? [])

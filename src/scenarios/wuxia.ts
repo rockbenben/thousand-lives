@@ -46,9 +46,10 @@ export const wuxia: Scenario = {
       initial: 70,
       max: 100,
       deathBelow: 0,
-      // 江湖凶险，旧伤暗疾、内力反噬日积月累，性命之数悄然损耗（-1/年）；
+      // 江湖凶险，旧伤暗疾、内力反噬日积月累，性命之数悄然损耗（-2/年）；
       // 须靠疗伤、灵药、休养调息回补，逞强不顾则积劳成疾、暴毙荒野。
-      decayPerTurn: 1,
+      // sim 校准：原 -1 使避战求稳者几无性命之危（careful 坏结局 0.1%），江湖凶险名存实亡；上调至 -2。
+      decayPerTurn: 2,
       bands: [
         { upTo: 15, label: '命悬一线', severity: 'critical', directive: '身受重伤、命悬一线，叙事中死亡的阴影步步紧逼；至少一个选项是九死一生的搏命。' },
         { upTo: 40, label: '带伤', severity: 'low', directive: '旧伤未愈、气血两亏，剧烈搏杀会雪上加霜。' },

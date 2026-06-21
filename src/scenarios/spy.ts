@@ -10,12 +10,14 @@ export const spy: Scenario = {
     {
       key: 'cover',
       name: '潜伏掩护',
-      initial: 65,
+      initial: 52,
       max: 100,
       deathBelow: 0,
-      // 潜伏日久，怀疑与破绽自然累积，掩护每月消蚀（-3/月）；
-      // 须靠清除痕迹、立功、上缴情报维持身份，否则迟早暴露被捕。
-      decayPerTurn: 3,
+      // 潜伏日久，怀疑与破绽自然累积，掩护每月消蚀（-4/月）；起手仅 52、缓冲薄。
+      // 须靠清除痕迹、立功、上缴情报主动维持身份，稍一松懈便迟早暴露被捕——
+      // 按史实校准：孤岛 1940-41 这两年，军统上海区编制 800 人崩到不足 50（损失约九成），
+      // 即便老练如区长陈恭澍亦于 1941 年 10 月被「七十六号」破获被捕，故掩护是悬顶最锋利的一刃。
+      decayPerTurn: 4,
       bands: [
         { upTo: 15, label: '身份将破', severity: 'critical', directive: '敌特已盯上你，叙事中盘查、跟踪、搜捕的罗网步步收紧；至少一个选项是身份暴露边缘的殊死脱身。' },
         { upTo: 40, label: '行迹可疑', severity: 'low', directive: '你的伪装出现破绽，旁人投来探究的目光，处处需小心遮掩。' },
@@ -46,11 +48,12 @@ export const spy: Scenario = {
     {
       key: 'trust',
       name: '组织信任',
-      initial: 45,
+      initial: 40,
       max: 100,
       deathBelow: 0,
-      // 潜伏日久、猜忌自然累积，组织信任逐月消蚀（sim 校准：使「被自己人清除」成为活的第二死亡线）
-      decayPerTurn: 1,
+      // 潜伏日久、猜忌自然累积，组织信任逐月消蚀（-2/月）；肃反与内鬼互咬下，
+      // 「被自己人清除」是与暴露并立的第二条活死亡线，史实校准后压力上调。
+      decayPerTurn: 2,
       bands: [
         { upTo: 12, label: '疑为内奸', severity: 'critical', directive: '组织已怀疑你叛变，叙事中肃反的杀机暗藏于同志之间；至少一个选项面临自己人的清除。' },
         { upTo: 35, label: '受人猜忌', severity: 'low', directive: '上线对你存有戒心，交办的事处处留一手。' },
