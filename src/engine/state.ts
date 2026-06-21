@@ -1,6 +1,14 @@
 import type { Scenario, Opening, Attribute } from '../scenarios/schema'
-import { parseCondition, evalCondition, conditionImplies } from './condition'
+import { parseCondition, evalCondition, conditionImplies, type Condition } from './condition'
 import type { GameState, TurnResult, Ending, Choice, Outcome } from './types'
+
+// 条件是否含「死亡级」子句：某致死属性 <= 其死线（hp<=40 这类高于死线的「重伤」不算死亡）。
+function hasDeathClause(c: Condition, deathBelow: Map<string, number>): boolean {
+  const parts = c.kind === 'and' ? c.parts : [c]
+  return parts.some(
+    (p) => p.kind === 'cmp' && p.op === '<=' && deathBelow.has(p.attr) && p.value <= deathBelow.get(p.attr)!,
+  )
+}
 
 export function initState(
   sc: Scenario,
@@ -99,23 +107,37 @@ export function checkEnding(
   attrs: Record<string, number>,
   completedTurns: number,
   flags: string[] = [],
+  rng?: () => number,
 ): Ending | null {
+  const deathBelow = new Map(
+    sc.attributes.filter((a) => a.deathBelow !== undefined).map((a) => [a.key, a.deathBelow!]),
+  )
   const dead = sc.attributes.filter(
     (a) => a.deathBelow !== undefined && attrs[a.key] <= a.deathBelow,
   )
   if (dead.length > 0) {
-    // 作者若为任一致死属性写了死亡级（阈值 <= deathBelow）的 <= 结局，用作者的 tone 而非通用死亡。
-    // 阈值高于 deathBelow 的 <= 结局（如 hp<=40 重伤）不是死亡结局，不能顶替死亡。
-    const custom = sc.endings.find((e) => {
-      const c = parseCondition(e.condition)
-      return (
-        c.kind === 'cmp' &&
-        c.op === '<=' &&
-        dead.some((a) => c.attr === a.key && c.value <= a.deathBelow!) &&
-        evalCondition(c, attrs, completedTurns, sc.maxTurns, flags)
+    // 死亡级结局：条件含「某致死属性 <= 其死线」子句者（hp<=40 这类高于死线的重伤不算）。
+    // 先按 salience 取最具体（带语境的死法如 `hp<=0 & has(据点)` 胜过裸 `hp<=0`），
+    // 再在「同等具体（互不蕴含）的并列死法」里**随机取一**——使数值相同也可能饿死/渴死/病死/中毒死，
+    // 死得不同（仅传入 rng 时随机，否则取首个保持确定，便于测试/AI 复现）。
+    const deathEndings = sc.endings
+      .map((e) => ({ e, cond: parseCondition(e.condition) }))
+      .filter(
+        (x) =>
+          hasDeathClause(x.cond, deathBelow) &&
+          evalCondition(x.cond, attrs, completedTurns, sc.maxTurns, flags),
       )
-    })
-    if (custom) return { tone: custom.tone, reason: custom.condition }
+    const top = deathEndings.filter(
+      (x) =>
+        !deathEndings.some(
+          (y) => y !== x && conditionImplies(y.cond, x.cond) && !conditionImplies(x.cond, y.cond),
+        ),
+    )
+    if (top.length > 0) {
+      const pick =
+        rng && top.length > 1 ? top[Math.min(top.length - 1, Math.floor(rng() * top.length))] : top[0]
+      return { tone: pick.e.tone, reason: pick.e.condition }
+    }
     return { tone: '死亡', reason: `${dead[0].name}耗尽` }
   }
   // 非死亡：在所有满足条件的结局中取「最具体」者——不被任何更严格（严格蕴含）的满足结局压制者；
@@ -266,7 +288,7 @@ export function applyChoice(
   ]
   const ended = endTone
     ? { tone: endTone, reason: 'forced' }
-    : checkEnding(sc, attributes, history.length, flags) ?? undefined
+    : checkEnding(sc, attributes, history.length, flags, rng ?? Math.random) ?? undefined
   return {
     ...st,
     attributes,
@@ -307,6 +329,6 @@ export function resolveCustomAction(
     history,
     memory: applyMemory(st.memory, resolved.memoryAdd),
     goalProgress: nextProgress(st.goalProgress, resolved.goalProgress),
-    ended: checkEnding(sc, attributes, history.length, flags) ?? undefined,
+    ended: checkEnding(sc, attributes, history.length, flags, Math.random) ?? undefined,
   }
 }

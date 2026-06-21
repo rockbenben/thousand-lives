@@ -26,6 +26,13 @@
 | `prompt.ts` `summary.ts` `keymoment.ts` | AI 提示词、结算卡、关键节点 |
 | `types.ts` | 运行时状态类型 |
 
+## 回合来源（TurnSource，可复制）
+
+`ai/turnSource.ts` 把「AI 在线生成」与「免 Key 本地事件池」统一到一个契约
+（`streaming` / `supportsCustomAction` / `choiceRng` / `generate`）。它桥接 `engine/` 与
+`ai/` + 配置，故不放进纯内核，但同样与具体剧本无关、可整体复制。`Play.tsx` 只依赖来源的
+能力声明，不判断 `mode`；新增一种来源（脚本回放、另一套后端）只实现一个 `TurnSource`，UI 不动。
+
 ## 游戏内容（每款游戏自带，不进引擎）
 
 `scenarios/<id>.ts`（剧本数据）、`scenarios/achievementConfig.ts`（成就内容）、

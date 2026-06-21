@@ -79,10 +79,15 @@ describe('wasteland 建据点闸门', () => {
 })
 
 describe('wasteland 结局重构为三年末世归宿', () => {
-  it('结局总数为 30（27 基础 + 3 隐藏哨兵），两个死亡结局保留', () => {
-    expect(wasteland.endings.length).toBe(30)
+  it('结局总数为 36（27 基础 + 3 哨兵 + 6 新增死法），多种随机死法保留', () => {
+    expect(wasteland.endings.length).toBe(36)
     expect(wasteland.endings.find((e) => e.tone === '力竭身亡')?.condition).toBe('hp<=0')
     expect(wasteland.endings.find((e) => e.tone === '疯癫失智·消失在废墟')?.condition).toBe('sanity<=0')
+    // hp<=0 随机死法池：≥5 个同条件死法供引擎随机取一，使数值相同也死得不同
+    const pool = wasteland.endings.filter((e) => e.condition === 'hp<=0')
+    expect(pool.length).toBeGreaterThanOrEqual(5)
+    for (const t of ['饿毙街头', '渴死荒途', '病亡无医', '中毒暴毙', '失血而亡'])
+      expect(pool.some((e) => e.tone === t), t).toBe(true)
   })
   it('8 个救援 tone 已改名为长期重建框架', () => {
     const renamed = ['从容立足·重建有望', '安稳扎根的幸存者', '苟活·却已精神崩坏', '油尽灯枯·勉力撑住', '饿殍边缘·勉强熬过', '体魄尚健·安然立足', '伤痕累累·熬到今日', '熬过末世']
