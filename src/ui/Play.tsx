@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { applyChoice, resolveCustomAction } from '../engine/state'
 import { bandOf } from '../engine/bands'
 import { isKeyMoment } from '../engine/keymoment'
-import { localTurn } from '../engine/local'
-import { buildTurnMessages } from '../engine/prompt'
-import { requestTurn, friendlyError, isAbortError } from '../ai/client'
-import { visibleNarrative } from '../ai/turn'
+import { friendlyError, isAbortError } from '../ai/client'
+import { localSource, aiSource } from '../ai/turnSource'
 import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../storage'
 import { downloadText, safeFilename } from './download'
 import { nodeImage, hasNodeArt } from './nodeArt'
@@ -24,7 +22,19 @@ export function Play({
   onQuit: () => void
 }) {
   const { scenario, state, pendingTurn, pendingAction } = session
-  const isLocal = state.mode === 'local'
+  // 回合来源：本地事件池或 AI 在线生成。Play 只依赖来源的能力声明（流式 / 自由行动 / 随机），
+  // 不再到处判断 mode === 'local'。换一种来源只需实现新的 TurnSource。
+  const source = useMemo(
+    () =>
+      state.mode === 'local'
+        ? localSource()
+        : aiSource(() => {
+            const c = loadConfig()
+            if (!c) throw new Error('未找到 API 配置，请回到卷首重新设置')
+            return c
+          }),
+    [state.mode],
+  )
   const [loading, setLoading] = useState(false)
   const [streamText, setStreamText] = useState('')
   const [error, setError] = useState('')
@@ -65,32 +75,38 @@ export function Play({
   }
   const deltas = attrTrack.current.deltas
 
-  // 生成下一回合；resolving=自定义行动结算（此时 pendingTurn 仍是行动发生的场景）
-  const fetchTurn = async () => {
+  // 生成下一回合；resolving=自定义行动结算（此时 pendingTurn 仍是行动发生的场景）。
+  // 流式来源（AI）显示「落笔中」并接收逐字回调、可中断；非流式来源（本地）即时产出、不显示加载态，
+  // 交由打字机动画呈现。两者统一走同一套在途/中断/落盘逻辑。
+  const runTurn = async () => {
     if (busyRef.current) return
     busyRef.current = true
     const ac = new AbortController()
     abortRef.current = ac
     const resolvingAction = pendingAction
     const scene = pendingTurn
-    setLoading(true)
-    setError('')
-    setStreamText('')
+    if (source.streaming) {
+      setLoading(true)
+      setError('')
+      setStreamText('')
+    }
     try {
-      const config = loadConfig()
-      if (!config) throw new Error('未找到 API 配置，请回到卷首重新设置')
-      const turn = await requestTurn(
-        config,
-        buildTurnMessages(scenario, state, resolvingAction, scene?.narrative),
-        undefined,
-        (t) => {
-          if (aliveRef.current) setStreamText(visibleNarrative(t))
-        },
-        ac.signal,
-      )
+      const turn = await source.generate({
+        scenario,
+        state,
+        resolvingAction,
+        sceneNarrative: scene?.narrative,
+        onStream: source.streaming
+          ? (v) => {
+              if (aliveRef.current) setStreamText(v)
+            }
+          : undefined,
+        signal: ac.signal,
+      })
       // 仅当本请求仍是当前请求时才落盘（被中断/被新请求取代的旧请求不写入）
       if (abortRef.current !== ac) return
-      streamedRef.current = true
+      // 流式来源已实时展示过正文 → 落盘后跳过打字机；非流式则让打字机动画呈现
+      streamedRef.current = source.streaming
       if (resolvingAction && scene) {
         const next = resolveCustomAction(scenario, state, scene, resolvingAction, turn)
         onUpdate({ scenario, state: next, pendingTurn: turn, pendingAction: undefined })
@@ -106,7 +122,7 @@ export function Play({
       // 只有"当前请求"管理共享标志，避免被取代的旧请求误清正在进行的新请求状态
       if (abortRef.current === ac) {
         busyRef.current = false
-        if (aliveRef.current) {
+        if (aliveRef.current && source.streaming) {
           setLoading(false)
           setStreamText('')
         }
@@ -114,19 +130,9 @@ export function Play({
     }
   }
 
-  // 本地模式：同步从事件池生成下一回合，不走网络
-  const genLocalTurn = () => {
-    streamedRef.current = false
-    onUpdate({ ...session, pendingTurn: localTurn(scenario, state) })
-  }
-
   useEffect(() => {
-    // 自定义行动结算仅 AI 模式存在；缺回合时：本地走事件池、AI 走网络
-    if (pendingAction) void fetchTurn()
-    else if (!pendingTurn && !state.ended) {
-      if (isLocal) genLocalTurn()
-      else void fetchTurn()
-    }
+    // 自定义行动结算（仅支持自由行动的来源会产生 pendingAction），或缺回合时，生成下一回合
+    if (pendingAction || (!pendingTurn && !state.ended)) void runTurn()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingTurn, pendingAction, state.history.length])
 
@@ -167,8 +173,8 @@ export function Play({
   const pick = (idx: number) => {
     if (!pendingTurn || loading || pendingAction) return
     streamedRef.current = false
-    // 本地模式注入「命运无常」偶然性:同一选择可能走向不同;AI 模式由模型自带变数
-    const next = applyChoice(scenario, state, pendingTurn, idx, isLocal ? Math.random : undefined)
+    // 来源决定随机源:本地注入「命运无常」偶然性(同一选择可能走向不同);AI 由模型自带变数
+    const next = applyChoice(scenario, state, pendingTurn, idx, source.choiceRng)
     onUpdate({ scenario, state: next, pendingTurn: null })
   }
 
@@ -395,7 +401,7 @@ export function Play({
         {error && (
           <div className="error-box">
             <p>{error}</p>
-            <button onClick={fetchTurn}>重试本回合</button>
+            <button onClick={runTurn}>重试本回合</button>
           </div>
         )}
       </div>
@@ -424,7 +430,7 @@ export function Play({
             )
           })}
 
-          {!isLocal &&
+          {source.supportsCustomAction &&
             (customOpen ? (
               <div className="custom-action">
                 <textarea
