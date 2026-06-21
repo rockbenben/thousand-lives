@@ -16,6 +16,7 @@ import {
   ACH_GROUP_ORDER,
   type Achievement,
 } from '../engine/achievements'
+import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
 import { hasEndingArt } from './endingArt'
 import { downloadText, safeFilename } from './download'
@@ -77,6 +78,7 @@ export function Archive({
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),
+    achConfig: achievementConfig,
   })
   const unlocked = achievements.filter((a) => a.done).length
   const galleryDone = builtinScenarios.reduce(

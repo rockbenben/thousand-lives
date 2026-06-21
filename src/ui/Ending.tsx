@@ -13,6 +13,7 @@ import { loadConfig, recordEnding, seenEndings, loadStats, type SaveGame } from 
 import type { Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { computeAchievements } from '../engine/achievements'
+import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
 
 // 当前已解锁成就（用于分享卡），需在 recordEnding 之后调用以包含本局
@@ -25,6 +26,7 @@ function unlockedAchievements() {
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),
+    achConfig: achievementConfig,
   }).filter((a) => a.done)
 }
 

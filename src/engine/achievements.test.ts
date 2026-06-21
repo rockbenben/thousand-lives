@@ -58,6 +58,31 @@ describe('computeAchievements', () => {
     expect(done('complete-one', a)).toBe(true)
   })
 
+  it('achConfig 驱动每剧本专属成就（通关/传说/集齐），引擎不内置任何剧本 id', () => {
+    const a = computeAchievements({
+      scenarios: [{ id: 'a', seen: 20, total: 20 }],
+      stats: noStats,
+      seenTones: { a: ['巅峰'] },
+      achConfig: {
+        a: {
+          legend: { tone: '巅峰', name: '传奇', desc: 'd', icon: '🏆' },
+          clear: { name: '通关甲', desc: 'd', icon: '✓' },
+          complete: { name: '集齐甲', icon: '★' },
+        },
+      },
+    })
+    expect(done('clear-a', a)).toBe(true)
+    expect(done('legend-a', a)).toBe(true) // seenTones 含巅峰 tone
+    expect(done('complete-a', a)).toBe(true)
+    expect(a.find((x) => x.id === 'legend-a')!.name).toBe('传奇')
+  })
+
+  it('无 achConfig 时不生成任何剧本专属成就（对未知剧本零耦合）', () => {
+    const a = computeAchievements({ scenarios: [{ id: 'a', seen: 20, total: 20 }], stats: noStats })
+    expect(a.some((x) => /^(clear|legend)-/.test(x.id) || x.id === 'complete-a')).toBe(false)
+    expect(done('complete-one', a)).toBe(true) // 通用阶梯成就不受影响
+  })
+
   it('S 级与本地通关来自 stats', () => {
     const a = computeAchievements({
       scenarios: [{ id: 'a', seen: 1, total: 20 }],

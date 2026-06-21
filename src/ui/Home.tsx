@@ -11,6 +11,7 @@ import {
   loadStats,
 } from '../storage'
 import { computeAchievements } from '../engine/achievements'
+import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
 import { covers } from './covers'
 import { GenerateModal } from './GenerateModal'
@@ -55,6 +56,7 @@ export function Home({
     })),
     stats: loadStats(),
     seenTones: Object.fromEntries(builtinScenarios.map((sc) => [sc.id, seenEndings(sc.id)])),
+    achConfig: achievementConfig,
   })
   const achDone = achievements.filter((a) => a.done).length
 
