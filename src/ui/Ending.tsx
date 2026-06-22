@@ -16,6 +16,24 @@ import { computeAchievements } from '../engine/achievements'
 import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
 
+// 剪贴板兜底：navigator.clipboard 在非 HTTPS / 旧浏览器下不可用时，用临时 textarea + execCommand
+function legacyCopy(text: string): boolean {
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.focus()
+    ta.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(ta)
+    return ok
+  } catch {
+    return false
+  }
+}
+
 // 当前已解锁成就（用于分享卡），需在 recordEnding 之后调用以包含本局
 function unlockedAchievements() {
   return computeAchievements({
@@ -120,12 +138,22 @@ export function EndingScreen({
   const card = buildSummaryCard(scenario, state, text)
 
   const copy = async () => {
+    // 优先用异步剪贴板 API；非 HTTPS / 旧浏览器下回退到 execCommand，再不行才提示手动复制
     try {
-      await navigator.clipboard.writeText(card)
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(card)
+      } else if (!legacyCopy(card)) {
+        throw new Error('execCommand copy failed')
+      }
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      setError('复制失败：浏览器拒绝了剪贴板访问，请手动选择文本复制')
+      if (legacyCopy(card)) {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } else {
+        setError('复制失败：浏览器拒绝了剪贴板访问，请手动选择文本复制')
+      }
     }
   }
 
