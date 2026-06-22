@@ -53,6 +53,13 @@
   --font-roman: "Cinzel", "Noto Serif SC", serif;
 }
 
+/* 繁体模式:标题字体 ZCOOL 小薇为简体字库（缺约 1/3 繁体专用字：書體國會這…），
+   会单字回退到系统宋体造成混排。改用已打包、繁体全覆盖的霞鹜文楷作标题，
+   繁体下标题内部统一（楷体风），零额外字体体积。LangToggle 切换时已设 <html lang="zh-Hant">。 */
+html[lang="zh-Hant"] {
+  --font-display: "LXGW WenKai", "Noto Serif SC", "STZhongsong", "Songti SC", "SimSun", serif;
+}
+
 * { box-sizing: border-box; }
 
 html { background: var(--ink-9); overflow-x: clip; }

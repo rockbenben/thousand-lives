@@ -51,6 +51,8 @@ export function LangToggle() {
     if (!root) return
     ensureConverter().then((conv) => {
       if (!live) return
+      // <title> 在 #root 之外不被树转换：繁体下浏览器标签/书签会残留简体标题，单独转一次
+      document.title = conv(document.title)
       const reconnect = () =>
         obs.current?.observe(root, { subtree: true, childList: true, characterData: true })
       obs.current = new MutationObserver((muts) => {
