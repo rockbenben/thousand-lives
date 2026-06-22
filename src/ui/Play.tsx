@@ -12,6 +12,9 @@ import { Lightbox } from './Lightbox'
 import { StoryCard } from './StoryCard'
 import { Typewriter } from './Typewriter'
 
+// 自定义行动字数上限：防止超长输入撑爆 AI 上下文 / 浪费 token
+const CUSTOM_ACTION_MAX = 200
+
 export function Play({
   session,
   onUpdate,
@@ -436,18 +439,20 @@ export function Play({
                 <textarea
                   className="custom-input"
                   value={customText}
-                  onChange={(e) => setCustomText(e.target.value)}
+                  onChange={(e) => setCustomText(e.target.value.slice(0, CUSTOM_ACTION_MAX))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submitCustom()
                   }}
                   placeholder="写下你想做的事，由 AI 裁定结果（Ctrl+Enter 提交）"
                   rows={2}
+                  maxLength={CUSTOM_ACTION_MAX}
                   autoFocus
                 />
                 <div className="custom-row">
                   <button className="ghost" onClick={() => { setCustomOpen(false); setCustomText('') }}>
                     取消
                   </button>
+                  <span className="custom-count">{customText.length}/{CUSTOM_ACTION_MAX}</span>
                   <button className="primary" disabled={!customText.trim()} onClick={submitCustom}>
                     照此行事
                   </button>
