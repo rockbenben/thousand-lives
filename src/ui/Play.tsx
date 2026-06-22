@@ -423,7 +423,11 @@ export function Play({
                 {fx.length > 0 && (
                   <span className="choice-fx">
                     {fx.map((f) => (
-                      <span key={f.name} className={`fx ${f.v > 0 ? 'up' : 'down'}`}>
+                      <span
+                        key={f.name}
+                        className={`fx ${f.v > 0 ? 'up' : 'down'}`}
+                        aria-label={`${f.name}${f.v > 0 ? '提升' : '降低'}${Math.abs(f.v)}`}
+                      >
                         {f.name} {f.v > 0 ? `+${f.v}` : f.v}
                       </span>
                     ))}

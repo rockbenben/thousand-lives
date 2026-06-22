@@ -23,6 +23,7 @@ import { downloadText, safeFilename } from './download'
 import { endingImage } from './endingArt'
 import { achievementImage } from './achievementArt'
 import { Lightbox } from './Lightbox'
+import { useModalA11y } from './useModalA11y'
 
 interface EndingDetail {
   scId: string
@@ -293,48 +294,13 @@ export function Archive({
       )}
 
       {detail && (
-        <div className="ending-detail-overlay" onClick={() => setDetail(null)}>
-          <div className="ending-detail" onClick={(e) => e.stopPropagation()}>
-            <button className="ghost ed-close" onClick={() => setDetail(null)}>✕</button>
-            {(() => {
-              const art = endingImage(detail.scId, detail.tone)
-              return art ? (
-                <button
-                  className="ed-art"
-                  style={{ backgroundImage: `url(${art})` }}
-                  onClick={() => setLightbox(art)}
-                  title="点击看全图"
-                  aria-label="查看大图"
-                >
-                  <span className="storycard-zoom" aria-hidden="true">⤢</span>
-                </button>
-              ) : null
-            })()}
-            <div className="ed-body">
-              <span className="ed-scene">{detail.emoji} {detail.title}</span>
-              <h3 className="ed-tone">{detail.tone}</h3>
-              {detail.epilogue ? (
-                <p className="ed-epilogue">{detail.epilogue}</p>
-              ) : (
-                <p className="ed-epilogue muted">此结局的尾声唯有亲历方知，再走一遭吧。</p>
-              )}
-            </div>
-          </div>
-        </div>
+        <EndingDetailModal
+          detail={detail}
+          onClose={() => setDetail(null)}
+          onViewArt={setLightbox}
+        />
       )}
-      {badge && (
-        <div className="badge-overlay" onClick={() => setBadge(null)}>
-          <div className="badge-show" onClick={(e) => e.stopPropagation()}>
-            <span
-              className="badge-show-img"
-              style={{ backgroundImage: `url(${badge.img})` }}
-              aria-hidden="true"
-            />
-            <h3 className="badge-show-name">{badge.name}</h3>
-            <p className="badge-show-desc">{badge.desc}</p>
-          </div>
-        </div>
-      )}
+      {badge && <BadgeModal badge={badge} onClose={() => setBadge(null)} />}
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
 
       <input
@@ -348,6 +314,88 @@ export function Archive({
           e.target.value = ''
         }}
       />
+    </div>
+  )
+}
+
+// 结局详情弹层：与 Memoir/Lightbox 一致地接入 useModalA11y（Esc 关闭 + 焦点陷阱 + 还原焦点）。
+// 拆成独立组件而非内联，是因为弹层条件渲染，钩子不能放在条件分支里调用。
+function EndingDetailModal({
+  detail,
+  onClose,
+  onViewArt,
+}: {
+  detail: EndingDetail
+  onClose: () => void
+  onViewArt: (src: string) => void
+}) {
+  const ref = useModalA11y(onClose)
+  const art = endingImage(detail.scId, detail.tone)
+  return (
+    <div className="ending-detail-overlay" onClick={onClose}>
+      <div
+        className="ending-detail"
+        onClick={(e) => e.stopPropagation()}
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`结局 · ${detail.tone}`}
+        tabIndex={-1}
+      >
+        <button className="ghost ed-close" onClick={onClose}>✕</button>
+        {art ? (
+          <button
+            className="ed-art"
+            style={{ backgroundImage: `url(${art})` }}
+            onClick={() => onViewArt(art)}
+            title="点击看全图"
+            aria-label="查看大图"
+          >
+            <span className="storycard-zoom" aria-hidden="true">⤢</span>
+          </button>
+        ) : null}
+        <div className="ed-body">
+          <span className="ed-scene">{detail.emoji} {detail.title}</span>
+          <h3 className="ed-tone">{detail.tone}</h3>
+          {detail.epilogue ? (
+            <p className="ed-epilogue">{detail.epilogue}</p>
+          ) : (
+            <p className="ed-epilogue muted">此结局的尾声唯有亲历方知，再走一遭吧。</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 徽章放大弹层：原本只能点背景关闭、无任何键盘退出路径；接入 useModalA11y 后 Esc 可关闭、焦点不外逃。
+function BadgeModal({
+  badge,
+  onClose,
+}: {
+  badge: { img: string; name: string; desc: string }
+  onClose: () => void
+}) {
+  const ref = useModalA11y(onClose)
+  return (
+    <div className="badge-overlay" onClick={onClose}>
+      <div
+        className="badge-show"
+        onClick={(e) => e.stopPropagation()}
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`徽章 · ${badge.name}`}
+        tabIndex={-1}
+      >
+        <span
+          className="badge-show-img"
+          style={{ backgroundImage: `url(${badge.img})` }}
+          aria-hidden="true"
+        />
+        <h3 className="badge-show-name">{badge.name}</h3>
+        <p className="badge-show-desc">{badge.desc}</p>
+      </div>
     </div>
   )
 }

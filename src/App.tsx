@@ -97,31 +97,34 @@ export default function App() {
 
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">跳到主要内容</a>
       <LangToggle />
-      {screen === 'home' && (
-        <Home
-          onSelect={startSetup}
-          onContinue={continueGame}
-          onOpenArchive={() => setScreen('archive')}
-        />
-      )}
-      {screen === 'archive' && (
-        <Archive onBack={() => setScreen('home')} onLoadGame={loadGame} />
-      )}
-      {screen === 'setup' && setupScenario && (
-        <Setup
-          key={setupScenario.id}
-          scenario={setupScenario}
-          onStart={startGame}
-          onBack={() => setScreen('home')}
-        />
-      )}
-      {screen === 'play' && session && (
-        <Play session={session} onUpdate={updateSession} onQuit={restart} />
-      )}
-      {screen === 'ending' && session && (
-        <EndingScreen session={session} onRestart={restart} onReplay={replay} />
-      )}
+      <main id="main-content" tabIndex={-1}>
+        {screen === 'home' && (
+          <Home
+            onSelect={startSetup}
+            onContinue={continueGame}
+            onOpenArchive={() => setScreen('archive')}
+          />
+        )}
+        {screen === 'archive' && (
+          <Archive onBack={() => setScreen('home')} onLoadGame={loadGame} />
+        )}
+        {screen === 'setup' && setupScenario && (
+          <Setup
+            key={setupScenario.id}
+            scenario={setupScenario}
+            onStart={startGame}
+            onBack={() => setScreen('home')}
+          />
+        )}
+        {screen === 'play' && session && (
+          <Play session={session} onUpdate={updateSession} onQuit={restart} />
+        )}
+        {screen === 'ending' && session && (
+          <EndingScreen session={session} onRestart={restart} onReplay={replay} />
+        )}
+      </main>
     </div>
   )
 }

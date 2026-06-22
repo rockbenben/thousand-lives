@@ -136,6 +136,20 @@ body::before {
 @keyframes twinkle { from { opacity: 0.6; } to { opacity: 0.95; } }
 
 .app { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+#main-content:focus { outline: none; }
+/* 跳到主内容：键盘 Tab 首站，平时移出视口，聚焦时滑入左上角 */
+.skip-link {
+  position: fixed; z-index: 100;
+  top: 8px; left: 8px;
+  transform: translateY(-150%);
+  padding: 8px 14px;
+  font-family: var(--font-display); font-size: 0.9rem;
+  color: var(--gold); background: rgba(16, 22, 52, 0.96);
+  border: 1px solid var(--line-strong); border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+.skip-link:focus { transform: translateY(0); outline: 2px solid var(--gold); outline-offset: 2px; }
 /* 简繁切换:右上角常驻,低调鎏金 */
 .lang-toggle {
   position: fixed; z-index: 90;

@@ -2,6 +2,7 @@ import type { Scenario } from '../scenarios/schema'
 import type { GameState } from '../engine/types'
 import { keyMomentIndex } from '../engine/keymoment'
 import { nodeImage } from './nodeArt'
+import { useModalA11y } from './useModalA11y'
 
 // 命途留影：把本局走过的「命运抉择」节点汇成可回溯的剧情卡相册（由 history 推导）。
 export function Memoir({
@@ -19,9 +20,19 @@ export function Memoir({
     .map((t, i) => ({ t, turnNo: i + 1, ki: keyMomentIndex(i + 1, scenario.maxTurns) }))
     .filter((x) => x.ki >= 0)
 
+  const ref = useModalA11y(onClose)
+
   return (
     <div className="memoir-overlay" onClick={onClose}>
-      <div className="memoir" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="memoir"
+        onClick={(e) => e.stopPropagation()}
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label="命途留影"
+        tabIndex={-1}
+      >
         <div className="memoir-head">
           <span className="memoir-title">命途留影</span>
           <span className="memoir-count">{cards.length} 帧</span>

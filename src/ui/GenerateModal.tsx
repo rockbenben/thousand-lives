@@ -6,6 +6,7 @@ import { generateScenario, type GenProgress } from '../ai/generateScenario'
 import { friendlyError, isAbortError } from '../ai/client'
 import { loadConfig, saveConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
+import { useModalA11y } from './useModalA11y'
 
 const providerOptions = PRESETS.map((p) => ({
   value: p.id,
@@ -94,9 +95,20 @@ export function GenerateModal({
         ? '正在收尾校验…'
         : `正在撰写支线剧情… ${p.events}/${p.target}`
 
+  // 生成中（busy）禁用 Esc 关闭，与点击遮罩一致——避免误触中断
+  const ref = useModalA11y<HTMLDivElement>(onClose, !busy)
+
   return (
     <div className="modal-backdrop" onClick={busy ? undefined : onClose}>
-      <div className="modal gen-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal gen-modal"
+        onClick={(e) => e.stopPropagation()}
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        aria-label="AI 生成新剧本"
+        tabIndex={-1}
+      >
         <h3>✨ AI 生成新剧本</h3>
         <p className="hint">给一个主题，AI 会为你设计属性、结局与上百条支线，生成后加入剧本库（可本地试玩）。</p>
 

@@ -71,6 +71,8 @@ export function SearchSelect({
               setQuery(null)
             }
           } else if (e.key === 'Escape') {
+            // 下拉展开时先收起自身，并吞掉 Esc，避免连带关闭外层弹窗（useModalA11y 会跳过 defaultPrevented）
+            if (open) e.preventDefault()
             setOpen(false)
             setQuery(null)
           }
