@@ -163,6 +163,14 @@ describe('export / import', () => {
     expect(back.scenario.id).toBe('wasteland')
   })
 
+  it('导出游戏内 session（内存态无 v）后可再导入', () => {
+    // App.startGame / updateSession 持有的内存 session 从不带 v（只有写 localStorage / 存档位时才补 v）。
+    // Play 的「导出」按钮直接 exportSaveString(session)，导出物必须能被 parseSaveFile 接回。
+    const live: SaveGame = { scenario: wasteland, state: initState(wasteland), pendingTurn: null }
+    const back = parseSaveFile(exportSaveString(live))
+    expect(back.scenario.id).toBe('wasteland')
+  })
+
   it('非法 JSON 抛中文错误', () => {
     expect(() => parseSaveFile('{not json')).toThrow('不是合法的 JSON')
   })

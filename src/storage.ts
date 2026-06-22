@@ -296,7 +296,9 @@ function emptyStats(): RunStats {
 
 // 导出为带元信息的封装，便于校验与未来兼容
 export function exportSaveString(game: SaveGame): string {
-  return JSON.stringify({ kind: 'thousand-lives-save', version: 1, game }, null, 2)
+  // 内存态 session（App.startGame/updateSession 持有）不带 v——与 saveSave/saveToSlot 一致地在导出时补上，
+  // 否则导出的文件 game.v 为 undefined，被 validateSaveGame 当作旧版本拒绝，导致导出物无法再导入。
+  return JSON.stringify({ kind: 'thousand-lives-save', version: 1, game: { ...game, v: SAVE_VERSION } }, null, 2)
 }
 
 // 解析导出文件；兼容直接是 SaveGame 的裸 JSON。不合法抛错（含中文提示）
