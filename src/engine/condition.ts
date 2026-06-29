@@ -35,7 +35,9 @@ function evalClause(
     const present = flags.includes(c.flag)
     return c.neg ? !present : present
   }
-  const v = attrs[c.attr]
+  // 伪属性 `turn`：解析为当前已完成回合数，供结局加「最早触发回合」门（如 name<=4 & turn>=18，
+  // 避免低值早结局在开局数回合就猝死、给玩家恢复窗口）。非真实属性，不参与属性存在性校验。
+  const v = c.attr === 'turn' ? completedTurns : attrs[c.attr]
   if (v === undefined) return false
   return c.op === '<=' ? v <= c.value : v >= c.value
 }
@@ -55,7 +57,8 @@ export function evalCondition(
 // 提取条件中引用的所有属性 key（供 import 校验属性是否存在）
 export function conditionAttrs(c: Condition): string[] {
   const clauses = c.kind === 'and' ? c.parts : [c]
-  return clauses.flatMap((p) => (p.kind === 'cmp' ? [p.attr] : []))
+  // 排除伪属性 `turn`（回合门，非剧本属性）——否则属性存在性校验会误判其不存在。
+  return clauses.flatMap((p) => (p.kind === 'cmp' && p.attr !== 'turn' ? [p.attr] : []))
 }
 
 // 把条件归一为各维度约束集合，用于「蕴含/区域包含」判断。

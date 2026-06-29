@@ -65,7 +65,8 @@ export const wasteland: Scenario = {
   ambitions: ['在末世里长久地活下去', '搜罗物资建立一处安全据点', '找到并守护其他幸存者', '查明病毒爆发的真相', '攒足补给，远走他乡寻一片净土', '研制出遏制病毒的解药', '在废土上建立自己的秩序与势力', '为惨死的亲人讨一个交代', '末世之中守住做人的底线', '组建一支生死与共的幸存者队伍'],
   turnUnit: '月',
   tierLabel: '据点',
-  maxTurns: 36,
+  maxTurns: 44,
+  finale: '你熬过了末世最长的寒冬，废土之上，终见微光。',
   systemPrompt: `你是一个末世生存文字游戏的主持人（GM）。世界观：不明病毒爆发后的现代废土，军方救援早已成泡影、官方安全区接连失守，感染者昼伏夜出，幸存者之间既有互助也有掠夺。叙事风格：紧张、写实、有压迫感，偶尔留一丝人性微光。
 规则：
 - 每回合代表一个月，剧情按月推进、可有跨度更大的经营与变故，不要原地打转
@@ -143,7 +144,7 @@ export const wasteland: Scenario = {
         { text: '怔怔数完，苦笑着空手离开', effects: { sanity: -3, supplies: -3 }, reaction: '你把橡皮筋一根根重新捆好，像在替一个死去的时代收殓。走出去老远，那荒诞的一幕还黏在眼底，分不清是想哭还是想笑。' },
         { text: '翻遍夹层，看有没有值钱的真家伙', effects: { supplies: 5, sanity: -2 }, reaction: '钞票底下竟压着半板止痛片和一把瑞士军刀——你嗤笑一声：这年头，废纸里裹着的实在玩意儿，才是真正的财。' },
       ],
-      summary: '废箱里的钞票', art: '1lp9c3v', gen: 'flux',
+      summary: '废箱里的钞票', art: '1lp9c3v', gen: 'gemini',
       weight: 0.4,
     },
     {
@@ -153,7 +154,7 @@ export const wasteland: Scenario = {
         { text: '爬上楼顶，静静看完这场天象', effects: { sanity: 10, supplies: -3 }, reaction: '冷风里你看了整整一夜，那片诡丽的光像在替这座死城办一场无声的葬礼——天亮时你心头竟空空地静了，连日的惊惶淡了几分。' },
         { text: '认定是凶兆，连夜收拾细软转移', effects: { hp: -4, supplies: -5, sanity: -2 }, reaction: '你背着包深一脚浅一脚地逃，回头那片绿光仍在天上烧。事后什么都没发生，可那一夜的仓皇，让你笑自己也信了回邪。' },
       ],
-      summary: '诡异极光', art: '1k8pb1u', gen: 'flux',
+      summary: '诡异极光', art: '1k8pb1u', gen: 'gemini',
       weight: 0.4,
       minTurn: 10,
     },
@@ -164,7 +165,7 @@ export const wasteland: Scenario = {
         { text: '抱回所有罐子，能存多少存多少', effects: { supplies: 12, hp: -3 }, reaction: '你脱下外套兜着叮当作响的战利品离开，那台机器还在身后徒劳地吐着货——这是末世给你开的唯一一个甜得发慌的玩笑。' },
         { text: '只灌饱肚子，痛快喝个够', effects: { hp: 6, sanity: 6, supplies: -2 }, reaction: '你坐在一地罐子中间，仰头灌下久违的甜与凉，气泡在喉咙里炸开。那一刻饥渴和恐惧都退了潮，你像回到了从前某个寻常的下午。' },
       ],
-      summary: '发疯的售货机', art: '8rs4t4', gen: 'flux',
+      summary: '发疯的售货机', art: '8rs4t4', gen: 'gemini',
       weight: 0.4,
     },
     {
@@ -174,7 +175,7 @@ export const wasteland: Scenario = {
         { text: '揣进怀里，留作支撑自己的念想', effects: { sanity: 9, supplies: -3 }, reaction: '此后每个撑不下去的夜，你都拧两圈发条。那串细弱的旋律成了你揣在胸口的一簇火，提醒你还记得自己是个人。' },
         { text: '太占地方，听完便放回原处', effects: { sanity: 4, supplies: -2 }, reaction: '你让最后一个音符消散在空气里，才合上匣盖。东西没带走，那点久违的柔软却悄悄跟着你出了门。' },
       ],
-      summary: '废墟里的八音盒', art: '1yrnyar', gen: 'flux',
+      summary: '废墟里的八音盒', art: '1yrnyar', gen: 'gemini',
       weight: 0.4,
       itemsGained: ['八音盒'],
     },
@@ -185,7 +186,7 @@ export const wasteland: Scenario = {
         { text: '骂骂咧咧揉着肩，自认倒霉', effects: { hp: -7, sanity: -2 }, reaction: '你冲着那只猫啐了一口，它毫不在意地舔起爪子。你揉着青肿的肩膀苦笑——熬过感染者，没想到差点死得这么窝囊。' },
         { text: '上楼查看，那猫窝里说不定有货', effects: { hp: -3, supplies: 7, sanity: -1 }, reaction: '你顺着楼梯摸上去，那野猫的窝边竟堆着它叼来的几包未拆的零食。你哭笑不得地收进包里——这一盆花，砸出条财路来了。' },
       ],
-      summary: '飞来的花盆', art: '4pivdv', gen: 'flux',
+      summary: '飞来的花盆', art: '4pivdv', gen: 'gemini',
       weight: 0.4,
     },
     {
@@ -196,7 +197,7 @@ export const wasteland: Scenario = {
         { text: '陪他唠几句，听听巷子外的传闻', effects: { sanity: 8, supplies: -4 }, reaction: '老头嘬着烟袋，断断续续讲起东边的庇护所、北边的吃人帮派。这些真假难辨的闲话，却让你像久旱逢甘霖般贪婪地听着。' },
         { text: '不与陌生人纠缠，绕开走', effects: { supplies: -2, sanity: -2 }, reaction: '你贴着墙根快步绕过那摊子，老头也不恼，只在身后悠悠道了句「后会有期」。走出巷口，你竟莫名有点舍不得那点人气。' },
       ],
-      summary: '废土杂货摊', art: '1svb312', gen: 'flux',
+      summary: '废土杂货摊', art: '1svb312', gen: 'gemini',
       weight: 0.4,
     },
     {
@@ -206,7 +207,7 @@ export const wasteland: Scenario = {
         { text: '只摘熟透的几颗，照木牌留下种子', effects: { supplies: 6, sanity: 10 }, reaction: '你把摘剩的番茄籽细细埋回土里，又替菜畦松了松土。做完这些，胸口那点被末世磨得发硬的东西，软了下来。' },
         { text: '顾不上许多，连根带果全拔走', effects: { supplies: 14, sanity: -8 }, reaction: '你抱着满怀的收成匆匆离开，那块木牌被你踩进了泥里。填饱了肚子，可那行被你辜负的字，夜里总在心头隐隐发烫。' },
       ],
-      summary: '夹缝里的菜畦', art: 'ws5s5p', gen: 'flux',
+      summary: '夹缝里的菜畦', art: 'ws5s5p', gen: 'gemini',
       weight: 0.4,
     },
     {
@@ -216,7 +217,7 @@ export const wasteland: Scenario = {
         { text: '宁可信其有，循着螺旋探一探', effects: { hp: -6, supplies: -5, sanity: 6 }, reaction: '你顺着一路的螺旋记号摸进地下，尽头竟真有个废弃的人防工事，墙上贴满陌生人留的字条。谜底没全解开，可这一夜你睡得格外踏实。' },
         { text: '邪门得很，明早绕开这片街区', effects: { supplies: -3, sanity: -3 }, reaction: '你天不亮就背包走人，把那个螺旋甩在身后。是福是祸再没人知道，可宁可错过、绝不踏进未知，正是你活到今天的本分。' },
       ],
-      summary: '螺旋符号传闻', art: '6z8vgi', gen: 'flux',
+      summary: '螺旋符号传闻', art: '6z8vgi', gen: 'gemini',
       weight: 0.4,
       minTurn: 14,
     },
@@ -228,9 +229,8 @@ export const wasteland: Scenario = {
         { text: '只拿眼前能拿的，尽快离开', effects: { supplies: 2, sanity: -3 }, reaction: '街角阴影里一双眼睛盯着你匆匆离去的背影，撇了撇嘴——这么大一间店，被你白白撂下了。' },
         { text: '原地屏息，等脚步声远去', effects: { supplies: -4, sanity: -5 }, reaction: '没人看见你这一夜，只有你自己听着那拖沓脚步声远去又折返，把这一夜熬成了煎熬。' },
       ],
-      summary: '便利店搜寻', art: '1oewd7f', gen: 'flux',
+      summary: '便利店搜寻', art: '1oewd7f', gen: 'gemini',
       minTurn: 1,
-      maxTurn: 3,
       once: true,
       itemsGained: ['撬棍'],
     },
@@ -242,7 +242,7 @@ export const wasteland: Scenario = {
         { text: '摸黑下楼，赌它们还没上来', effects: { hp: -12, supplies: -3 }, reaction: '楼梯井里那东西扑了个空，发出一声不甘的低吼——你贴着墙根冲下去的那股狠劲，连它都没追上。' },
         { text: '点亮手电查看——也许只是错觉', effects: { sanity: -8, supplies: -4 }, reaction: '光柱亮起的刹那，黑暗里无数张灰败的脸齐刷刷转向你——你把自己活活照成了它们眼里的猎物。' },
       ],
-      summary: '夜半异响', art: '1cgmrju', gen: 'flux',
+      summary: '夜半异响', art: '1cgmrju', gen: 'gemini',
       weight: 1.5,
     },
     {
@@ -252,7 +252,7 @@ export const wasteland: Scenario = {
         { text: '全部搬空，多多益善', effects: { supplies: 16, hp: -4 }, reaction: '你走后，下一个摸进来的幸存者望着空空如也的橱柜，恶狠狠啐了一口——这年头，先到的就是王法。' },
         { text: '只取够用的，留点给后来人', effects: { supplies: 8, sanity: 4 }, reaction: '后来人拉开柜门，看见你留下的那几罐，怔了半晌——这片废土上，竟还有人肯替素不相识的人留一口活路。' },
       ],
-      summary: '居民楼觅食', art: '1k9cahn', gen: 'flux',
+      summary: '居民楼觅食', art: '1k9cahn', gen: 'gemini',
       itemsGained: ['罐头'],
     },
     {
@@ -263,7 +263,7 @@ export const wasteland: Scenario = {
         { text: '警惕地拒绝，让他走开', effects: { supplies: -3, sanity: -4 }, reaction: '他垂下举起的手，眼里的光一点点灭了，转身蹒跚走进废墟——没骂你，那份沉默的失望反倒更扎心。' },
         { text: '假意答应，趁机搜他的包', effects: { supplies: 6, sanity: -10 }, reaction: '他反应过来时已被你按住，瞪大的眼里满是难以置信：「你……你居然……」这一眼，你往后许多个夜里都甩不掉。' },
       ],
-      summary: '街角的幸存者', art: '4pentz', gen: 'flux',
+      summary: '街角的幸存者', art: '4pentz', gen: 'gemini',
       weight: 1.2,
     },
     {
@@ -273,9 +273,10 @@ export const wasteland: Scenario = {
         { text: '记下方位，决定动身前往', effects: { supplies: -5, sanity: 10 }, reaction: '若有同伴在旁，他会重重拍你肩膀，声音发颤：「总算有个奔头了！」——绝望里抓住方向的人，眼里的光骗不了人。' },
         { text: '不轻信，继续守在原地', effects: { supplies: -6, sanity: -3 }, reaction: '没人来评判你的谨慎，可那段循环录音一遍遍重播，像在无声嗤笑你白白错过了唯一一个像样的方向。' },
       ],
-      summary: '电台讯号', art: '1gqv5zk', gen: 'flux',
+      summary: '电台讯号', art: '1gqv5zk', gen: 'gemini',
       once: true,
       minTurn: 5,
+      maxTurn: 20,
     },
     {
       narrative:
@@ -284,7 +285,7 @@ export const wasteland: Scenario = {
         { text: '硬扛，把干粮留到更危急时', effects: { hp: -10, supplies: -2, sanity: -6 }, reaction: '若有同伴看见你攥着干粮却饿得发抖，会皱眉摇头：「你这是拿命省粮，留得住口粮，留不住命啊。」' },
         { text: '吃光干粮，先撑过今天', effects: { hp: 4, supplies: -8 }, reaction: '没人苛责一个饿到极致的人填饱肚子，可空荡荡的背包就摆在脚边，无声提醒着你：明天的账，迟早要还。' },
       ],
-      summary: '墙根分食干粮', art: 'hu4b98', gen: 'flux',
+      summary: '墙根分食干粮', art: 'hu4b98', gen: 'gemini',
       weight: 1.3,
     },
     {
@@ -294,7 +295,7 @@ export const wasteland: Scenario = {
         { text: '冒雨绕远路撤离', effects: { hp: -6, supplies: -5, sanity: -2 }, reaction: '那几个感染者在雨幕里茫然转着圈，始终没能锁定你——你绕的这一大圈远路，把它们和危险一并甩在了身后。' },
         { text: '躲进废弃车厢屏息等待', effects: { supplies: -7, sanity: -6 }, reaction: '感染者贴着车窗缓缓挪过，鼻尖几乎抵到玻璃上——你死死咬住袖子不让自己发抖，赌赢了，也熬干了一身的胆气。' },
       ],
-      summary: '雨中的围拢', art: '1q1u3g4', gen: 'flux',
+      summary: '雨中的围拢', art: '1q1u3g4', gen: 'gemini',
     },
     {
       narrative:
@@ -305,7 +306,7 @@ export const wasteland: Scenario = {
         ] },
         { text: '先在门口听动静再进', effects: { supplies: -4, sanity: 2 }, reaction: '你贴门听了许久才迈步，这份耐性救了你——里头的动静证明，急着冲进去的人，多半已经没机会后悔了。' },
       ],
-      summary: '废弃药房', art: '1dcyb6d', gen: 'flux',
+      summary: '废弃药房', art: '1dcyb6d', gen: 'gemini',
       once: true,
     },
     {
@@ -315,9 +316,10 @@ export const wasteland: Scenario = {
         { text: '加入，人多力量大', effects: { supplies: -6, sanity: 10 }, reaction: '老猎人咧嘴一笑，拍了拍你的肩，把守夜的好位置让给了你——他眼里的算计淡了几分，多了点接纳同类的踏实。' },
         { text: '婉拒，独行更自由', effects: { supplies: -4, sanity: -5 }, reaction: '老猎人耸耸肩，转身没入街角的阴影，临走撂下一句：「独狼……在这世道活不长，小子。」语气里说不清是惋惜还是讥讽。' },
       ],
-      summary: '老猎人的邀约', art: '1tym5co', gen: 'flux',
+      summary: '老猎人的邀约', art: '1tym5co', gen: 'gemini',
       once: true,
       minTurn: 8,
+      maxTurn: 22,
     },
     {
       narrative:
@@ -326,7 +328,7 @@ export const wasteland: Scenario = {
         { text: '绕到侧门，悄悄靠近', effects: { hp: -4, supplies: -5, sanity: 6 }, reaction: '侧门后探出一个面黄肌瘦的哨兵，见你没惊动广场上的尸群，低声赞了句「是个老手」，放你进了门——里头挤满了同样走投无路的人，配给紧巴、人心惶惶，这据点自己也撑不了多久了。' },
         { text: '高喊求救，赌里面有活人', effects: { hp: -10, supplies: -3, sanity: 8 }, reaction: '喊声惊得满广场身影一齐抬头，墙头也亮起了灯——有人冲下来把你拽进门，骂咧咧又佩服你这一嗓子的孤注一掷；可进了门才看清，这据守的体育馆早已弹尽粮绝，不过是又一处朝不保夕的避难所。' },
       ],
-      summary: '抵达体育馆', art: 'muujmr', gen: 'flux',
+      summary: '抵达体育馆', art: 'muujmr', gen: 'gemini',
       once: true,
       minTurn: 22,
       weight: 2,
@@ -338,7 +340,7 @@ export const wasteland: Scenario = {
         { text: '抓紧时间，能搬多少搬多少', effects: { supplies: 22, hp: -4, sanity: -2 }, reaction: '巨响招来的几道身影刚摸近，就只看见你背着满满当当的战利品扬长而去——他们攥着空拳，眼里又是眼红又是忌惮。' },
         { text: '只拿一部分，速战速决', effects: { supplies: 10, sanity: 2 }, reaction: '你拎着东西干脆利落地撤了，引来的觊觎者扑了个空，只在心里暗骂一句：这人下手快，撤得更快。' },
       ],
-      summary: '货车横财', art: '1knqda6', gen: 'flux',
+      summary: '货车横财', art: '1knqda6', gen: 'gemini',
       requiresItem: '撬棍',
       once: true,
     },
@@ -350,7 +352,7 @@ export const wasteland: Scenario = {
         { text: '跟着「同伴」走过去看看', effects: { hp: -15, sanity: -6, supplies: -3 }, reaction: '你伸向「他」的手，触到的却是冰冷的锈铁与裂开的伤口——幻象散去时，连你自己都分不清是哭还是笑了。' },
         { text: '蜷缩在角落，捂耳尖叫到天明', effects: { sanity: 4, supplies: -6 }, reaction: '没有人来安慰这一夜的崩溃，只有你自己的尖叫在空楼里回荡，天亮时嗓子哑了，那声呼唤却总算淡去了。' },
       ],
-      summary: '崩溃边缘的幻象', art: 'xopghu', gen: 'flux',
+      summary: '崩溃边缘的幻象', art: 'xopghu', gen: 'gemini',
       requires: 'sanity<=22',
       weight: 2,
     },
@@ -361,7 +363,7 @@ export const wasteland: Scenario = {
         { text: '设陷阱抓鼠，好歹是口肉', effects: { hp: -2, supplies: 8, sanity: -6 }, reaction: '没人看着你生火烤鼠，可那份饿到不挑食、还能冷静设套的求生本能，是熬过末世的人才有的硬气。' },
         { text: '嚼口香糖骗骗肠胃，继续赶路', effects: { hp: -8, supplies: -2, sanity: -4 }, reaction: '到手的活物被你白白放走，胃里那阵更凶的绞痛像在替你后悔——体面，在饿到第三天时是最廉价的奢侈。' },
       ],
-      summary: '墙角觅食的老鼠', art: '16n682h', gen: 'flux',
+      summary: '墙角觅食的老鼠', art: '16n682h', gen: 'gemini',
       requires: 'supplies<=15',
       weight: 1.8,
     },
@@ -373,7 +375,7 @@ export const wasteland: Scenario = {
         { text: '佯装离开，夜里再回来偷', effects: { supplies: 10, hp: -8, sanity: -6 }, reaction: '天亮时那伙人发现物资少了一截，气得破口大骂，却怎么也想不到，那个白天灰溜溜走掉的家伙竟敢摸回来。' },
         { text: '硬闯，拼一条生路', effects: { hp: -18, supplies: 6, sanity: -8 }, reaction: '你浑身是血却真撕开了一道口子冲出重围，沙袋后那几个人愣在原地——他们头回见着这么不要命的孤身一人。' },
       ],
-      summary: '武装据点', art: '1fhpm3b', gen: 'flux',
+      summary: '武装据点', art: '1fhpm3b', gen: 'gemini',
       weight: 1.2,
     },
     {
@@ -383,7 +385,7 @@ export const wasteland: Scenario = {
         { text: '烧家具取暖，赌烟不会暴露位置', effects: { hp: 6, supplies: -8, sanity: -2 }, reaction: '火光在雪夜里跳动，远处几道踉跄的身影被引了过来又被你提前转移甩开——这一把火，你赌赢了体温也赌赢了命。' },
         { text: '硬扛严寒，靠意志撑过去', effects: { hp: -12, supplies: -4, sanity: -5 }, reaction: '没有谁见证你冻得发紫的嘴唇和咬碎的牙关，只有清晨第一缕天光照见你还在发抖——你硬是用意志熬退了死神。' },
       ],
-      summary: '暴雪封城', art: '1euasya', gen: 'flux',
+      summary: '暴雪封城', art: '1euasya', gen: 'gemini',
       minTurn: 12,
     },
     {
@@ -393,9 +395,10 @@ export const wasteland: Scenario = {
         { text: '循着频率去城东找互助社区', effects: { supplies: -6, sanity: 12 }, reaction: '那温厚的男声仿佛隔着电波也察觉了你的脚步，念名字的间隙轻轻添了句：「再多撑一会儿，路上的朋友，门一直开着。」' },
         { text: '将信将疑，先回个讯号试探', effects: { supplies: -4, sanity: 5 }, reaction: '电波那头沉默片刻，随即传来一声温和的轻笑：「警惕是对的，这年头肯先敲门的人，才活得久。」' },
       ],
-      summary: '幸存者电台', art: '1suvy0v', gen: 'flux',
+      summary: '幸存者电台', art: '1suvy0v', gen: 'gemini',
       once: true,
       minTurn: 6,
+      maxTurn: 22,
     },
     {
       narrative:
@@ -406,7 +409,7 @@ export const wasteland: Scenario = {
         ] },
         { text: '留药自保，默默离开', effects: { sanity: -12, supplies: -3 }, reaction: '没人会指责一个想活命的人，可那孩子追在身后渐弱的喘息，和母亲僵冷怀抱的那一幕，会在你往后的梦里反复审判你。' },
       ],
-      summary: '高烧的孩子', art: 'g2o4bl', gen: 'flux',
+      summary: '高烧的孩子', art: 'g2o4bl', gen: 'gemini',
       requiresItem: '退烧药',
       once: true,
     },
@@ -417,7 +420,7 @@ export const wasteland: Scenario = {
         { text: '设伏反杀，守住家当', effects: { hp: -14, supplies: -6, sanity: -8 }, reaction: '黑影们包抄进来时反被你一一撂倒，最后一个落荒而逃的边跑边回头，眼神里全是惊骇——这窝点的主人，根本是头藏起爪子的狼。' },
         { text: '弃一半物资金蝉脱壳', effects: { supplies: -30, hp: -2 }, reaction: '那几个掠夺者扑向你撂下的物资，争得头破血流，谁也没顾上去追——你用一半家当，聪明地买回了整条命。' },
       ],
-      summary: '物资引狼', art: '1gkub7n', gen: 'flux',
+      summary: '物资引狼', art: '1gkub7n', gen: 'gemini',
       requires: 'supplies>=70',
       weight: 1.5,
     },
@@ -428,7 +431,7 @@ export const wasteland: Scenario = {
         { text: '撕衣束伤、生火止血，搏一线生机', effects: { hp: 16, supplies: -10, sanity: -4 }, reaction: '烙铁般的剧痛里，你硬是把自己从鬼门关拽了回来。倘若有人撞见这一幕，定会倒吸一口凉气：这人的求生欲，比死神的镰刀还硬。' },
         { text: '保存体力静卧，赌身体自愈', effects: { hp: 4, supplies: -6, sanity: -6 }, reaction: '你把命交给了运气，听着血一滴滴渗进地砖缝。这一回侥幸没死，可那种把生死全押给身体的赌法，连你自己都后怕。' },
       ],
-      summary: '濒死自救', art: '1g17zkd', gen: 'flux',
+      summary: '濒死自救', art: '1g17zkd', gen: 'gemini',
       requires: 'hp<=20',
       weight: 1.6,
     },
@@ -439,7 +442,7 @@ export const wasteland: Scenario = {
         { text: '尾随感染者潮，查个究竟', effects: { hp: -8, supplies: -4, sanity: -4 }, reaction: '没人敢跟着尸群走，你却贴着它们的尾巴探进了城北——这份要么找死、要么揭开真相的胆魄，寻常人想都不敢想。' },
         { text: '反向搜刮被清空的街区', effects: { supplies: 14, hp: -4, sanity: -2 }, reaction: '别人都盯着尸群惊慌，你却看准它们腾空的街区反向扎了进去——这份冷静算计的脑子，在废土上比力气还值钱。' },
       ],
-      summary: '感染者迁徙', art: '91otiu', gen: 'flux',
+      summary: '感染者迁徙', art: '91otiu', gen: 'gemini',
       minTurn: 8,
     },
     {
@@ -449,7 +452,7 @@ export const wasteland: Scenario = {
         { text: '上网搜寻救援信息与安全区坐标', effects: { sanity: 12, supplies: -6 }, reaction: '屏幕亮起的瞬间，你像抓住了与旧世界相连的最后一根线。换作旁人，多半只顾着填肚子，你却先去抢那条能救命的情报——这眼界，救得了不止今天。' },
         { text: '撬开自动售货机，补充给养', effects: { supplies: 12, sanity: -2 }, reaction: '你三下五除二撬开了机器，饮料零食哗啦啦滚出来——眼前的实惠到了手，只是那台还连着网的电脑，被你头也不回地撂下了。' },
       ],
-      summary: '残存电力', art: '1fb1qew', gen: 'flux',
+      summary: '残存电力', art: '1fb1qew', gen: 'gemini',
       once: true,
       minTurn: 4,
     },
@@ -461,7 +464,7 @@ export const wasteland: Scenario = {
         { text: '见势不妙撤离', effects: { hp: 0, sanity: -1, supplies: -4 }, reaction: '拐角后的动静停了，仿佛在等你露头。你却已悄然退出门外——那东西扑了个空，而你的存粮又少了一格。' },
         { text: '大声试探对方', effects: { hp: -6, sanity: -4, supplies: -3 }, reaction: '你一声喝问刚出口，拐角后猛地扑出个红了眼的家伙——这一嗓子等于自报家门，把藏在暗处的危险全勾了出来。' },
       ],
-      summary: '废弃便利店', art: '1tybsna', gen: 'flux',
+      summary: '废弃便利店', art: '1tybsna', gen: 'gemini',
     },
     {
       narrative:
@@ -471,7 +474,7 @@ export const wasteland: Scenario = {
         { text: '留下食物离开', effects: { hp: 0, sanity: 2, supplies: -8 }, reaction: '你把食物搁在楼梯口便退了，那声求救渐渐弱下去——既没冒险，也没全然狠心，这一点分寸，夜里能让你睡得踏实些。' },
         { text: '无视求救继续走', effects: { hp: 0, sanity: -5, supplies: -2 }, reaction: '那声呼救在你身后一点点变细、断绝。没人会怪你保命，可那道戛然而止的余音，会黏在你心里好些天。' },
       ],
-      summary: '楼上传声', art: '1exdg63', gen: 'flux',
+      summary: '楼上传声', art: '1exdg63', gen: 'gemini',
     },
     {
       narrative:
@@ -480,7 +483,7 @@ export const wasteland: Scenario = {
         { text: '烧掉部分家具', effects: { hp: 2, sanity: -2, supplies: -6 }, reaction: '火苗窜起，僵硬的手指总算缓过了知觉——没人看着你，可这份当机立断地拆桌生火，正是会过日子的人才有的果断。' },
         { text: '硬撑到天亮', effects: { hp: -8, sanity: -4, supplies: -2 }, reaction: '你抱着膝盖在墙角抖了一整夜，省下的那点燃料压根不值这一身冻伤——硬扛得了寒，扛不住自己这股拧巴的倔。' },
       ],
-      summary: '刺骨寒夜', art: '1bqrgph', gen: 'flux',
+      summary: '刺骨寒夜', art: '1bqrgph', gen: 'gemini',
     },
     {
       narrative:
@@ -490,7 +493,7 @@ export const wasteland: Scenario = {
         { text: '观察后离开', effects: { hp: 0, sanity: 0, supplies: -3 }, reaction: '你盯着那串新鲜脚印想了想，终究没上前。藏在附近的人见你识趣离开，也松了口气——这一回，两边都没动手。' },
         { text: '设伏等待来人', effects: { hp: -5, sanity: -5, supplies: -4 }, reaction: '你蹲守了大半天，等来的却是更熟门熟路的对手——废土上想算计别人的，往往自己也正被人盯着。' },
       ],
-      summary: '侧翻货车', art: '1b8hp84', gen: 'flux',
+      summary: '侧翻货车', art: '1b8hp84', gen: 'gemini',
     },
     {
       narrative:
@@ -499,8 +502,9 @@ export const wasteland: Scenario = {
         { text: '记录坐标前往', effects: { hp: -2, sanity: 1, supplies: -7 }, reaction: '你贴着喇叭一字字记下那断续的方位，攥紧了拳头——若有同伴在旁，会被你这股抓住一线生机就死不松手的劲头感染。' },
         { text: '怀疑是陷阱', effects: { hp: 0, sanity: -2, supplies: -2 }, reaction: '没人来评说你的多疑，只有那段含糊的录音在杂讯里反复打转，像在嘲弄你既不敢信、又舍不得彻底关掉。' },
       ],
-      summary: '军方频段', art: '1bevstb', gen: 'flux',
+      summary: '军方频段', art: '1bevstb', gen: 'gemini',
       once: true,
+      maxTurn: 22,
     },
     {
       narrative:
@@ -509,7 +513,7 @@ export const wasteland: Scenario = {
         { text: '寻找阴凉休息', effects: { hp: 2, sanity: -1, supplies: -5 }, reaction: '没人看着你蜷进阴影里喘息，可这份不跟自己身体较劲、懂得见好就收的清醒，正是熬过酷暑的人才学得会的。' },
         { text: '继续赶路', effects: { hp: -7, sanity: -3, supplies: -3 }, reaction: '你晃晃悠悠硬撑着往前挪，脚步越来越虚浮——这股不要命的赶路劲，空荡的马路看在眼里都替你捏一把汗。' },
       ],
-      summary: '酷热天气', art: '1l67dwm', gen: 'flux',
+      summary: '酷热天气', art: '1l67dwm', gen: 'gemini',
     },
     {
       narrative:
@@ -519,7 +523,7 @@ export const wasteland: Scenario = {
         { text: '拒绝并离开', effects: { hp: 0, sanity: -4, supplies: -2 }, reaction: '女人没再纠缠，只是抱紧了孩子退到一旁，那双盛满绝望的眼无声送你离开——你没错，可那一眼让你脚步发沉。' },
         { text: '索要物品交换', effects: { hp: 0, sanity: -2, supplies: -1 }, reaction: '女人怔了怔，默默从怀里摸出仅剩的一点值钱物什递来，眼神复杂——这买卖公平，却也凉薄得让你自己都别开了脸。' },
       ],
-      summary: '饥饿母子', art: '1mkgpfq', gen: 'flux',
+      summary: '饥饿母子', art: '1mkgpfq', gen: 'gemini',
     },
     {
       narrative:
@@ -528,7 +532,7 @@ export const wasteland: Scenario = {
         { text: '立刻逃离现场', effects: { hp: -2, sanity: -3, supplies: -4 }, reaction: '布陷阱的人循声赶到时，只看见空荡的街和还在晃的铁罐——你撤得干脆，他扑了个空，骂了句：「跑得倒快。」' },
         { text: '寻找埋伏者', effects: { hp: -8, sanity: -5, supplies: -6 }, reaction: '你迎着脚步声反扑过去，布陷阱的人没料到惊动的猎物竟敢回头找上门，惊得后退半步——可对方人多，这胆量代价不小。' },
       ],
-      summary: '简易陷阱', art: '1hseqg0', gen: 'flux',
+      summary: '简易陷阱', art: '1hseqg0', gen: 'gemini',
     },
     {
       narrative:
@@ -537,7 +541,7 @@ export const wasteland: Scenario = {
         { text: '勉强进食，赌肠胃扛得住', effects: { hp: -8, sanity: -2, supplies: 8 }, reaction: '没人看着你就着腐臭往嘴里塞，可那股饿到拿肠胃赌命的狠劲，是被饥饿逼到墙角的人才懂的孤注一掷。' },
         { text: '继续忍耐，保住肠胃', effects: { hp: -6, sanity: -3, supplies: 0 }, reaction: '你咽着口水转身离开了那堆烂食——空着肚子，却守住了不被一口脏东西放倒的清醒，这忍耐也是一种本事。' },
       ],
-      summary: '垃圾堆翻找烂罐头', art: '25u8q3', gen: 'flux',
+      summary: '垃圾堆翻找烂罐头', art: '25u8q3', gen: 'gemini',
       requires: 'supplies<=20',
     },
     {
@@ -547,7 +551,7 @@ export const wasteland: Scenario = {
         { text: '追寻声音来源', effects: { hp: -3, sanity: -8, supplies: -3 }, reaction: '你循声追进黑暗，墙角空无一人，那呼唤却又从背后响起——没有旁人，只有你越陷越深的脑子在编织温柔的陷阱。' },
         { text: '强迫自己冷静', effects: { hp: 0, sanity: -2, supplies: -2 }, reaction: '你死死掐着掌心，逼自己别去理那声音。没人见证这场和幻听的拉锯，可你没追过去，就是赢了它一回。' },
       ],
-      summary: '空走廊里的回头', art: '1rrp3cr', gen: 'flux',
+      summary: '空走廊里的回头', art: '1rrp3cr', gen: 'gemini',
       requires: 'sanity<=20',
     },
     {
@@ -558,7 +562,7 @@ export const wasteland: Scenario = {
         { text: '索取报酬再帮', effects: { hp: -1, sanity: 0, supplies: 3 }, reaction: '领头的盯着你看了两秒，笑了：「明白人。」痛快地分了你一份物资——这世道，先谈好价钱反倒省了往后的猜忌。' },
         { text: '拒绝合作', effects: { hp: 0, sanity: -2, supplies: -2 }, reaction: '楼顶那群人耸耸肩，转回头继续垒墙，再没多看你一眼——一次结交人脉的机会，就这么从你指缝里溜走了。' },
       ],
-      summary: '楼顶据点', art: '1f9ty72', gen: 'flux',
+      summary: '楼顶据点', art: '1f9ty72', gen: 'gemini',
     },
     {
       narrative:
@@ -567,7 +571,7 @@ export const wasteland: Scenario = {
         { text: '尝试启动车辆', effects: { hp: -4, sanity: -3, supplies: -5 }, reaction: '引擎一声轰鸣，睡着的感染者齐刷刷睁眼扑来——你猛踩油门冲出停车场的那一下，惊险得连后视镜里的它们都甩远了。' },
         { text: '拆下可用零件', effects: { hp: 0, sanity: -1, supplies: 4 }, reaction: '你没去碰那声等于自杀的引擎，而是悄无声息地卸下了能用的零件——这份不被横财冲昏头的冷静，是活下去的本钱。' },
       ],
-      summary: '废弃轿车', art: '1dd0qq4', gen: 'flux',
+      summary: '废弃轿车', art: '1dd0qq4', gen: 'gemini',
     },
     {
       narrative:
@@ -577,7 +581,7 @@ export const wasteland: Scenario = {
         { text: '只搜大厅区域', effects: { hp: -1, sanity: -1, supplies: 3 }, reaction: '你只在过道里翻拣了一通便收手，没去碰那间透光的病房——拿得不多，却也没把命搭进未知的黑暗里，稳当。' },
         { text: '立即撤离', effects: { hp: 0, sanity: 0, supplies: -2 }, reaction: '你扫了一眼那片血污就退了出来。空荡荡的急诊厅没人评判你的胆怯，可那间亮着灯的病房里究竟有什么，你再也不会知道了。' },
       ],
-      summary: '医院大厅', art: '1bvjdce', gen: 'flux',
+      summary: '医院大厅', art: '1bvjdce', gen: 'gemini',
     },
     {
       narrative:
@@ -587,7 +591,7 @@ export const wasteland: Scenario = {
         { text: '逼问位置离开', effects: { hp: 0, sanity: -5, supplies: 5 }, reaction: '老人被你逼着吐露位置，看你转身就走、留他独对溃烂的伤口，眼里的光彻底熄了——你得了情报，丢了点别的东西。' },
         { text: '装作没看见', effects: { hp: 0, sanity: -3, supplies: -2 }, reaction: '老人伸出的手僵在半空，你已侧身走过。他没出声，可那储藏点的秘密和他这条命，都被你一并留在了身后的角落里。' },
       ],
-      summary: '受伤老人', art: '1bn8uez', gen: 'flux',
+      summary: '受伤老人', art: '1bn8uez', gen: 'gemini',
     },
     {
       narrative:
@@ -596,7 +600,7 @@ export const wasteland: Scenario = {
         { text: '死守据点', effects: { hp: -5, sanity: -4, supplies: -6 }, reaction: '门板被你用身子和家具死死顶住，撞击声一下下砸在心上。天亮时门外的嘶吼散去，你瘫坐在地——硬是守住了这方寸活路。' },
         { text: '趁乱转移', effects: { hp: -3, sanity: -2, supplies: -5 }, reaction: '你趁着满街混乱悄然溜出后窗，把那群撞门的家伙甩在了空屋里——审时度势、该走就走，这份果断比死守更难得。' },
       ],
-      summary: '夜间骚动', art: '1crzvrr', gen: 'flux',
+      summary: '夜间骚动', art: '1crzvrr', gen: 'gemini',
     },
     {
       narrative:
@@ -606,7 +610,7 @@ export const wasteland: Scenario = {
         { text: '关闭设备省电', effects: { hp: 0, sanity: -2, supplies: -1 }, reaction: '你伸手关了电台，那段循环的求救声戛然而止。没人怪你精打细算，可那句没人回应的呼救，就这么沉进了死城的寂静里。' },
         { text: '追查信号来源', effects: { hp: -3, sanity: -1, supplies: -6 }, reaction: '你扛着耳机一路追那飘忽的方位，绕了大半座死城——明知是趟前途未卜的麻烦，还肯为一声陌生的呼救奔走，这心肠不多见了。' },
       ],
-      summary: '求援信号', art: '1fg7drn', gen: 'flux',
+      summary: '求援信号', art: '1fg7drn', gen: 'gemini',
     },
     {
       narrative:
@@ -616,7 +620,7 @@ export const wasteland: Scenario = {
         { text: '强行搜身', effects: { hp: -2, sanity: -6, supplies: -2 }, reaction: '你按住挣扎的孩子翻他口袋，小刀划破了你的手。他哭嚎着的眼神里满是被背叛的惊恐——连个孩子都防，你心里也不是滋味。' },
         { text: '转身离开', effects: { hp: 0, sanity: -2, supplies: -2 }, reaction: '你转身离去，男孩举着刀缩在墙角，既松了口气又透着说不出的失落——这吃人的世道，连点头之交的暖意他都没敢奢望。' },
       ],
-      summary: '孤身孩童', art: '1d2yyiq', gen: 'flux',
+      summary: '孤身孩童', art: '1d2yyiq', gen: 'gemini',
     },
     {
       narrative:
@@ -625,7 +629,7 @@ export const wasteland: Scenario = {
         { text: '停下处理伤口', effects: { hp: 3, sanity: -1, supplies: -4 }, reaction: '你寻了处避风的角落仔细缠好脚踝，没逞强硬撑——天色虽暗得快，可懂得在夜幕前给自己留条退路的人，才走得到最后。' },
         { text: '咬牙继续前进', effects: { hp: -7, sanity: -2, supplies: -2 }, reaction: '你咬着牙一瘸一拐往前挪，每一步都踩在刀尖上，旧伤越拖越重——夜色追了上来，你这股硬撑，赌得实在凶险。' },
       ],
-      summary: '旧伤发作', art: '1edyi65', gen: 'flux',
+      summary: '旧伤发作', art: '1edyi65', gen: 'gemini',
     },
     {
       narrative:
@@ -635,7 +639,7 @@ export const wasteland: Scenario = {
         { text: '寻找机会反抗', effects: { hp: -9, sanity: -5, supplies: -6 }, reaction: '你瞅准空当暴起反抗，虽吃了亏，却也让那几个掠夺者实打实地慌了一下——他们没想到这落单的猎物竟敢咬人。' },
         { text: '低头谈判', effects: { hp: -1, sanity: -1, supplies: -7 }, reaction: '你不卑不亢地讨价还价，为首的眯眼打量你半晌，终是收了部分东西放行——能在枪口下谈成条件，这口才也是保命的本事。' },
       ],
-      summary: '路遇掠夺者', art: 'qyxyu2', gen: 'flux',
+      summary: '路遇掠夺者', art: 'qyxyu2', gen: 'gemini',
     },
     {
       narrative:
@@ -644,7 +648,7 @@ export const wasteland: Scenario = {
         { text: '躲进地下通道', effects: { hp: -2, sanity: -2, supplies: -4 }, reaction: '你护着背包钻进通道避雨，保住了那点火柴和干粮——没旁人看着，可这份先顾物资再顾自己的精明，正是熬过雨季的门道。' },
         { text: '冒雨前进', effects: { hp: -5, sanity: -3, supplies: -5 }, reaction: '你顶着瓢泼大雨硬闯，等找到落脚处，背包里的火柴绷带早泡成了一团烂泥——逞这一时之快，把家底都赔进了雨里。' },
       ],
-      summary: '暴雨来袭', art: '1eud36b', gen: 'flux',
+      summary: '暴雨来袭', art: '1eud36b', gen: 'gemini',
     },
     {
       narrative:
@@ -653,7 +657,7 @@ export const wasteland: Scenario = {
         { text: '前往侦察', effects: { hp: -2, sanity: -1, supplies: -6 }, reaction: '你摸向那缕浓烟，没人知道前头是同类的炊烟还是劫后的余烬——可愿意为一线同伴的可能去探虚实，这胆色在废土上稀罕。' },
         { text: '保持距离', effects: { hp: 0, sanity: 0, supplies: -2 }, reaction: '你盯着那缕浓烟看了片刻，终究没去——稳妥是稳妥，只是那头若真有个能搭伙的同类，也随这决定一起飘散了。' },
       ],
-      summary: '远方浓烟', art: '1kvnjos', gen: 'flux',
+      summary: '远方浓烟', art: '1kvnjos', gen: 'gemini',
     },
     {
       narrative:
@@ -662,7 +666,7 @@ export const wasteland: Scenario = {
         { text: '彻底清理环境', effects: { hp: 1, sanity: -1, supplies: -5 }, reaction: '你忍着恶心把霉斑和坏食一一清掉，据点重新透了气——这份在末世里还肯收拾家、不肯让自己活成猪窝的讲究，撑住了人的体面。' },
         { text: '暂时放任不管', effects: { hp: -4, sanity: -2, supplies: -2 }, reaction: '你嫌费事懒得动，任那片霉斑越爬越大。没人催你，可没过几天，潮湿的霉气就先一步在你嗓子和肺里安了家。' },
       ],
-      summary: '据点霉变', art: '1e6bsj1', gen: 'flux',
+      summary: '据点霉变', art: '1e6bsj1', gen: 'gemini',
     },
     {
       narrative:
@@ -672,7 +676,7 @@ export const wasteland: Scenario = {
         { text: '默默离开', effects: { hp: 0, sanity: -1, supplies: -2 }, reaction: '你朝那具戒备至死的遗骸默默颔首，转身离去。没碰他一分一毫，可那份本可救急的物资，也随你的脚步留在了死寂里。' },
         { text: '掩埋遗体', effects: { hp: 0, sanity: 2, supplies: -4 }, reaction: '你费力刨开硬土，把士兵和他怀里的地图一道掩埋。倘若有同伴在旁，会默默帮你培土——这世道还肯为陌生人立座坟的，没几个了。' },
       ],
-      summary: '遗弃军车', art: '1kx1c4g', gen: 'flux',
+      summary: '遗弃军车', art: '1kx1c4g', gen: 'gemini',
       weight: 0.7,
     },
     {
@@ -683,7 +687,7 @@ export const wasteland: Scenario = {
         { text: '绕开继续前进', effects: { supplies: -3 }, reaction: '你看了眼那黑黢黢的车厢，摇摇头绕了过去。没人笑你胆小，可天黑前少了这点进项，夜里的肚子会替你后悔。' },
         { text: '在入口观察片刻', effects: { supplies: -4, sanity: -1 }, reaction: '你在车门口蹲守观望，那阵金属轻响始终摸不清是风是鬼——既没冒进也没全退，这份小心，起码让你没栽进黑暗里。' },
       ],
-      summary: '脱轨的地铁车厢', art: '1uglvej', gen: 'flux',
+      summary: '脱轨的地铁车厢', art: '1uglvej', gen: 'gemini',
     },
     {
       narrative:
@@ -693,7 +697,7 @@ export const wasteland: Scenario = {
         { text: '远离此地', effects: { supplies: -2 }, reaction: '你避开那面泛着冷光的幕墙绕道而行——窗后若真藏着猎人，这一退正好让他扑了空，警觉救了你一命。' },
         { text: '留下记号再走', effects: { supplies: -3 }, reaction: '你在墙根留下个只有自己看得懂的暗记便走了——不冒进、不贪功，却为日后留了线索，这份盘算比莽撞高明。' },
       ],
-      summary: '绳索痕迹', art: '1ieypig', gen: 'flux',
+      summary: '绳索痕迹', art: '1ieypig', gen: 'gemini',
     },
     {
       narrative:
@@ -703,7 +707,7 @@ export const wasteland: Scenario = {
         { text: '守在外面观察', effects: { supplies: -4 }, reaction: '你蹲在缝隙外盯了许久，始终没贸然进去——里头到底是宝库还是陷阱，你宁可饿一顿也不拿命去赌，稳。' },
         { text: '立刻离开', effects: { supplies: -2 }, reaction: '你看了眼那道渗着阴冷的门缝，转身就走。没人笑你避事，可那拖进黑暗里的物资是福是祸，从此与你无关了。' },
       ],
-      summary: '地下车库', art: '1c5h9o9', gen: 'flux',
+      summary: '地下车库', art: '1c5h9o9', gen: 'gemini',
     },
     {
       narrative:
@@ -713,7 +717,7 @@ export const wasteland: Scenario = {
         { text: '封住入口离开', effects: { supplies: -3, sanity: 2 }, reaction: '你拖来杂物把笼舍那头堵死才离开——拿不到里头的东西，却也没让那未知的危险跟出来，这分寸拿捏得稳妥。' },
         { text: '不予理会', effects: { supplies: -2 }, reaction: '你听着那抓挠声越来越急，头也不回地走了。没人评判你的取舍，可那笼里到底是猫狗还是别的，成了永远的悬念。' },
       ],
-      summary: '宠物医院', art: '1czizt7', gen: 'flux',
+      summary: '宠物医院', art: '1czizt7', gen: 'gemini',
     },
     {
       narrative:
@@ -723,7 +727,7 @@ export const wasteland: Scenario = {
         { text: '迅速撤离', effects: { supplies: -3 }, reaction: '那规律的敲击声听得你头皮发麻，你没逞强，扭头便撤——有时候，听从直觉掉头走，本身就是最聪明的选择。' },
         { text: '在外围等待', effects: { supplies: -4 }, reaction: '你守在加固的院墙外，既不进也不走，听那敲击声一下下响着——这份既谨慎又不甘的犹豫，把宝贵的工夫都耗在了门口。' },
       ],
-      summary: '废弃幼园', art: '1dcrk34', gen: 'flux',
+      summary: '废弃幼园', art: '1dcrk34', gen: 'gemini',
     },
     {
       narrative:
@@ -733,7 +737,7 @@ export const wasteland: Scenario = {
         { text: '拆取零件备用', effects: { supplies: 4 }, reaction: '你只在船外卸了些用得上的零件就收手，没钻进那阴森的舱里——拿得不多，却也没去招惹船上那桩没说完的惨剧。' },
         { text: '离开河岸', effects: { supplies: -2 }, reaction: '你望着那艘搁浅的残船，终究没上前，沿着染成橙红的河岸走远了——稳是稳，只是船里若藏着什么，你再不会知道。' },
       ],
-      summary: '搁浅巡艇', art: '1e8maib', gen: 'flux',
+      summary: '搁浅巡艇', art: '1e8maib', gen: 'gemini',
     },
     {
       narrative:
@@ -743,7 +747,7 @@ export const wasteland: Scenario = {
         { text: '只搜大厅', effects: { supplies: 3 }, reaction: '你只在大厅拣了点零食便罢手，没去碰那扇透着腥气的放映厅门——拿得不多，却也稳稳避开了藏在黑暗里的东西。' },
         { text: '离开影院', effects: { supplies: -2 }, reaction: '你听着门后那缓慢沉重的摩擦声，二话不说退了出去——这份当机立断的撤退，把一场未知的凶险隔在了门外。' },
       ],
-      summary: '旧电影院', art: '1ekcghg', gen: 'flux',
+      summary: '旧电影院', art: '1ekcghg', gen: 'gemini',
     },
     {
       narrative:
@@ -753,7 +757,7 @@ export const wasteland: Scenario = {
         { text: '快速通过', effects: { supplies: -3 }, reaction: '你屏着气快步穿过焦黑的车厢，没去碰那些行李，赶在尸群苏醒前脱了身——分得清轻重缓急，命比物资金贵。' },
         { text: '推下障碍开路', effects: { hp: -4, supplies: 2 }, reaction: '你使劲把烧毁的大巴推下天桥开道，轰隆一声响——动静虽大，可这股说干就干、亲手清路的狠劲，让人不敢小瞧。' },
       ],
-      summary: '焚毁大巴', art: '1g82ue3', gen: 'flux',
+      summary: '焚毁大巴', art: '1g82ue3', gen: 'gemini',
       minTurn: 15,
     },
     {
@@ -764,7 +768,7 @@ export const wasteland: Scenario = {
         { text: '隐藏观察整夜', effects: { supplies: -6 }, reaction: '你猫在暗处守了整宿，那束光再没亮过。没人见证你的耐心，可不轻易把自己暴露给一束来历不明的光，这份沉得住气救命。' },
         { text: '直接离开', effects: { supplies: -2 }, reaction: '你看了眼那片漆黑的楼影，转身没入夜色。是同类还是诱饵，从此再无从分辨，这谜底被你利落地留在了身后。' },
       ],
-      summary: '短暂灯光', art: '1h8pa0c', gen: 'flux',
+      summary: '短暂灯光', art: '1h8pa0c', gen: 'gemini',
       requires: 'sanity>=60',
     },
     {
@@ -775,7 +779,7 @@ export const wasteland: Scenario = {
         { text: '检查设备来源', effects: { supplies: 3, sanity: -2 }, reaction: '你顺着那截重新接驳的电线查探，想弄清这里还有没有人——比起食物先摸清环境，这份警觉省得日后被人从背后捅刀。' },
         { text: '立即离开', effects: { supplies: -2 }, reaction: '你嗅着那缕焦香，心里发虚，转身就走——也许只是个想重拾旧日的可怜人，可宁可错过也不犯险，你走得果断。' },
       ],
-      summary: '面包工坊', art: '1lxod6j', gen: 'flux',
+      summary: '面包工坊', art: '1lxod6j', gen: 'gemini',
     },
     {
       narrative:
@@ -785,7 +789,7 @@ export const wasteland: Scenario = {
         { text: '自行选择路线', effects: { supplies: -3 }, reaction: '你看穿那些被血迹涂改的箭头不能全信，索性自己择路而行——不被别人留的记号牵着鼻子走，这份独立的判断救命。' },
         { text: '擦除部分记号', effects: { supplies: -4 }, reaction: '你抹掉了几个被恶意篡改的箭头，免得后来人被引进死路——大难当头还肯替素不相识的人擦去陷阱，这心肠难得。' },
       ],
-      summary: '墙上箭头', art: '1cd3pft', gen: 'flux',
+      summary: '墙上箭头', art: '1cd3pft', gen: 'gemini',
     },
     {
       narrative:
@@ -795,7 +799,7 @@ export const wasteland: Scenario = {
         { text: '放弃风险', effects: { supplies: -2 }, reaction: '你掂量了那道湿滑深坑的凶险，摇头作罢——眼前的物资虽诱人，可摔伤在这世道等于送命，懂得割舍才走得远。' },
         { text: '寻找安全路线', effects: { supplies: -4 }, reaction: '你绕着泳池找了半天稳妥的下法，耗了不少工夫——既想要箱子又不肯冒险，这份瞻前顾后，把时间全磨在了犹豫上。' },
       ],
-      summary: '干涸泳池', art: '1debig2', gen: 'flux',
+      summary: '干涸泳池', art: '1debig2', gen: 'gemini',
       minTurn: 20,
     },
     {
@@ -806,7 +810,7 @@ export const wasteland: Scenario = {
         { text: '捕捉鸽子充饥', effects: { supplies: 5 }, reaction: '你屏息逼近，猛地扑出抓住一只扑棱的鸽子——在这连麻雀都绝迹的死城，能徒手逮着口活肉，这身手实打实地管用。' },
         { text: '保持距离', effects: { supplies: -2 }, reaction: '你警惕着成群活物会招来的觊觎者，没敢靠近便绕开了——稳是稳，只是那点唾手可得的口粮也随之飞了。' },
       ],
-      summary: '异常鸽群', art: '1df2ubk', gen: 'flux',
+      summary: '异常鸽群', art: '1df2ubk', gen: 'gemini',
     },
     {
       narrative:
@@ -816,7 +820,7 @@ export const wasteland: Scenario = {
         { text: '封门离开', effects: { supplies: -3 }, reaction: '你拉上店门把那诡异的琴声关在里头——不去深究，也不慌不忙，这份遇到说不清的事就敬而远之的分寸，稳当。' },
         { text: '匆忙逃离', effects: { supplies: -2, sanity: -1 }, reaction: '那不成调的琴声激得你后颈发麻，你慌不择路地夺门而出——逃是逃了，可那点没解开的恐惧，还黏在你心里。' },
       ],
-      summary: '钢琴异响', art: '1lo4kru', gen: 'flux',
+      summary: '钢琴异响', art: '1lo4kru', gen: 'gemini',
       requires: 'sanity>=40',
     },
     {
@@ -827,7 +831,7 @@ export const wasteland: Scenario = {
         { text: '只拆取工具', effects: { supplies: 3 }, reaction: '你没去开那扇渗着腐臭的车门，只卸了点车上的工具——拿得不多，却也没拿肠胃去赌一车说不准的腐肉，聪明。' },
         { text: '离开恶臭区域', effects: { supplies: -2 }, reaction: '你被那股腐臭熏得直反胃，捂着鼻子快步走开。没人笑你挑剔，可那一车或许还能吃的食材，你到底没敢碰。' },
       ],
-      summary: '冷链货车', art: '1bn9y2v', gen: 'flux',
+      summary: '冷链货车', art: '1bn9y2v', gen: 'gemini',
     },
     {
       narrative:
@@ -837,7 +841,7 @@ export const wasteland: Scenario = {
         { text: '默默离开', effects: { supplies: -2 }, reaction: '你朝那片简陋的坟茔默默鞠了一躬，转身离去，什么也没动——这世道还肯对陌生人的安息地保留一分敬意的，不多了。' },
         { text: '整理墓地', effects: { supplies: -4, sanity: 4 }, reaction: '你扶正了歪倒的木牌，把枯花重新摆好。倘有逝者的同伴远远看见，定会红了眼眶——乱世里替素不相识的死者拢一拢坟，是天大的善意。' },
       ],
-      summary: '临时墓园', art: '1avymq7', gen: 'flux',
+      summary: '临时墓园', art: '1avymq7', gen: 'gemini',
       once: true,
     },
     {
@@ -848,7 +852,7 @@ export const wasteland: Scenario = {
         { text: '检查后门', effects: { hp: -3, supplies: 5 }, reaction: '你留了个心眼去探后门，撞上守在那儿的东西也没慌——别人只顾着翻柜台，你却懂得先把退路和暗处摸清，老到。' },
         { text: '直接离开', effects: { supplies: -2 }, reaction: '你扫了眼这间被人匆忙搜过的洗衣店，没多停留便走了——稳是稳，可那点没被带走的东西，也随你的脚步留在了原地。' },
       ],
-      summary: '洗衣店', art: '3pxst2', gen: 'flux',
+      summary: '洗衣店', art: '3pxst2', gen: 'gemini',
     },
     {
       narrative:
@@ -858,7 +862,7 @@ export const wasteland: Scenario = {
         { text: '撤回原路', effects: { supplies: -3 }, reaction: '那一成不变的口哨听得你头皮发麻，你果断原路退了回去——分得清哪是机会哪是陷阱，这份警觉比贪那点物资值钱。' },
         { text: '藏身等待', effects: { supplies: -5 }, reaction: '你躲进暗处守着，想等吹哨的人现身，口哨却始终从四面八方传来——既不敢进又不肯走，这一等，白白耗光了天光。' },
       ],
-      summary: '重复口哨', art: '1l41vvu', gen: 'flux',
+      summary: '重复口哨', art: '1l41vvu', gen: 'gemini',
       weight: 0.8,
     },
     {
@@ -869,7 +873,7 @@ export const wasteland: Scenario = {
         { text: '收集可用材料', effects: { supplies: 3 }, reaction: '你只拆了些钉子木板就罢手，没去碰那扇渗着腐臭的封门——拿得不多，却也聪明地把里头的未知隔在了门后。' },
         { text: '离开照相馆', effects: { supplies: -2 }, reaction: '你看着满墙蒙尘的全家福，又瞥了眼那扇渗臭的封门，默默退了出去——那门后封着什么，你宁可一辈子不知道。' },
       ],
-      summary: '旧照相馆', art: '1eju01d', gen: 'flux',
+      summary: '旧照相馆', art: '1eju01d', gen: 'gemini',
     },
     {
       narrative:
@@ -879,7 +883,7 @@ export const wasteland: Scenario = {
         { text: '迅速撤离', effects: { supplies: -2 }, reaction: '你看出这片区域会被钟声反复引来死亡，二话不说撤了——不在危险里多留一刻，这份当机立断，救了你一命。' },
         { text: '观察感染者动向', effects: { supplies: -4 }, reaction: '你蹲在远处摸钟声召唤的规律，想找出空当，却迟迟没敢动手——盘算得太久，机会和天光都从你眼皮底下溜走了。' },
       ],
-      summary: '钟楼回响', art: '1lm8qsr', gen: 'flux',
+      summary: '钟楼回响', art: '1lm8qsr', gen: 'gemini',
       minTurn: 26,
     },
     {
@@ -890,7 +894,7 @@ export const wasteland: Scenario = {
         { text: '留下记号', effects: { supplies: -3 }, reaction: '你没贸然下手，只在附近留了暗记打算日后再来——眼下烟头还热，稳住贪念先避其锋芒，这份冷静比莽撞高明。' },
         { text: '避开此地', effects: { supplies: -2 }, reaction: '你看着那些新鲜的烟头和罐头，掂出了背后的凶险，默默绕开了——舍得放下唾手可得的诱惑，才不会栽在别人的窝里。' },
       ],
-      summary: '封死入口', art: '1d0fls9', gen: 'flux',
+      summary: '封死入口', art: '1d0fls9', gen: 'gemini',
     },
     {
       narrative:
@@ -900,7 +904,7 @@ export const wasteland: Scenario = {
         { text: '绕路前进', effects: { supplies: -3 }, reaction: '你看出那单车阵列透着说不清的森然，索性绕道而行——读得懂别人留下的警告并避其锋芒，这份直觉，常常就是活路。' },
         { text: '推倒障碍', effects: { hp: -3, supplies: 2 }, reaction: '你不管那阵列是祭坛还是警告，上手就把单车推倒开道——这股不被诡异唬住、偏要破而后立的莽劲，倒也透着股狠。' },
       ],
-      summary: '单车堆阵', art: '1buxtp7', gen: 'flux',
+      summary: '单车堆阵', art: '1buxtp7', gen: 'gemini',
     },
     {
       narrative:
@@ -910,7 +914,7 @@ export const wasteland: Scenario = {
         { text: '搜集地面物资', effects: { supplies: 3 }, reaction: '你只在熏黑的地面层拣了点东西，没钻进那座书架迷宫——拿得不多，却也聪明地没把自己困进可能出不来的窄道里。' },
         { text: '离开图书馆', effects: { supplies: -2 }, reaction: '你望着那片焦黑的废墟和黑沉沉的地下室，摇头退了出去——稳是稳，可那一排排书架后藏着的东西，从此与你无缘。' },
       ],
-      summary: '烧毁书馆', art: '1g6xxvd', gen: 'flux',
+      summary: '烧毁书馆', art: '1g6xxvd', gen: 'gemini',
       requires: 'sanity>=50',
     },
     {
@@ -921,7 +925,7 @@ export const wasteland: Scenario = {
         { text: '彻底搜查楼层', effects: { supplies: 13, hp: -5 }, reaction: '你顺着血迹把整层楼翻了个遍，连凶险的角落都没放过——别人只敢摘几棵菜，你却敢追着搏斗的痕迹深挖，胆大心也细。' },
         { text: '立即撤离', effects: { supplies: -2 }, reaction: '你瞥见楼道里那些激烈搏斗的血痕，没敢久留，采都没采便撤了——这份见势不妙就走的警觉，把未知的凶险挡在了身后。' },
       ],
-      summary: '天台菜园', art: '1ch7c5j', gen: 'flux',
+      summary: '天台菜园', art: '1ch7c5j', gen: 'gemini',
     },
     {
       narrative:
@@ -931,7 +935,7 @@ export const wasteland: Scenario = {
         { text: '检查周围痕迹', effects: { supplies: 4, sanity: -2 }, reaction: '你蹲下来研究那盘下到一半的残棋和散落的痕迹，想弄清这里人去棚空的缘由——比起急着搜刮，先摸清来路，这份谨慎老到。' },
         { text: '继续赶路', effects: { supplies: -2 }, reaction: '你看着这片人去棚空的营地，被那股凄凉勾得心里发堵，没多停留便走了——稳是稳，可遗下的物资也随风飘远了。' },
       ],
-      summary: '废弃营地', art: '1dcydmk', gen: 'flux',
+      summary: '废弃营地', art: '1dcydmk', gen: 'gemini',
     },
     {
       narrative:
@@ -941,7 +945,7 @@ export const wasteland: Scenario = {
         { text: '稍作休息', effects: { supplies: -4, sanity: 2 }, reaction: '你在那片永不同步的钟声里闭眼歇了片刻，反倒奇异地松弛下来——能把诡异之地当成喘息的港湾，这份心宽也是本事。' },
         { text: '立刻离开', effects: { supplies: -2 }, reaction: '那满屋错乱的指针搅得你分不清时日，你赶紧抽身退了出去——不在乱人心神的地方多留，这份清醒，守住了你的脑子。' },
       ],
-      summary: '钟表铺', art: '3wibae', gen: 'flux',
+      summary: '钟表铺', art: '3wibae', gen: 'gemini',
     },
     {
       narrative:
@@ -951,7 +955,7 @@ export const wasteland: Scenario = {
         { text: '寻找遗留房间', effects: { supplies: 8 }, reaction: '你照着纸条上的线索摸进对应的宿舍翻找，果然有所斩获——能从满墙悲怆里冷静读出有用的信息，这份务实救了你的命。' },
         { text: '默默离去', effects: { supplies: -2 }, reaction: '你不忍细看那满墙颤动的纸条，默默转身离开——没多停留，可那些落笔人的期盼与绝望，还是悄悄压在了你心上。' },
       ],
-      summary: '寻人纸条', art: '1cvrhf7', gen: 'flux',
+      summary: '寻人纸条', art: '1cvrhf7', gen: 'gemini',
       once: true,
     },
     {
@@ -962,7 +966,7 @@ export const wasteland: Scenario = {
         { text: '留下食物离开', effects: { supplies: -5, sanity: 3 }, reaction: '你隔着门把食物推进缝里才走——既没拿命去赌门后的未知，又不忍让那似哭似嚎的生灵饿着，这份心软中带着分寸。' },
         { text: '忽略声音', effects: { supplies: -2 }, reaction: '你听着那似哭似嚎的呜咽，狠下心快步走开了。没人评判你保命，可那道铁门后的生灵成了什么，再没人知道。' },
       ],
-      summary: '仓库犬吠', art: '1ay9o9j', gen: 'flux',
+      summary: '仓库犬吠', art: '1ay9o9j', gen: 'gemini',
     },
     {
       narrative:
@@ -972,7 +976,7 @@ export const wasteland: Scenario = {
         { text: '原地休整', effects: { supplies: -4 }, reaction: '你在那堆焚毁证件旁坐下歇脚，任焦黑的纸屑打旋。没人扰你，可那个销毁一切痕迹的人究竟遭遇了什么，成了挥不去的寒意。' },
         { text: '离开现场', effects: { supplies: -2 }, reaction: '你被那股决绝割裂过往的气息激得发寒，没多停留便离开了——不去深究别人的伤疤，这份分寸，也是一种体面。' },
       ],
-      summary: '焚毁证件', art: '1g8bx9z', gen: 'flux',
+      summary: '焚毁证件', art: '1g8bx9z', gen: 'gemini',
     },
     {
       narrative:
@@ -982,7 +986,7 @@ export const wasteland: Scenario = {
         { text: '遮挡镜面', effects: { supplies: -4 }, reaction: '你扯下布条把镜面一块块盖住，断了那挥之不去的错觉——懂得在快撑不住时主动掐掉幻象的源头，这份自救的清醒难得。' },
         { text: '快速通过', effects: { supplies: -2 }, reaction: '你别开眼，不去理会镜中那些一闪而过的人影，快步穿了过去——不和将崩的神经较劲，这份果断，守住了你的理智。' },
       ],
-      summary: '镜墙倒影', art: '1lng8vx', gen: 'flux',
+      summary: '镜墙倒影', art: '1lng8vx', gen: 'gemini',
     },
     {
       narrative:
@@ -992,7 +996,7 @@ export const wasteland: Scenario = {
         { text: '绕路离开', effects: { supplies: -5 }, reaction: '你听着水里那声不属于你的拍打，毫不犹豫绕道而行——分得清哪些物资碰不得，这份壮士断腕的果决，救了你的命。' },
         { text: '只捞近处漂物', effects: { supplies: 2, sanity: -3 }, reaction: '你只在水边捞了几样漂近的杂物便收手，没敢往深处趟——拿得不多，却也聪明地没把腿伸进黑暗里那东西的口边。' },
       ],
-      summary: '积水隧道', art: '1hkuhia', gen: 'flux',
+      summary: '积水隧道', art: '1hkuhia', gen: 'gemini',
     },
     {
       narrative:
@@ -1002,7 +1006,7 @@ export const wasteland: Scenario = {
         { text: '佯装退走，绕到后窗潜入', effects: { supplies: 5, hp: -6, sanity: -4 }, reaction: '独眼男人守着前门虚张声势，压根没料到你会从后窗摸进来——等他反应过来，你早已得手抽身，被他啐了句：「狡猾的家伙！」' },
         { text: '硬碰硬，赌他不敢开枪', effects: { hp: -16, supplies: 8, sanity: -8 }, reaction: '你看穿了他色厉内荏，真就硬闯过去。独眼男人握枪的手抖到最后也没扣下扳机，眼里又惊又惧——你赌赢了他那点虚张的胆。' },
       ],
-      summary: '加油站对峙', art: '80asbt', gen: 'flux',
+      summary: '加油站对峙', art: '80asbt', gen: 'gemini',
       weight: 1.2,
     },
     {
@@ -1012,7 +1016,7 @@ export const wasteland: Scenario = {
         { text: '攀塔登顶，俯瞰寻路', effects: { hp: -10, supplies: -4, sanity: 10 }, reaction: '你攀着摇摇欲坠的锈梯一步步登顶，脚下横档不时断裂坠落。若有人远远望见这一幕，定会倒抽冷气——这是把命押在风里的搏法。' },
         { text: '绕塔搜寻基站机房', effects: { supplies: 6, sanity: -3 }, reaction: '你没去赌那道要命的爬梯，转而摸进塔下的基站机房翻找——舍得放下登顶的诱惑、稳稳取实利，这份不逞强的算计聪明。' },
       ],
-      summary: '信号塔', art: '3ktq9d', gen: 'flux',
+      summary: '信号塔', art: '3ktq9d', gen: 'gemini',
       minTurn: 6,
     },
     {
@@ -1022,7 +1026,7 @@ export const wasteland: Scenario = {
         { text: '冒险饮用，先解燃眉之急', effects: { hp: -6, supplies: 6, sanity: -2 }, reaction: '你捏着鼻子灌下那口锈味刺鼻的水。没人拦你，可弄坏了肠胃才来后悔的滋味，这片缺医少药的废土向来不留情面。' },
         { text: '取水煮沸，多耗些时间', effects: { supplies: 5, hp: 4, sanity: 1 }, reaction: '你忍着干渴架火把水煮开了才喝——明明渴到嗓子冒烟还沉得住气，这份不拿肠胃赌命的耐心，是老练幸存者的智慧。' },
       ],
-      summary: '净水危机', art: '1bgehc4', gen: 'flux',
+      summary: '净水危机', art: '1bgehc4', gen: 'gemini',
       requires: 'supplies<=20',
       weight: 1.4,
     },
@@ -1033,7 +1037,7 @@ export const wasteland: Scenario = {
         { text: '发动取暖，赌一夜安稳', effects: { hp: 6, supplies: -6, sanity: 6 }, reaction: '机器轰鸣里，久违的光与暖裹住了你。这赌注引来的危险被你提前防住，若有同伴在旁，会就着这点光暖，头一回睡得安稳。' },
         { text: '抽走柴油另作他用', effects: { supplies: 8, sanity: -2 }, reaction: '你忍着寒意没去发动那台等于报警器的机器，只悄悄抽走了柴油——舍得放弃一夜温暖换长久的安全，这份克制不简单。' },
       ],
-      summary: '废弃发电机', art: '1tz6idj', gen: 'flux',
+      summary: '废弃发电机', art: '1tz6idj', gen: 'gemini',
     },
     {
       narrative:
@@ -1043,7 +1047,7 @@ export const wasteland: Scenario = {
         { text: '只换包扎，不愿冒险', effects: { hp: 5, supplies: -4, sanity: -3 }, reaction: '护士默默替你上完药，没再勉强，只是望向那两个街区的眼神黯了下去——你没欠她什么，可那点失望还是扎了你一下。' },
         { text: '怀疑是陷阱，转身离开', effects: { supplies: -3, sanity: -5 }, reaction: '护士攥着医药箱怔在原地，看你头也不回地走远，轻声道：「连帮忙都怕了吗……」这世道把人逼成这样，谁也怪不得。' },
       ],
-      summary: '路遇护士', art: '1ks40tm', gen: 'flux',
+      summary: '路遇护士', art: '1ks40tm', gen: 'gemini',
       weight: 1.1,
     },
     {
@@ -1053,7 +1057,7 @@ export const wasteland: Scenario = {
         { text: '交械入伙，抱团取暖', effects: { supplies: 6, sanity: 4, hp: -2 }, reaction: '门内那道警惕的目光见你坦然交出武器，迟疑片刻还是放了你进去——肯把命门交给一群陌生人，这份豁出去的信任也是种胆量。' },
         { text: '趁乱不入，远远绕开', effects: { supplies: -5, sanity: -3 }, reaction: '你听着门内为最后一口吃食吵得不可开交，摇头退开了——分得清哪些抱团是取暖、哪些是火坑，这份冷眼，救了你的命。' },
       ],
-      summary: '商场困守', art: '1bw8h8d', gen: 'flux',
+      summary: '商场困守', art: '1bw8h8d', gen: 'gemini',
       minTurn: 5,
     },
     {
@@ -1063,7 +1067,7 @@ export const wasteland: Scenario = {
         { text: '掐着秒表强迫自己规律作息', effects: { sanity: 12, supplies: -5, hp: -2 }, reaction: '没人见证你掐着秒表跟濒临断裂的神经死磕，可那份在崩溃边缘还肯给自己立规矩的狠劲，是从悬崖边把人拽回来的硬本事。' },
         { text: '不管不顾继续赶路', effects: { hp: -8, sanity: -8, supplies: -4 }, reaction: '你顶着糊成一团的昼夜硬往前挪，耳边的呢喃越来越响——那根绷到极限的弦，正一点点滑向再也回不来的深渊。' },
       ],
-      summary: '分不清昼夜的幻听', art: 'mxmtgg', gen: 'flux',
+      summary: '分不清昼夜的幻听', art: 'mxmtgg', gen: 'gemini',
       requires: 'sanity<=20',
       weight: 1.8,
     },
@@ -1074,7 +1078,7 @@ export const wasteland: Scenario = {
         { text: '扎筏渡河，循光而去', effects: { hp: -12, supplies: -8, sanity: 8 }, reaction: '你扎起破筏拼命横渡急流朝那束求救光划去——肯为一个素未谋面的同类拿命去赌一条宽河，这份赤诚，茫茫死城里寥寥无几。' },
         { text: '隔岸观察一夜再定', effects: { supplies: -6, sanity: -2 }, reaction: '你蹲在岸边盯着那明灭的灯守了整夜，没急着冒进——这世道最毒的陷阱常裹着求救的外衣，先看清再说，这份沉稳救命。' },
       ],
-      summary: '对岸的灯', art: '1cy045l', gen: 'flux',
+      summary: '对岸的灯', art: '1cy045l', gen: 'gemini',
       minTurn: 10,
     },
     {
@@ -1084,7 +1088,7 @@ export const wasteland: Scenario = {
         { text: '花半天精心打磨', effects: { hp: -2, supplies: -6, sanity: 8 }, reaction: '你耐着性子把矛尖磨得寒光凛凛。没人在旁，可这份肯沉下心打磨家伙的耐性，往后每一次对敌都会替你说话——好刀，养命。' },
         { text: '凑合能用就上路', effects: { supplies: -3, sanity: 2 }, reaction: '你掂了掂这柄半成品长矛，觉得能用就够了，扛上便走——求快是求快，只盼真到了拼命那刻，这凑合的家伙别掉链子。' },
       ],
-      summary: '自制长矛', art: '1io8gm7', gen: 'flux',
+      summary: '自制长矛', art: '1io8gm7', gen: 'gemini',
       requiresItem: '撬棍',
       once: true,
       itemsGained: ['简陋长矛'],
@@ -1096,7 +1100,7 @@ export const wasteland: Scenario = {
         { text: '动身前往接种点', effects: { supplies: -8, sanity: 10 }, reaction: '你攥紧了那条渺茫的消息，毅然上路。若有同伴在旁，会被你这股抓住一线希望就敢押上一切的决断点燃，跟着燃起斗志。' },
         { text: '先打探虚实，不贸然行动', effects: { supplies: -4, sanity: -2 }, reaction: '你按捺住激动，先多方探听接种点的虚实——这年头官腔越足越可疑，不被一纸承诺冲昏头脑，这份冷静往往就是活路。' },
       ],
-      summary: '疫苗传闻', art: '1h0vpj6', gen: 'flux',
+      summary: '疫苗传闻', art: '1h0vpj6', gen: 'gemini',
       once: true,
       minTurn: 12,
     },
@@ -1120,6 +1124,7 @@ export const wasteland: Scenario = {
         { text: '把他锁进房间，独自离开', effects: { sanity: -8, supplies: -4 }, reaction: '你反锁上门，身后传来他渐渐变调的、不再像人的低吼。你没能下手，也没能救他——这份逃避，会在往后的夜里一遍遍审判你。' },
       ],
       summary: '伙伴感染', art: '1ax4oas', gen: 'gemini',
+      once: true,
       keyMoment: true,
       requires: 'sanity>=30',
       weight: 1.3,
@@ -1131,7 +1136,7 @@ export const wasteland: Scenario = {
         { text: '迅速搬运，能拿多少是多少', effects: { supplies: 20, hp: -6, sanity: -4 }, reaction: '拖行声逼近的当口，你抱起箱子就往外冲，擦着那东西的指缝逃了出来——这份贪到极致又快到极致的胆量，赌赢了一笔横财。' },
         { text: '设好退路再分批搬', effects: { supplies: 12, sanity: 2 }, reaction: '你先摸清退路才分批往外搬，没被满屋物资冲昏头——明明唾手可得也不贪命，这份临危不乱的盘算，是老手才有的稳。' },
       ],
-      summary: '学校储藏室', art: '1f665tz', gen: 'flux',
+      summary: '学校储藏室', art: '1f665tz', gen: 'gemini',
       itemsGained: ['军训干粮'],
     },
     {
@@ -1144,7 +1149,7 @@ export const wasteland: Scenario = {
         ] },
         { text: '什么都不换，速速离开', effects: { supplies: -3, sanity: -2 }, reaction: '你在步步杀机的烛影里没敢久留，空手退了出去——稳是稳，可那把能保命的枪和那张地图，都随摇曳的烛火留在了身后。' },
       ],
-      summary: '站台黑市', art: '1hluxlt', gen: 'flux',
+      summary: '站台黑市', art: '1hluxlt', gen: 'gemini',
       minTurn: 7,
     },
     {
@@ -1154,7 +1159,7 @@ export const wasteland: Scenario = {
         { text: '循脚印追踪，或有同伴', effects: { hp: -8, supplies: -6, sanity: 4 }, reaction: '你顶着暴雪深一脚浅一脚地追着那串脚印——明知前头可能是掠夺者，还肯为一线同伴的指望去闯白色死寂，这胆色不一般。' },
         { text: '反向避开，独自寻路', effects: { hp: -6, supplies: -5, sanity: -4 }, reaction: '你警觉地反向避开那串新鲜脚印，独自在风雪里另寻活路——分得清雪地里的脚印是机缘还是杀机，这份谨慎稳妥。' },
       ],
-      summary: '雪地脚印', art: '1lvz6zt', gen: 'flux',
+      summary: '雪地脚印', art: '1lvz6zt', gen: 'gemini',
       weight: 1.1,
     },
     {
@@ -1164,7 +1169,7 @@ export const wasteland: Scenario = {
         { text: '吃下去，赌肠胃扛得住', effects: { hp: -4, supplies: 6, sanity: 2 }, reaction: '你撕开胀罐就着饥饿狼吞虎咽。没人拦你，可拿肠胃赌一罐胀气的过期肉，在这缺医少药的世道，本就是九死一生的豪赌。' },
         { text: '忍住，继续找更安全的食物', effects: { hp: -6, supplies: -2, sanity: -4 }, reaction: '你盯着那罐胀气的午餐肉咽了咽口水，终究把它放了回去——饿到发昏还能压住嘴，这份不拿命冒险的清醒，救过太多人。' },
       ],
-      summary: '过期罐头', art: '1kviurz', gen: 'flux',
+      summary: '过期罐头', art: '1kviurz', gen: 'gemini',
       requires: 'supplies<=20',
     },
     {
@@ -1175,7 +1180,7 @@ export const wasteland: Scenario = {
         { text: '揭穿骗局，鼓动众人散去', effects: { sanity: -6, supplies: -2, hp: -4 }, reaction: '你当众戳破谎言，「先知」气得脸色铁青，几个狂热信徒扑上来要打你——可也有人怔住了，眼里头一回闪过被你唤醒的清明。' },
         { text: '默默退出，不沾是非', effects: { supplies: -3, sanity: -2 }, reaction: '你一眼看穿这裹着信仰的骗局，没声张便退了出去——不被狂热裹挟，也不去捅那个马蜂窝，这份明哲保身的分寸，稳。' },
       ],
-      summary: '末日布道', art: '1eoq8bv', gen: 'flux',
+      summary: '末日布道', art: '1eoq8bv', gen: 'gemini',
       minTurn: 9,
     },
     {
@@ -1185,7 +1190,7 @@ export const wasteland: Scenario = {
         { text: '抛出干粮引开，趁机脱身', effects: { supplies: -10, hp: -4, sanity: -2 }, reaction: '群犬扑向你撒出的干粮乱抢成一团，你趁隙贴墙溜了——没硬碰那排獠牙，用一把口粮换条命，这脑子转得比腿快。' },
         { text: '挥矛硬拼，杀出血路', effects: { hp: -14, supplies: -2, sanity: -4 }, reaction: '你挺矛迎上扑来的头犬，死战中竟真撕开一道口子杀了出去——被逼到绝境还敢以一敌群的狠劲，连那群饿犬都怵了。' },
       ],
-      summary: '野犬围攻', art: '1l8ce7i', gen: 'flux',
+      summary: '野犬围攻', art: '1l8ce7i', gen: 'gemini',
       weight: 1.2,
     },
     {
@@ -1195,7 +1200,7 @@ export const wasteland: Scenario = {
         { text: '只摘一把，留下大半', effects: { supplies: 6, sanity: 10 }, reaction: '你只摘了一小把，郑重地把那块「请别全拿」的木牌扶正。这片菜畦的主人若知此事，定会红了眼——废土上肯守一句约定的人，太稀罕了。' },
         { text: '连根拔起，全部带走', effects: { supplies: 14, sanity: -8 }, reaction: '你把那片菜连根拔了个精光，木牌上「留给需要的人」几个字被你踩在脚下——往后再有谁爬上来，只能对着空菜畦凉了心。' },
       ],
-      summary: '天台菜畦', art: '1ch7i68', gen: 'flux',
+      summary: '天台菜畦', art: '1ch7i68', gen: 'gemini',
     },
     {
       narrative:
@@ -1217,7 +1222,7 @@ export const wasteland: Scenario = {
         { text: '把照片贴胸口，逼自己振作', effects: { sanity: 12, supplies: -3 }, reaction: '你把照片贴在胸口，擦干眼泪重新站了起来。没人看见这一幕，可把思念熬成往前走的力气，是濒临崩溃的人最了不起的自救。' },
         { text: '任由情绪决堤，哭一场', effects: { sanity: 6, hp: -2, supplies: -3 }, reaction: '你抱着照片在废墟里嚎啕大哭，把憋了许久的悲怆全哭了出来——没人笑你软弱，有时痛痛快快哭一场，才哭得动往后的路。' },
       ],
-      summary: '一张全家福', art: '1hk2oj6', gen: 'flux',
+      summary: '一张全家福', art: '1hk2oj6', gen: 'gemini',
       weight: 0.8,
     },
     {
@@ -1227,7 +1232,7 @@ export const wasteland: Scenario = {
         { text: '速速搜刮厨房与药柜', effects: { supplies: 12, hp: -4, sanity: -6 }, reaction: '你顶着那股令人头皮发麻的诡异气息，把厨房药柜搜了个遍才撤——明知有无数双眼睛在暗处盯着还敢动手，这胆子练到了头。' },
         { text: '只在门口探看，不进深处', effects: { supplies: -3, sanity: 2 }, reaction: '你只在门口探了探，被那反常的「完好」激得后背发凉，没敢深入——读得懂诡异背后的杀机并及时止步，这份直觉救命。' },
       ],
-      summary: '诡异别墅', art: '1k8lheg', gen: 'flux',
+      summary: '诡异别墅', art: '1k8lheg', gen: 'gemini',
       weight: 1.1,
     },
     {
@@ -1237,7 +1242,7 @@ export const wasteland: Scenario = {
         { text: '把最后的口粮先紧着孩子', effects: { supplies: -8, sanity: 12, hp: -2 }, reaction: '孩子捧着你省下的口粮，小口小口地吃，抬头怯生生喊了声「谢谢」。这世道还肯饿着自己喂别人孩子的人，稀罕得像奇迹。' },
         { text: '教他自己觅食、自保', effects: { sanity: 6, supplies: -4 }, reaction: '孩子学得认真，小手笨拙地照你说的设套、藏身。授人以鱼不如授人以渔——这份冷静的远见，比一时的口粮更能护他长久。' },
       ],
-      summary: '同行的孩子', art: 'jbmbfe', gen: 'flux',
+      summary: '同行的孩子', art: 'jbmbfe', gen: 'gemini',
       requiresItem: '退烧药',
       weight: 1.1,
     },
@@ -1248,7 +1253,7 @@ export const wasteland: Scenario = {
         { text: '翻遍废墟寻找新电池', effects: { supplies: -6, sanity: 8, hp: -2 }, reaction: '你翻箱倒柜地满世界找电池，只为重新接通那点与外界相连的念想——这份死也不肯让希望熄灭的执拗，撑住了将崩的神经。' },
         { text: '接受寂静，靠自己撑下去', effects: { sanity: -6, supplies: -2 }, reaction: '你放下了拍打的手，任那片死寂吞没自己。没人能替你扛这铺天盖地的孤独，可肯独自咽下它继续走的人，内里其实硬得很。' },
       ],
-      summary: '电台熄灭', art: '1gqql17', gen: 'flux',
+      summary: '电台熄灭', art: '1gqql17', gen: 'gemini',
       minTurn: 14,
     },
     {
@@ -1258,7 +1263,7 @@ export const wasteland: Scenario = {
         { text: '硬着头皮走进山谷', effects: { hp: -10, supplies: -6, sanity: 6 }, reaction: '你踏着前人的尸骨一步步走进山谷，没被那满地凶险吓退——希望就在眼前，敢从死人堆里趟出一条生路的人，值得活下去。' },
         { text: '绕行高地，远远观察', effects: { hp: -6, supplies: -8, sanity: -2 }, reaction: '你没急着扎进那片焦土，而是绕上高地先看清局势——希望近在咫尺也不冲动送命，这份沉得住气，正是熬到此刻的本钱。' },
       ],
-      summary: '焦土山谷', art: '1g4xnde', gen: 'flux',
+      summary: '焦土山谷', art: '1g4xnde', gen: 'gemini',
       requiresItem: '安全区地图',
       minTurn: 18,
       weight: 1.5,
@@ -1270,7 +1275,7 @@ export const wasteland: Scenario = {
         { text: '将错就错冲去服务台抢东西', effects: { supplies: 12, hp: -10, sanity: 2 }, reaction: '你索性踩着这记丧钟般的播报冲向服务台，在尸群涌来前抢空了货架——别人慌着逃命，你却敢逆着险情捞一把，这胆识够野。' },
         { text: '砸了广播器，亡羊补牢', effects: { supplies: -3, sanity: -4 }, reaction: '你一把砸烂了那台胡乱播报的广播器，荒诞的声浪戛然而止——虽已招来嘶吼，可懂得第一时间掐断祸源，这反应不慢。' },
       ],
-      summary: '便利店中奖', art: '1oesdpj', gen: 'flux',
+      summary: '便利店中奖', art: '1oesdpj', gen: 'gemini',
       weight: 0.4,
       once: true,
     },
@@ -1281,7 +1286,7 @@ export const wasteland: Scenario = {
         { text: '带上它，这情报值钱', effects: { supplies: 6, sanity: 6, hp: -2 }, reaction: '你把鹦鹉揣进怀里，默念着那串「6657」。能从一只鸟的胡言乱语里嗅出值钱的秘密，这份机敏，旁人想都想不到。' },
         { text: '逗它玩一会儿，难得的慰藉', effects: { sanity: 10, supplies: -4 }, reaction: '你逗着鹦鹉笑出了声，这是陷落以来头一次发自心底的轻松——肯在末世里给自己留一刻温柔的人，心还没被磨死。' },
       ],
-      summary: '会说话的鹦鹉', art: '1h3enk3', gen: 'flux',
+      summary: '会说话的鹦鹉', art: '1h3enk3', gen: 'gemini',
       weight: 0.4,
       once: true,
       itemsGained: ['鹦鹉'],
@@ -1293,7 +1298,7 @@ export const wasteland: Scenario = {
         { text: '屏息绕行，谁也别惊动这场「喜事」', effects: { sanity: -6, supplies: -2 }, reaction: '你屏着气，一步一挪地绕开了那支诡异的「迎亲」队伍——读得懂何时该当一缕影子悄然退场，这份分寸，在废土上就是命。' },
         { text: '趁它们「出神」摸走宾客掉落的物资', effects: { supplies: 10, hp: -8, sanity: -4 }, reaction: '你贴着地面，从那群「宾客」脚边一点点把物资摸了回来——敢在感染者鼻子底下顺东西，这心理素质叫人头皮发麻地佩服。' },
       ],
-      summary: '感染者婚礼', art: '91fahe', gen: 'flux',
+      summary: '感染者婚礼', art: '91fahe', gen: 'gemini',
       weight: 0.4,
       once: true,
     },
@@ -1304,7 +1309,7 @@ export const wasteland: Scenario = {
         { text: '认真「运营」，苦中作乐当个末世主播', effects: { sanity: 12, supplies: -5 }, reaction: '你对着镜头自说自话，竟把自己逗笑了。没有观众，可在末世里还能拿绝境开涮、给灵魂找个出口的人，韧性强得吓人。' },
         { text: '录完就删，别留下行踪证据', effects: { sanity: 4, hp: -2 }, reaction: '你录完便利落地删了视频，不留半点行踪。哪怕孤独到想找人说话，也清醒地不给敌人留破绽——这份冷静，救命。' },
       ],
-      summary: '末世直播', art: '1ekw8sn', gen: 'flux',
+      summary: '末世直播', art: '1ekw8sn', gen: 'gemini',
       weight: 0.4,
       once: true,
     },
@@ -1316,7 +1321,7 @@ export const wasteland: Scenario = {
         { text: '煽动幸存者反抗营主', effects: { hp: -10, sanity: 6, supplies: 2 }, reaction: '你压低声音点起众人胸中的火，起初没人敢应，可你眼里的光一点点烧到了他们脸上——敢在暴君眼皮下举旗的，是天生的领头人。' },
         { text: '连夜逃离这座人间炼狱', effects: { supplies: -6, sanity: 4, hp: -4 }, reaction: '你趁着夜色翻墙逃了出去，把那座吃人的炼狱甩在身后——分得清安稳和奴役的区别，宁可重回风雨也不跪着活，这份骨气难得。' },
       ],
-      summary: '暴君营地', art: '1ejev7t', gen: 'flux',
+      summary: '暴君营地', art: '1ejev7t', gen: 'gemini',
       minTurn: 8,
       weight: 1.2,
     },
@@ -1336,6 +1341,7 @@ export const wasteland: Scenario = {
         { text: '只护他一程，到安全处便分别', effects: { sanity: 4, supplies: -4 }, reaction: '你把孩子送到了相对安全的地方便转身。既没拿他换钱，也没赔上自己的命——量力而行的善意，虽不耀眼，却也问心无愧。' },
       ],
       summary: '免疫之子', art: '1bfhgk8', gen: 'gemini',
+      once: true,
       keyMoment: true,
       minTurn: 3,
       weight: 1.3,
@@ -1347,7 +1353,7 @@ export const wasteland: Scenario = {
         { text: '强迫自己规律作息、坚守理智', effects: { sanity: 12, supplies: -6 }, reaction: '没有一个活人见证你和遗忘、和疯癫死磕的这一程，可在举世皆寂里硬撑着不让自己散架的人，守住的是人之所以为人的最后一线。' },
         { text: '出门去寻找哪怕一个活人', effects: { hp: -6, sanity: 6, supplies: -4 }, reaction: '你推开那扇加固的门重新走进废墟，只为证明自己不是最后一个人——肯为一声回应踏出壳的人，心里那点火，还没灭。' },
       ],
-      summary: '最后的人', art: '1ekyl75', gen: 'flux',
+      summary: '最后的人', art: '1ekyl75', gen: 'gemini',
       requires: 'sanity<=35',
       minTurn: 10,
       weight: 1.1,
@@ -1360,6 +1366,7 @@ export const wasteland: Scenario = {
         { text: '只顾自己，挤过人群往前逃', effects: { hp: -4, sanity: -8, supplies: 2 }, reaction: '你把别人挤开往前冲，身后接连响起被你撞倒的人绝望的尖叫——你逃出来了，可那一路踩着的哭喊，会牢牢钉在你心上。' },
       ],
       summary: '死亡列车', art: '1f8feqm', gen: 'gemini',
+      once: true,
       keyMoment: true,
       minTurn: 3,
       weight: 1.2,
@@ -1371,7 +1378,7 @@ export const wasteland: Scenario = {
         { text: '交械入区，换一份安稳', effects: { supplies: -10, hp: 8, sanity: 4 }, reaction: '你交出武器物资，按下指纹，跨进了那道门。门内的人递来一碗热食和一句「辛苦了」——用自由换一份太平，这取舍冷暖自知。' },
         { text: '只在墙外讨生活，不入牢笼', effects: { sanity: 4, supplies: -4, hp: -2 }, reaction: '你望着那堵高墙摇了摇头，转身回到风雨里。守门的兵都愣了：这年头，还有人嫌避风港是牢笼——这份对自由的执拗，稀罕。' },
       ],
-      summary: '安全区代价', art: '1cekkui', gen: 'flux',
+      summary: '安全区代价', art: '1cekkui', gen: 'gemini',
       minTurn: 11,
     },
     {
@@ -1402,7 +1409,7 @@ export const wasteland: Scenario = {
         { text: '配合实验，赌它真能造出疫苗', effects: { hp: -12, sanity: -6, supplies: 2 }, reaction: '为首者推了推眼镜，难得露出一丝近乎敬意的神色：「你比上一个识大体。」可隔壁渐弱的惨叫提醒着你，这份「崇高」赌的是命。' },
         { text: '拼死反抗，砸开实验室逃生', effects: { hp: -10, sanity: 4, supplies: 4 }, reaction: '你挣开束缚砸翻器械夺路而逃，白大褂们惊得四散躲避——被绑上手术台还能反咬一口杀出去的，他们头回见这么硬的「材料」。' },
       ],
-      summary: '活体实验', art: '1fi6fa5', gen: 'flux',
+      summary: '活体实验', art: '1fi6fa5', gen: 'gemini',
       requires: 'hp>=30',
       minTurn: 14,
       weight: 1.2,
@@ -1436,7 +1443,7 @@ export const wasteland: Scenario = {
         { text: '简易防护、只取最近的一批', effects: { supplies: 8, hp: -6 }, reaction: '你裹上简易防护只取了最近的一批就撤，没贪多——既要药也惜命，在贪婪和理智之间卡住那条线，这份分寸救命。' },
         { text: '辐射太凶，放弃这批物资', effects: { supplies: -4, sanity: -2 }, reaction: '你盯着爆表的读数，终究把那批救命药留在了辐射尘里——舍得放下唾手可得的诱惑，不拿命换物的人，才活得长久。' },
       ],
-      summary: '辐射禁区', art: '1ksh1pw', gen: 'flux',
+      summary: '辐射禁区', art: '1ksh1pw', gen: 'gemini',
       minTurn: 13,
       weight: 1.1,
     },
@@ -1447,7 +1454,7 @@ export const wasteland: Scenario = {
         { text: '一弹搏命，杀出最后生机', effects: { hp: -12, sanity: 4 }, reaction: '你瞅准最近那只感染者的眉心扣下最后一弹，趁它倒地的空当杀出了重围——绝境里这一枪稳得叫人发怵，命是自己一颗子弹挣回来的。' },
         { text: '虚晃示警、靠双腿赌一把', effects: { hp: -8, sanity: -6, supplies: -2 }, reaction: '你没舍得开那一枪，虚晃一记便撒腿狂奔。把生死押在双腿上是险了点，可留着子弹、绝不轻言放弃的人，总能多搏一线。' },
       ],
-      summary: '最后一颗子弹', art: 'tau20j', gen: 'flux',
+      summary: '最后一颗子弹', art: 'tau20j', gen: 'gemini',
       requires: 'hp<=30',
       minTurn: 16,
       weight: 1.2,
@@ -1459,7 +1466,7 @@ export const wasteland: Scenario = {
         { text: '取几本要紧的，留作火种与知识', effects: { sanity: 10, supplies: -4 }, reaction: '你挑了几本要紧的小心揣进怀里。在连水都重逾黄金的世道还肯为知识留一席之地的人，守的是人类不肯熄灭的那点火种。' },
         { text: '只撕书页生火取暖，活着要紧', effects: { hp: 4, sanity: -6 }, reaction: '你一页页撕下书烧火取暖，火光里字句化成灰烬。活下去当然要紧，可亲手烧掉文明火种的那一刻，你心里也空落落地疼了一下。' },
       ],
-      summary: '文明遗迹', art: '1eg0siy', gen: 'flux',
+      summary: '文明遗迹', art: '1eg0siy', gen: 'gemini',
       minTurn: 10,
       weight: 0.9,
     },
@@ -1470,7 +1477,7 @@ export const wasteland: Scenario = {
         { text: '护住这个孩子，守住希望', effects: { sanity: 10, supplies: -8, hp: -2 }, reaction: '你一锤定音要护住这个孩子，营地里争执的众人安静下来，你的同伴泪眼婆娑地握住你的手——敢在绝境里赌一个新生的人，给了所有人活下去的盼头。' },
         { text: '末世不宜生育，忍痛劝阻', effects: { sanity: -6, supplies: 4 }, reaction: '你忍着心痛说出那番冷硬的现实，营地里一片沉默，你的同伴别过脸去——没人说你错，可这份不近人情的清醒，扎得人生疼。' },
       ],
-      summary: '末世新生', art: '1ekt7hx', gen: 'flux',
+      summary: '末世新生', art: '1ekt7hx', gen: 'gemini',
       requires: 'sanity>=30',
       minTurn: 18,
       weight: 1.1,
@@ -1483,7 +1490,7 @@ export const wasteland: Scenario = {
         { text: '默许此事，活下去最大', effects: { hp: 6, sanity: -16, supplies: 4 }, reaction: '你别过脸，默许了那件谁也不敢说出口的事。肚子是填上了，可从这一夜起，营地里每个人的眼神都变了——包括你自己的。' },
         { text: '拼死外出觅食，为众人寻一线生路', effects: { hp: -10, sanity: 6, supplies: 8 }, reaction: '你在所有人都盯着那具遗体时，独自抄起家伙冲进了死城觅食。带着粮回来的那一刻，众人望你的眼神，是绝望里重新燃起的敬服与生机。' },
       ],
-      summary: '饥荒人性', art: '1mgmym5', gen: 'flux',
+      summary: '饥荒人性', art: '1mgmym5', gen: 'gemini',
       requires: 'supplies<=20',
       minTurn: 15,
       weight: 1.2,
@@ -1495,7 +1502,7 @@ export const wasteland: Scenario = {
         { text: '屏息冲过去摘下防毒面具', effects: { hp: -8, supplies: -4, sanity: 2 }, reaction: '你憋着一口气扑过去扯下面具扣在脸上，灼人的毒雾被隔在了外头——敢在毒云里抢一具尸体的家当，这份豁出去的果决救了你往后的命。' },
         { text: '捂住口鼻拼命逆风逃离', effects: { hp: -12, supplies: -6, sanity: -4 }, reaction: '你呛着咳着踉跄逃出毒雾区，肺里像灌了火——逃是逃了，可那只能救命的面具，也被你连同那具遗骸一起丢在了黄绿色的死地里。' },
       ],
-      summary: '化工厂毒雾', art: '7vye4y', gen: 'flux',
+      summary: '化工厂毒雾', art: '7vye4y', gen: 'gemini',
       once: true,
       itemsGained: ['防毒面具'],
       weight: 1.3,
@@ -1507,7 +1514,7 @@ export const wasteland: Scenario = {
         { text: '戴稳面具，深入毒气隧道搜刮', effects: { supplies: 30, hp: -6, sanity: -4 }, reaction: '你罩着面具一头扎进黄绿色的雾里，把那处无人敢碰的给养搬了个空——别人光是闻着这味就腿软，你却靠一只面具走进了死人堆里的宝库。' },
         { text: '只在隧道口探一截就退', effects: { supplies: 8, hp: -3, sanity: -2 }, reaction: '你贴着隧道口拣了些近处的东西就退了出来，没敢深入——面具虽在，可拿命去赌滤罐能撑多久，终究不是稳妥人会做的事。' },
       ],
-      summary: '毒气隧道', art: '1ffit51', gen: 'flux',
+      summary: '毒气隧道', art: '1ffit51', gen: 'gemini',
       requiresItem: '防毒面具',
       once: true,
       weight: 1.4,
@@ -1519,7 +1526,7 @@ export const wasteland: Scenario = {
         { text: '据守库房，与围攻者拼死一搏', effects: { hp: -16, supplies: -10, sanity: -6 }, reaction: '你背靠着粮山红了眼地厮杀，硬是把成片的围攻者一一逼退——守着这么大一份家底还能不丢半分地杀出来，连最凶的劫掠者都倒抽了凉气。' },
         { text: '主动抛出大批物资引开众人', effects: { supplies: -34, sanity: 4 }, reaction: '你把成箱的给养往街心一推，贪婪的人群顷刻扑上去争抢撕咬，谁也没空再盯着你——用一半家底换一条活路，这笔账算得比谁都清醒。' },
       ],
-      summary: '粮山引来的围攻', art: '930tkh', gen: 'flux',
+      summary: '粮山引来的围攻', art: '930tkh', gen: 'gemini',
       requires: 'supplies>=70',
       weight: 1.6,
     },
@@ -1530,7 +1537,7 @@ export const wasteland: Scenario = {
         { text: '砸开铁门，把净水片全数收入囊中', effects: { supplies: 6, hp: -4, sanity: 2 }, reaction: '链条在你的猛砸下崩断，你把那几板净水片一扫而空塞进怀里——这年头能囤上一把净水片的人，等于在背包里揣了一条命。' },
         { text: '只取一板，留些给后来的渴死鬼', effects: { supplies: 3, sanity: 5 }, reaction: '你只抠下一板就收了手，把剩下的留在原处。后来摸进来的人对着那几板净水片愣了半晌——这死城里，竟还有人肯替陌生人留一口活命的清水。' },
       ],
-      summary: '社区净水站', art: '1jrv356', gen: 'flux',
+      summary: '社区净水站', art: '1jrv356', gen: 'gemini',
       once: true,
       itemsGained: ['净水片'],
       minTurn: 4,
@@ -1544,7 +1551,7 @@ export const wasteland: Scenario = {
         ] },
         { text: '舍不得净水片，强咽几口脏水', effects: { hp: -12, supplies: -2, sanity: -4 }, reaction: '你攥着净水片没舍得用，硬灌了几口脏水。当晚便绞着肚子吐了个昏天黑地——省下了药，赔进去的却是大半条命，这账亏到了家。' },
       ],
-      summary: '污染水源', art: '1fhnnz1', gen: 'flux',
+      summary: '污染水源', art: '1fhnnz1', gen: 'gemini',
       requiresItem: '净水片',
       once: true,
       weight: 1.3,
@@ -1556,7 +1563,7 @@ export const wasteland: Scenario = {
         { text: '反复校验，记下这串信号源坐标', effects: { sanity: 8, supplies: -5 }, reaction: '你把那串脉冲来回译了三遍才敢确信，掌心的坐标被汗水洇得发涨——能在满是杂讯的死城里抠出一组真坐标的人，脑子比枪还好使。' },
         { text: '心烦意乱，关机不再理会', effects: { sanity: -4, supplies: -3 }, reaction: '那执拗的脉冲听得你心头发毛，伸手关了收音机。死寂重新罩下来，可那串没记下的坐标，往后会像根刺一样时不时扎你一下。' },
       ],
-      summary: '神秘信标', art: '1hjn9qb', gen: 'flux',
+      summary: '神秘信标', art: '1hjn9qb', gen: 'gemini',
       once: true,
       itemsGained: ['信号源坐标'],
       minTurn: 7,
@@ -1568,7 +1575,7 @@ export const wasteland: Scenario = {
         { text: '推门而入，弄清信标的源头', effects: { sanity: 6, supplies: 10, hp: -4 }, reaction: '门后竟是个小小的幸存者电台站，守台的老人见你循着信标找来，浑浊的眼睛一下亮了：「真有人收到了……我守这台机器，总算没白守。」' },
         { text: '爬上塔顶拆走天线设备就走', effects: { supplies: 6, sanity: -6 }, reaction: '你撬走了塔顶那台还在工作的天线，脉冲应声断绝。背着设备走远时你忽然心里一沉——若塔里真有人靠它等救援，这一下，等于亲手掐断了别人的盼头。' },
       ],
-      summary: '信标源头', art: '1b5lett', gen: 'flux',
+      summary: '信标源头', art: '1b5lett', gen: 'gemini',
       requiresItem: '信号源坐标',
       itemsLost: ['信号源坐标'],
       once: true,
@@ -1581,7 +1588,7 @@ export const wasteland: Scenario = {
         { text: '合力撬开横梁，救他脱困', effects: { hp: -6, supplies: -6, sanity: 10 }, reaction: '横梁撬开的一刻，年轻人攥着怀表泣不成声，硬把那块旧表塞进你手里：「这是我爹留的，往后……它替我跟着你。」从此你身边多了个肯把后背交给你的人。' },
         { text: '心有不忍，留下些水和药就走', effects: { supplies: -4, sanity: -3 }, reaction: '你搁下水和药转身离去，年轻人没有挽留，只是望着你的背影低声道谢——你没欠他什么，可那块没能护住的旧怀表，会在你梦里晃上几回。' },
       ],
-      summary: '废墟下的人', art: '1sz7z7w', gen: 'flux',
+      summary: '废墟下的人', art: '1sz7z7w', gen: 'gemini',
       once: true,
       itemsGained: ['旧怀表'],
       weight: 1.2,
@@ -1644,7 +1651,7 @@ export const wasteland: Scenario = {
         { text: '凭信物寻到城南据点赴约', effects: { supplies: 14, sanity: 8, hp: -2 }, reaction: '城南据点的人验过怀表，神色骤变，当即奉上一大批给养致谢：「我哥临终前最惦记的就是它……你替他守住了，这份情我们认。」一块表，换来了一处可投靠的善缘。' },
         { text: '疑心是圈套，攥紧信物不去', effects: { supplies: -3, sanity: -4 }, reaction: '你掂量着掮客那半真半假的话，终究没敢去赴这趟约。信物还在你怀里，可那扇或许真能为你敞开的门，也被你的谨慎一并关上了。' },
       ],
-      summary: '信物的来历', art: '1u3jbry', gen: 'flux',
+      summary: '信物的来历', art: '1u3jbry', gen: 'gemini',
       requiresItem: '旧怀表',
       once: true,
       minTurn: 9,
@@ -1656,7 +1663,7 @@ export const wasteland: Scenario = {
         { text: '舍命不舍面具，拼死护住它', effects: { hp: -14, supplies: -4, sanity: 4 }, reaction: '你宁可挨刀也死死扣着面具不撒手，那股要命不要面具的疯劲，竟把劫掠者唬得退了半步——他想不通，一只破面具凭什么让人豁出命去护。' },
         { text: '交出防毒面具，保命要紧', effects: { hp: -2, supplies: -3, sanity: -8 }, reaction: '你颤抖着摘下面具递了过去，为首的掂着战利品满意地挥手放行。命是保住了，可往后再遇上毒雾，你就只剩一条湿毛巾和一身的运气了。' },
       ],
-      summary: '面具劫掠', art: '1lxd409', gen: 'flux',
+      summary: '面具劫掠', art: '1lxd409', gen: 'gemini',
       requiresItem: '防毒面具',
       itemsLost: ['防毒面具'],
       weight: 1.1,
@@ -1668,7 +1675,7 @@ export const wasteland: Scenario = {
         { text: '攥紧怀表，靠这点念想撑住自己', effects: { hp: 10, sanity: 12, supplies: -4 }, reaction: '你把怀表死死贴在胸口，那滴答的错觉像有人在耳边催你别倒下。高烧退去时你长出一口气——撑着你熬过这一夜的，不是药，是有人惦记着你的那点暖。' },
         { text: '高烧中神志涣散，几近放弃', effects: { hp: -10, sanity: -6, supplies: -3 }, reaction: '你的手一点点松开，怀表「当啷」落地。半梦半醒间你听见有人在喊你的名字，恍惚里又攥回了它——这一回，是侥幸没沉下去，下次未必还有这运气。' },
       ],
-      summary: '信物的暖意', art: '1u3j96g', gen: 'flux',
+      summary: '信物的暖意', art: '1u3j96g', gen: 'gemini',
       requiresItem: '旧怀表',
       requires: 'hp<=40',
       weight: 1.3,
@@ -1680,7 +1687,7 @@ export const wasteland: Scenario = {
         { text: '匀出大半箱药，救济门外病患', effects: { supplies: -10, sanity: 16, hp: -2 }, reaction: '你把成把的药分发出去，病患们捧着救命药跪地痛哭，连声唤你恩人——肯在金山面前舍出大半的人，赢的不是物资，是一群肯为你拼命的伙伴。' },
         { text: '抱箱从后门溜走，独吞这批药', effects: { supplies: 8, sanity: -10 }, reaction: '你抱着冷藏箱从后门猫腰溜了，身后门口那群病患的咳嗽声渐渐变成了咒骂。药是你的了，可那一声声诅咒，会在往后的夜里反复爬上你的心头。' },
       ],
-      summary: '诊所药箱', art: '1k8w95b', gen: 'flux',
+      summary: '诊所药箱', art: '1k8w95b', gen: 'gemini',
       once: true,
       minTurn: 11,
     },
@@ -1691,7 +1698,7 @@ export const wasteland: Scenario = {
         { text: '反复默念自己的名字，把神志拽回来', effects: { sanity: 14, hp: -2, supplies: -3 }, reaction: '你一遍遍念着名字、掐着掌心，那些浮动的面孔终于一点点退回了阴影里。能在崩溃的悬崖边把自己生生拉回来的人，整片废土也找不出几个。' },
         { text: '伸手去够那些「故人」的手', effects: { hp: -10, sanity: -4, supplies: -4 }, reaction: '你伸出的手只攥住了一把冰冷的空气和墙皮的碎屑，幻象「轰」地碎开。回过神时你正站在窗台边缘——再往前半步，就再没有醒来的机会了。' },
       ],
-      summary: '幻象深渊', art: '1djlu58', gen: 'flux',
+      summary: '幻象深渊', art: '1djlu58', gen: 'gemini',
       requires: 'sanity<=30',
       weight: 1.5,
     },
@@ -1715,7 +1722,7 @@ export const wasteland: Scenario = {
         { text: '摸黑独吞这批隐藏库存', effects: { supplies: 10, sanity: -3 }, reaction: '你借着夜色搬空了只有你记得的暗格，背包鼓了起来——可这秘密压在心头，也让你愈发提防身边的每一双眼睛。' },
         { text: '拿出来分给同伴，聚拢人心', effects: { supplies: 2, sanity: 6 }, reaction: '你把那批别人找不到的库存匀给了同伴，换来一圈感激的眼神——废土上，肯分粮的人，才聚得起一群肯替你拼命的人。' },
       ],
-      summary: '熟门熟路', art: '1gi1usa', gen: 'flux',
+      summary: '熟门熟路', art: '1gi1usa', gen: 'gemini',
       requires: 'has(店员)',
       minTurn: 4,
       weight: 0.9,
@@ -1727,7 +1734,7 @@ export const wasteland: Scenario = {
         { text: '倾尽药品器械，救他一命', effects: { hp: -4, supplies: -8, sanity: 8 }, reaction: '你赌上珍贵的药品和自己的旧伤把人从鬼门关拽了回来——他攥着你的手发誓此生跟定你，这份医者仁心，在废土上重过千金。' },
         { text: '保住药品，只做简单包扎', effects: { supplies: -2, sanity: -4 }, reaction: '你只草草包扎便收起了药箱——药是省下了，可那人渐渐没了气息时望你的那一眼，让你往后许多夜都翻来覆去。' },
       ],
-      summary: '军医本色', art: '1bbkhg9', gen: 'flux',
+      summary: '军医本色', art: '1bbkhg9', gen: 'gemini',
       requires: 'has(军医)',
       minTurn: 4,
       weight: 0.9,
@@ -1739,9 +1746,10 @@ export const wasteland: Scenario = {
         { text: '逞勇涉险，赌一把身手', effects: { hp: -10, supplies: 8, sanity: -2 }, reaction: '你仗着年轻腿快攀过朽桥险险够到了物资，落地时后怕得腿发软——这次赌赢了，可这股莽劲，早晚要让你吃个大亏。' },
         { text: '按住冲动，稳妥行事', effects: { supplies: -3, sanity: 6 }, reaction: '你死死按住了逞强的念头、稳稳退了开——一个年轻人能在废土上学会「忍」字，是比跑得快、跳得高更要命的本事。' },
       ],
-      summary: '少年血气', art: '1cyw5ha', gen: 'flux',
+      summary: '少年血气', art: '1cyw5ha', gen: 'gemini',
       requires: 'has(高中生)',
       minTurn: 3,
+      maxTurn: 18,
       weight: 0.9,
     },
     {
@@ -1750,7 +1758,7 @@ export const wasteland: Scenario = {
         { text: '收下阿黄，相依为命', effects: { sanity: 6, supplies: -2 }, flagsSet: ['阿黄'], reaction: '你拍了拍腿，那狗便颠颠地扑进你怀里。你给它取名阿黄——从此这条忠心的狗成了末世里少有的慰藉，夜里有它支着耳朵替你守着，心也安稳几分，只是那口粮，又得从牙缝里匀出一份。' },
         { text: '狠心赶走，自顾不暇', effects: { supplies: 2 }, reaction: '你硬起心肠捡起块碎砖朝它扬了扬，它呜咽着退开，却还在原地不肯走。省下的那一份口粮压在背包里沉甸甸的，你低头快步离开，到底没敢回头再看它一眼。' },
       ],
-      summary: '收留阿黄', art: '1eguxkn', gen: 'flux', minTurn: 4, weight: 1,
+      summary: '收留阿黄', art: '1eguxkn', gen: 'gemini', minTurn: 4, weight: 1,
     },
     {
       narrative: '阿黄如今总寸步不离地跟着你，鼻子灵、耳朵尖，废墟里有人摸近，它老远就压低喉咙警觉地呜呜起来；翻找物资时，它还能凭着嗅觉刨出埋在瓦砾下的罐头。你看着这通人性的家伙，心里盘算开了——若肯多匀些口粮、好好把它喂壮，再花些工夫调教，它未必不能成为你在末世里一个得力的帮手。',
@@ -1758,7 +1766,7 @@ export const wasteland: Scenario = {
         { text: '悉心喂养，倚为帮手', effects: { hp: 2, sanity: 4, supplies: -4 }, reaction: '你把省下的口粮一口口喂给阿黄，它一天天壮实起来，毛色也亮了。寻物觅食、守夜护院样样拿手，人和狗的命，就这么紧紧拴在了一处——只是粮食也跟着耗得更快了。' },
         { text: '有口饭吃，不必费心', effects: { supplies: 2 }, reaction: '你只把吃剩的残食留给阿黄，懒得再多费心思调教。省了力气，人和狗之间也就少了那份生死与共、心意相通的默契，它依旧跟着你，却终究只是条跟着混口饭的狗。' },
       ],
-      summary: '喂养阿黄', art: '1bww6w5', gen: 'flux', requires: 'has(阿黄)', minTurn: 12, weight: 1.1,
+      summary: '喂养阿黄', art: '1bww6w5', gen: 'gemini', requires: 'has(阿黄)', minTurn: 12, weight: 1.1,
     },
     {
       narrative: '一伙劫匪循着气味摸进了你的藏身处，刀光在月色里闪着冷意。混乱中，阿黄毫不犹豫地扑了上去，死死咬住一个匪徒的手腕，替你挡下了致命的一击，自己却被狠狠踹翻在地，发出凄厉的哀鸣，再爬不起来。劫匪的刀已重新举起，对准了倒地的它。救它，你得拼着重伤再冲进去；不救，你眼下就能脱身。',
@@ -1767,7 +1775,90 @@ export const wasteland: Scenario = {
         { text: '放它自去，求个心安', effects: { supplies: 2, sanity: 4 }, reaction: '你含泪冲它喊「走——快走」，替它和自己都求个两全。阿黄挣扎着爬起，一瘸一拐地回头望了你最后一眼，便钻进了茫茫废墟。它是死是活你再不得而知，可那点相伴过的暖，却长长久久地留在了心底。' },
         { text: '舍狗保命，绝境无情', effects: { supplies: 2 }, flagsClear: ['阿黄'], reaction: '绝境之中，你终究背过身，踩着阿黄的哀鸣保全了自己。你活下来了，背包还在，命还在，可那点末世里仅剩的、靠一条狗焐热的暖意，也跟着那声渐弱的哀鸣，一并熄了。' },
       ],
-      summary: '阿黄赴险', art: '1m49sat', gen: 'flux', requires: 'has(阿黄)', minTurn: 22, weight: 1.2,
+      summary: '阿黄赴险', art: '1m49sat', gen: 'gemini', requires: 'has(阿黄)', minTurn: 22, weight: 1.2,
+    },
+    {
+      narrative:
+        '据点立稳了名头，麻烦也跟着上门。一支盘踞在邻近三个街区的武装幸存者团伙派人捎来口信：他们的头目想见你。会面定在两片势力交界的废广场，对方头目独眼缠着旧疤，开门见山——眼下废土上零散的据点撑不过下一个寒冬，要么并作一家、互通有无共御尸潮，要么就在春天来临前，看谁先把谁吞掉。他把一柄解下的猎刀横在桌上，算是诚意，也算是威胁。结盟能让你的据点一夜壮大，可把后背交给一个野心勃勃的枭雄，谁也说不准明天的刀会不会捅向你。',
+      choices: [
+        { text: '歃血结盟，两家据点连成一片', effects: { supplies: 16, sanity: 8, hp: -3 }, flagsSet: ['盟约'], reaction: '独眼头目割破手掌按在桌面，咧嘴一笑：「成。从今往后你我两家，一根绳上的蚂蚱。」两片势力连成一气，墙更高了，巡哨更密了，废土上头一回有人要正眼掂量你的分量。' },
+        { text: '婉拒结盟，只谈一纸互不侵犯', effects: { supplies: 4, sanity: -3 }, reaction: '你压住了并家的诱惑，只与他划清了井水不犯河水的界。头目眯眼盯了你半晌，收刀起身：「精明……但精明人，在这世道也未必活得长。」话里的机锋，让你往后多排了两班守夜。' },
+        { text: '设局反吞，趁会面拿下对方头目', effects: {}, outcomes: [
+          { weight: 2, effects: { supplies: 24, hp: -14, sanity: -8 }, reaction: '你抢先发难，废广场上刀光骤起。一场血拼过后，你踩着对方头目的尸首吞下了他整片地盘——从此废土上再没人敢小觑你，可这条以诈取胜的路，也让投奔者望你的眼神里多了一丝忌惮。' },
+          { weight: 1, effects: { hp: -20, supplies: -16, sanity: -10 }, reaction: '你的杀机被对方先一步识破，反被打了埋伏。你浴血杀出重围捡回半条命，却折了大半人手、丢了不少家底——枭雄之间的算计，赌输了便是伤筋动骨。' },
+        ] },
+      ],
+      summary: '据点会盟', art: '1e5yyjp', gen: 'gemini', minTurn: 36, requires: 'has(据点)', weight: 1.2,
+    },
+    {
+      narrative:
+        '熬到这一步，墙内聚起的人多了，新的祸患却从里头长了出来。昨夜库房少了三箱口粮，今晨又有人举报：几个老资格的住户私藏物资、克扣新来者的配给，甚至动手打伤了分粮时多嘴的少年。墙外是感染者，墙内若也烂了，这堡垒迟早从根上塌掉。众人吵作一团，目光齐刷刷落到你这立墙之人身上——是当众立下铁律、以儆效尤，还是设个由众人推选的议事桌，让规矩从此不只系于你一人之口？',
+      choices: [
+        { text: '当众立威，铁腕整肃秩序', effects: { sanity: 6, hp: -2, supplies: 4 }, reaction: '你把私藏的物资尽数追回、当众罚了带头闹事的人，立下白纸黑字的铁律。墙内一时鸦雀无声，秩序是稳住了，只是有人服气，也有人在背地里嘀咕你越来越像那些「营主」。' },
+        { text: '设议事桌，让规矩出自众人之手', effects: { sanity: 10, supplies: -4, hp: -2 }, flagsSet: ['秩序'], reaction: '你没把刀攥在自己手里，而是请各家推举代表，围坐定下了分粮、守夜、断案的章程。头一回，墙内的人不再只是仰你鼻息的难民，而成了肯为这片家园说话、出力的伙伴——一套不靠你一人撑着的秩序，悄悄生了根。' },
+        { text: '查清主谋，私下铲除隐患', effects: { sanity: -6, hp: -4, supplies: 6 }, reaction: '你不动声色地查清了带头作乱的人，趁夜把麻烦悄悄抹平了。隐患是除了，物资也追了回来，可那桩没人说破的事压在心头，往后你看谁的眼神里，都难免多了三分提防。' },
+      ],
+      summary: '墙内秩序', art: '1cdo7ob', gen: 'gemini', minTurn: 37, requires: 'has(堡垒)', weight: 1.1,
+    },
+    {
+      narrative:
+        '一场尸潮过后，几十名失了据点的幸存者拖家带口涌到你墙下——老的老、小的小，伤的伤、病的病，跪在墙根一声声哀求收留。墙头的人都看着你：开门收人，你这点家底要被几十张嘴生生分薄，万一里头混进了细作或染了病的，更是引狼入室；可若闭门不纳，眼睁睁看着这群活人在墙外被夜里的尸群吞掉，那一夜的惨叫，你这辈子怕是都忘不掉。曙光还远，人心却已在天平上摇晃。',
+      choices: [
+        { text: '开门收容，分薄家底也要救人', effects: { supplies: -14, sanity: 14, hp: -2 }, reaction: '你下令开门，把饿殍般的人群一个个接进墙内、匀出口粮、腾出铺位。粮仓肉眼可见地瘪了下去，可墙内多了几十条肯为这片家园拼命的人，多了孩子重新响起的笑——这笔账，用粮食算是亏的，用人心算，是赚的。' },
+        { text: '只收老弱孩童，余者发些干粮遣走', effects: { supplies: -6, sanity: 4 }, reaction: '你留下了跑不动、护不住自己的老人和孩子，又给余下的人塞了几日干粮指条活路。算不上铁石心肠，也谈不上倾囊相助——在这要命的世道，这点掐着分寸的善意，已是许多人给不出的了。' },
+        { text: '闭门拒纳，守住自己这一摊', effects: { supplies: 2, sanity: -12, hp: -2 }, reaction: '你硬起心肠下令封门，任墙外的哭求一声声撞在铁门上。那一夜，墙外的动静从哀求变成了惨叫，又渐渐归于死寂。你守住了家底，也守住了人，可墙头那些不忍再看的眼神，和你自己堵在胸口的那块石头，久久没能散去。' },
+      ],
+      summary: '墙外难民潮', art: 'z515dd', gen: 'gemini', minTurn: 38, weight: 1.2,
+    },
+    {
+      narrative:
+        '你以为早已退出你势力范围的旧敌，又回来了。当年被你打退、折了威风的那个匪帮头目，这些时日纠集了散落各处的亡命徒，组成一支几十人的队伍，连夜逼到了你据点外的高地上，扎下营盘，篝火连成一片。他要的不只是物资，是当众踩碎你这块在废土上越来越响的招牌，找回那口憋了许久的恶气。哨兵慌张来报时，你站上墙头远眺那一片晃动的火光——这一仗躲不过去了，是死守、是先发制人，还是另寻第三条路。',
+      choices: [
+        { text: '据墙死守，把围攻者耗在墙下', effects: { hp: -12, supplies: -12, sanity: 6 }, reaction: '你下令熄灯、上墙、备好滚石檑木，把一波波扑墙的亡命徒尽数砸了回去。鏖战三日，对方丢下满地伤亡悻悻退走——你用一道墙和满身伤，把这块越打越硬的招牌，又往废土上钉深了一寸。' },
+        { text: '夜袭敌营，先发制人斩首', effects: {}, outcomes: [
+          { weight: 2, effects: { hp: -10, supplies: 10, sanity: -4 }, reaction: '你挑了死士摸黑摸进敌营，一刀结果了正在篝火旁醉酒的头目。群龙无首的乌合之众天没亮就作鸟兽散，还丢下了搬不完的辎重——这一手快、狠、准的斩首，叫整片废土都记住了你的名字。' },
+          { weight: 1, effects: { hp: -22, supplies: -10, sanity: -10 }, reaction: '夜袭却撞进了对方的圈套，营盘里早有埋伏。你拼死杀出重围，赔进去几个并肩多年的弟兄，自己也险些没能爬回墙内——逞先发制人之勇，赌输了便是血淋淋的代价。' },
+        ] },
+        { text: '联络他方势力，里应外合夹击', effects: { hp: -8, supplies: -6, sanity: 8 }, reaction: '你连夜知会了相熟的另一片势力，约定里应外合。当亡命徒扑上你的墙头时，援军的人马正好从他们背后杀出——前后夹击之下，旧敌溃不成军。这一仗打完，两家从此结下了用血换来的、实打实的过命交情。' },
+      ],
+      summary: '旧敌反扑', art: '1ehmzva', gen: 'gemini', minTurn: 39, requires: 'has(堡垒)', weight: 1.2,
+    },
+    {
+      narrative:
+        '据点终于经营成了一座有模有样的营地，可入夜后墙内仍是一片漆黑——人心里那点对光的渴望，比对粮食的还要深。这日，一个曾在供电局干过的住户找上你，说城郊那座小型变电站或许还能抢修，只要凑齐线缆、零件，再冒险跑一趟，说不定能让整座营地重新亮起灯。这是一桩耗费物资、还得派人深入险地的大工程，可一旦灯亮起来，那将不只是照明——那是文明的火种在废土上重新被点燃的信号，是给所有人「日子能越过越好」的指望。',
+      choices: [
+        { text: '倾力抢修变电站，让营地重见光明', effects: { supplies: -10, sanity: 14, hp: -4 }, flagsSet: ['灯火'], reaction: '忙了整整数日，当那串灯泡终于「啪」地次第亮起、把营地的夜照得暖黄一片时，墙内爆发出一阵难以置信的欢呼，有人当场红了眼。孩子们追着灯光跑，老人们怔怔望着久违的电灯掉泪——这一夜，废土上重新有了一座不肯熄灭的灯塔，文明的火，又烧了起来。' },
+        { text: '先攒够余粮再说，眼下不冒这险', effects: { supplies: 4, sanity: -4 }, reaction: '你掂量着抢修要搭进去的物资和人手，终究把这桩心愿先压了下来，把粮仓填得更实些。日子是稳当了，可入夜后那片浓得化不开的黑，和众人眼里悄悄黯下去的那点指望，也实实在在压在了你心上。' },
+      ],
+      summary: '点亮营地', art: '1g1e5dt', gen: 'gemini', minTurn: 40, requires: 'has(营地)', weight: 1.1,
+    },
+    {
+      narrative:
+        '一支自称来自外省幸存者联盟的小队，循着废土上的口碑找到了你的据点。带队的女人风尘仆仆，却难掩眼底的振奋——她说东边数百里外，几座大型安全区已经连成了一片稳固的辖区，电力、医疗、农耕都在恢复，更要紧的是，对病毒的疫苗已经过了试制、开始小批量接种。她此行是来联络废土上仍在坚守的据点，邀你们派人随她回去对接，把这片孤悬的土地，也接进那张正在重新铺开的文明之网。这消息太大、太好，好得几乎让人不敢信。',
+      choices: [
+        { text: '派人随队东去，对接联盟', effects: { supplies: -6, sanity: 16 }, flagsSet: ['曙光'], reaction: '你挑了几个机灵可靠的人，备足干粮随她上路对接。送他们出门那天，你站在墙头望着东方——三年了，第一次，「熬出头」这三个字不再是哄自己的空话，而成了一个有方向、有期限、看得见的盼头。整座据点的人都觉得，那片天，好像真的要亮了。' },
+        { text: '谨慎查证，先不轻信这泼天好消息', effects: { sanity: 4, supplies: -3 }, reaction: '你按捺住翻涌的激动，没急着应承，只多方盘问、暗中查证她的来路与说辞。这年头，越是天大的好消息越要防着是套——这份在喜讯面前都不肯失了分寸的冷静，正是你熬过三年的本钱。查证之下，那联盟竟大半是真，只是路途比她说的更凶险些。' },
+      ],
+      summary: '联盟来使', art: '1ile83g', gen: 'gemini', minTurn: 41, weight: 1.2,
+    },
+    {
+      narrative:
+        '东去对接的人马终于回来了，还带回一支挂着联盟臂章的接应队——疫苗是真的，重建的辖区也是真的。可天大的好事偏偏卡在最后一道坎上：联盟划定的安置点能容下的人手有限，迁过去意味着舍下你一砖一瓦垒起来的这座营地，把所有人连根拔起，长途跋涉穿过尚未肃清的废土；留下不走，则要永远做这文明之网外、自生自灭的孤岛。墙内为「走还是留」吵翻了天，几十双眼睛、几十条性命的去向，最终又压回了你这个主心骨肩上。',
+      choices: [
+        { text: '率众迁往安置点，融入重建的新世界', effects: { supplies: -10, sanity: 16, hp: -6 }, reaction: '你拍板带众人启程。临行前你最后一次站在亲手砌的墙头，把这座熬过尸潮与寒冬的营地，郑重地交给了风。一路虽折损了些气力与给养，可当安置点的灯火与穿白大褂的医护撞进眼帘时，所有的疲惫都化作了泪水——你带着托付给你的人，一个不少地，走进了那个重新有光的世界。' },
+        { text: '留守这片亲手挣下的疆土，做废土上的灯塔', effects: { supplies: 8, sanity: 10, hp: -2 }, reaction: '你谢绝了内迁，选择留守。你与联盟立约，让这座营地成为他们伸向废土深处的一个补给点、一座驿站。墙没拆，灯还亮，往来的人越来越多——你没去投奔那个新世界，而是把新世界的边界，亲手向你脚下这片土地延伸了过来。' },
+        { text: '送走老弱妇孺，自领死士殿后清路', effects: { supplies: -6, sanity: 12, hp: -10 }, reaction: '你把跑不动、护不住自己的人尽数托付给接应队先行，自己却带着一队敢拼命的人留下断后、替大队清扫沿途的尸群与匪患。送别时有孩子哭着不肯松手，你笑着把他推上车——能在曙光将至时仍把生路先让给旁人的，整片废土上没有几个。' },
+      ],
+      summary: '迁徙抉择', art: '1ku04cx', gen: 'gemini', minTurn: 43, requires: 'has(营地)', once: true, weight: 1.6,
+    },
+    {
+      narrative:
+        '三年将尽，废土上的风里第一次没了那股化不开的死气。你登上据点最高处守着黎明，远处接二连三亮起的灯火、隐隐传来的人声与犬吠，都在告诉你这片死城正一寸寸活过来。怀里那块同伴托付的旧物贴着胸口，那些没能走到这一天的人的脸，一张张从记忆深处浮上来。你忽然想为他们、也为这座据点，留下一点东西——一座碑，一行字，一段让后来人记得「有人曾在这死城里认真活过」的念想。可立碑费时费力，而眼下，还有太多活人的生计等着你操持。',
+      choices: [
+        { text: '立一座碑，刻下逝者的名字', effects: { sanity: 16, supplies: -6 }, reaction: '你领着众人在据点中央垒起一座石碑，把那些没能熬到曙光的名字一个个刻了上去。落成那日，墙内的人默默围拢过来，有人献上一束从天台菜园里掐的野花。这座碑不产一粒粮、不挡一只感染者，却让活着的人头一回觉得，他们守的不只是一条命，而是一个值得被记住的家。' },
+        { text: '把心思先用在活人的春耕上', effects: { supplies: 10, sanity: 6, hp: -2 }, reaction: '你把缅怀压在心底，转身扎进了开春的营生里——翻地、育苗、修渠，张罗着让这据点在新的一年能多打几担粮。逝者长已矣，活人的日子还得往前奔。看着墙内重新有了春耕的忙碌与盼头，你知道，这才是对那些故去之人最实在的告慰。' },
+      ],
+      summary: '废土立碑', art: '1dblpwf', gen: 'gemini', minTurn: 42, requires: 'has(据点)', weight: 1,
     },
   ],
 }

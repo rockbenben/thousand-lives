@@ -102,7 +102,9 @@ describe('voyage AI 模式', () => {
 })
 
 describe('voyage 隐藏 endTone 哨兵', () => {
-  const tones = ['屠岛劫财·恶贯满盈', '见利忘义·众叛弃尸', '逍遥怒海·自由之王']
+  // 注：逍遥怒海·自由之王 已从「隐藏天堂结局」改为人生里程碑(置 has(自由之王) 续纵横，
+  // 满期 crew>=50 才盖棺)，故移出哨兵列表。详见 voyage.ts。
+  const tones = ['屠岛劫财·恶贯满盈', '见利忘义·众叛弃尸']
   it('三哨兵结局存在且 condition 为 crew<=-1', () => {
     for (const t of tones) {
       const e = voyage.endings.find((x) => x.tone === t)
@@ -134,12 +136,12 @@ describe('voyage 衰减与 sim 健壮性', () => {
     const crew = voyage.attributes.find((a) => a.key === 'crew')!
     expect(crew.decayPerTurn).toBe(1) // sim-tuned：decay0 时同舟共济独大55%；decay1 后人心须经营、结局多样；decay2 过罚
   })
-  it('船力 sim 校准：起手 50、每年衰减 2（怒海之凶·船蛀）', () => {
+  it('船力 sim 校准：起手 50、每年衰减 1（45 回合重校）', () => {
     const ship = voyage.attributes.find((a) => a.key === 'ship')!
-    // 原 init35/decay1 使避险者 100% 满期、几无怒海之险；上调至 init50/decay2，
-    // careful 坏结局 2.6%→30%、随性玩法贴大航海史实地凶（≈麦哲伦船队九成损耗），高船力结局仍可达
+    // 原 init35/decay1 几无怒海之险；曾上调 init50/decay2；maxTurns 30→45 后 -2 总损耗暴增
+    // （葬身海底占 67%），降至 -1，险情改由战斗事件承担，高船力结局重新可达
     expect(ship.initial).toBe(50)
-    expect(ship.decayPerTurn).toBe(2)
+    expect(ship.decayPerTurn).toBe(1)
   })
   it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
     for (const ev of voyage.localEvents ?? [])

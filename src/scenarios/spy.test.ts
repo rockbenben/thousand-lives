@@ -66,7 +66,9 @@ describe('spy 升功勋闸门', () => {
 })
 
 describe('spy 隐藏 endTone 哨兵', () => {
-  const tones = ['卖国求荣·遗臭万年', '卖友求生·血债难偿', '策反成功·扭转乾坤']
+  // 注：策反成功·扭转乾坤 已从「隐藏天堂结局」改为人生里程碑(置 has(策反成功) 续潜伏，
+  // 满期 intel>=40 才盖棺)，故移出哨兵列表。详见 spy.ts。
+  const tones = ['卖国求荣·遗臭万年', '卖友求生·血债难偿']
   it('三哨兵结局存在且 condition 为 trust<=-1', () => {
     for (const t of tones) expect(spy.endings.find((x) => x.tone === t)?.condition, t).toBe('trust<=-1')
   })

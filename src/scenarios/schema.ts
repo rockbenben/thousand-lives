@@ -117,6 +117,9 @@ export const scenarioSchema = z
     openings: z.array(openingSchema).optional(),
     turnUnit: z.string().default('回合'),
     maxTurns: z.number().int().positive().optional(),
+    // 走到 maxTurns（活完这一程）时结局页的收束语。各题材终点含义不同：
+    // 年/载类=天年善终，谍战=抗战胜利，末世=熬到曙光，穿书=写至终章。缺省=此生行至尽头。
+    finale: z.string().optional(),
     // 该题材对「进阶层级」的称呼（境界/官阶/名位…），用于 AI 提示的叙事化晋阶指引；
     // 仅启用印记体系（ceilingUnlocks/opening flag）的题材需设，缺省回退「段位」。
     tierLabel: z.string().optional(),

@@ -118,8 +118,10 @@ describe('sanguo 势力 volatility（升降可逆 + 改投）', () => {
 })
 
 describe('sanguo 隐藏 endTone', () => {
-  it('新增三哨兵隐藏结局 trust<=-1', () => {
-    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中', '一言定鼎·名动天下']) {
+  it('哨兵隐藏结局 trust<=-1', () => {
+    // 注：一言定鼎·名动天下 已从「隐藏天堂结局」改为人生里程碑(置 has(名动天下) 续辅佐，
+    // 满期 repute>=50 才盖棺)，故移出哨兵校验。详见 sanguo.ts。
+    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中']) {
       const e = sanguo.endings.find((x) => x.tone === t)
       expect(e?.condition, t).toBe('trust<=-1')
     }
@@ -132,7 +134,7 @@ describe('sanguo 隐藏 endTone', () => {
   it('每个哨兵基调都被某事件 endTone 引用（防 tone 打错）', () => {
     const used = new Set<string>()
     for (const ev of sanguo.localEvents ?? []) for (const c of ev.choices) for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
-    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中', '一言定鼎·名动天下']) expect(used.has(t), t).toBe(true)
+    for (const t of ['站错主公·身死族灭', '功高震主·赐死狱中']) expect(used.has(t), t).toBe(true)
   })
 })
 
@@ -144,12 +146,12 @@ describe('sanguo 巅峰结局须 maxTurns + 经天纬地须霸业', () => {
     }
   })
   it('落幕年有霸业+高信任 → 经天纬地', () => {
-    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, 30, ['据州', '称雄', '鼎足', '霸业'])
+    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, sanguo.maxTurns!, ['据州', '称雄', '鼎足', '霸业'])
     expect(r?.tone).toBe('经天纬地·名相千古')
   })
   it('落幕年高谋略但无霸业（失势/改投后）→ 落算无遗策而非经天纬地', () => {
     // wit 96 但 flags 无霸业（曾有后被清）
-    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, 30, ['据州', '称雄', '鼎足'])
+    const r = checkEnding(sanguo, { wit: 98, trust: 90, repute: 60 }, sanguo.maxTurns!, ['据州', '称雄', '鼎足'])
     expect(r?.tone).toBe('算无遗策·智极而孤')
   })
 })
@@ -163,7 +165,7 @@ describe('sanguo AI 模式', () => {
     expect(all).toContain('势力')
     expect(all).toContain('据州→称雄→鼎足→霸业')
     expect(all).not.toContain('封顶')
-    expect(all).toContain('一言定鼎') // 隐藏天堂 tone 经词表注入
+    expect(all).toContain('身死族灭') // 隐藏哨兵 tone 经词表注入（一言定鼎已改里程碑，改验仍为哨兵的 站错主公·身死族灭）
   })
   it('systemPrompt 含势力沉浮/改投规则与横祸极稀指导', () => {
     expect(sanguo.systemPrompt).toContain('势力')

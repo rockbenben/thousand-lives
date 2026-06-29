@@ -4,9 +4,9 @@ import { clampEffects, initState, applyChoice } from '../engine/state'
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('wasteland 尺度与前提', () => {
-  it('turnUnit=月、maxTurns=36（三年末世）', () => {
+  it('turnUnit=月、maxTurns=44（末世加长后期）', () => {
     expect(wasteland.turnUnit).toBe('月')
-    expect(wasteland.maxTurns).toBe(36)
+    expect(wasteland.maxTurns).toBe(44)
   })
   it('intro 与 systemPrompt 改为「救援无望·长期重建」框架（去掉「撑过三十天」「等待...军方救援」）', () => {
     expect(wasteland.intro).not.toContain('三十天')

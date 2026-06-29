@@ -21,23 +21,11 @@ import { builtinScenarios } from '../src/scenarios'
 import { initState, applyChoice } from '../src/engine/state'
 import { localTurn } from '../src/engine/local'
 import { parseCondition } from '../src/engine/condition'
+import { makeRng, deathAttrs, LETHAL_TONE as LETHAL } from './_sim-shared'
 import type { Scenario } from '../src/scenarios/schema'
 import type { GameState, TurnResult } from '../src/engine/types'
 
-const LETHAL = /形神俱灭|横死|暴毙|身死|道消|坐化|羽化|走火|经脉俱断|抹杀|殒命|当场/
-
-function makeRng(seed: number): () => number {
-  let a = seed >>> 0
-  return () => {
-    a |= 0
-    a = (a + 0x6d2b79f5) | 0
-    let t = Math.imul(a ^ (a >>> 15), 1 | a)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-const deathKeys = (sc: Scenario) => sc.attributes.filter((a) => a.deathBelow !== undefined).map((a) => a.key)
+const deathKeys = (sc: Scenario) => deathAttrs(sc).map((a) => a.key)
 const ladderFlags = (sc: Scenario) => {
   const out = new Set<string>()
   for (const a of sc.attributes) for (const u of a.ceilingUnlocks ?? []) out.add(u.flag)

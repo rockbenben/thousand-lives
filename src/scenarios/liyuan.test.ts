@@ -4,8 +4,10 @@ import { clampEffects, initState, applyChoice, checkEnding } from '../engine/sta
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('liyuan 隐藏 endTone', () => {
-  it('新增致死与天堂隐藏结局存在且为哨兵 safety<=-1', () => {
-    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹', '一夜爆红·伶界天骄']) {
+  it('致死/封箱隐藏结局存在且为哨兵 safety<=-1', () => {
+    // 注：一夜爆红·伶界天骄 已从「隐藏天堂结局(endTone 即终局)」改为「人生里程碑」——
+    // 抱病登台爆红只置 has(一夜爆红) 并继续人生，到满期 fame>=60 才以「伶界天骄」盖棺(见 liyuan.ts)。
+    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹']) {
       const e = liyuan.endings.find((x) => x.tone === t)
       expect(e?.condition, t).toBe('safety<=-1')
     }
@@ -21,8 +23,9 @@ describe('liyuan 隐藏 endTone', () => {
     for (const ev of liyuan.localEvents ?? []) {
       for (const c of ev.choices) for (const o of c.outcomes ?? []) if (o.endTone) used.add(o.endTone)
     }
-    // 三个哨兵隐藏结局的 tone 都须能被某事件触发，否则字符串不匹配、结局永不命中
-    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹', '一夜爆红·伶界天骄']) {
+    // 哨兵隐藏结局的 tone 须能被某事件 endTone 触发，否则字符串不匹配、结局永不命中。
+    // (一夜爆红 已改为里程碑+maxTurns 结局，不再由 endTone 触发，故移出此校验)
+    for (const t of ['开罪权贵·横死乱世', '名节尽毁·封箱绝迹']) {
       expect(used.has(t), t).toBe(true)
     }
   })
@@ -90,7 +93,7 @@ describe('liyuan 巅峰结局须 maxTurns（不中途白嫖）', () => {
     }
   })
   it('落幕年（满期）高位触发巅峰结局', () => {
-    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, 30, ['搭班', '挑梁', '名伶', '泰斗'])
+    const r = checkEnding(liyuan, { art: 98, fame: 98, safety: 98 }, liyuan.maxTurns!, ['搭班', '挑梁', '名伶', '泰斗'])
     expect(r?.tone).toBeTruthy()
     expect(['一代宗师·开宗立派', '艺压群伶·曲高和寡', '红透半边天·万人空巷', '艺名双全·梨园泰斗']).toContain(r!.tone)
   })
@@ -132,8 +135,8 @@ describe('liyuan AI 模式', () => {
     expect(all).toContain('名位')
     expect(all).toContain('搭班→挑梁→名伶→泰斗')
     expect(all).not.toContain('封顶')
-    // 隐藏 tone 经词表注入（伶界天骄 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
-    expect(all).toContain('伶界天骄')
+    // 隐藏 tone 经词表注入（横死乱世 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
+    expect(all).toContain('横死乱世')
   })
   it('systemPrompt 含名位晋阶规则与横祸极稀指导', () => {
     expect(liyuan.systemPrompt).toContain('名位')

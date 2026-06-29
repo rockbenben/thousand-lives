@@ -57,7 +57,8 @@ export function scenarioUsesFlags(sc: Scenario): boolean {
 }
 
 // 哨兵隐藏结局：condition 为单个 <= 子句、且阈值低于该属性死线（永不自然成立，仅由 endTone 触发）
-function isHiddenSentinel(sc: Scenario, cond: string): boolean {
+// 导出供平衡模拟器(scripts/sim-balance)等复用，保证"哨兵/隐藏结局"判据单一来源、不分叉。
+export function isHiddenSentinel(sc: Scenario, cond: string): boolean {
   const c = parseCondition(cond)
   if (c.kind !== 'cmp' || c.op !== '<=') return false
   const attr = sc.attributes.find((a) => a.key === c.attr)

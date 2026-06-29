@@ -131,8 +131,8 @@ describe('scifi 衰减与 sim 健壮性', () => {
     const colony = scifi.attributes.find((a) => a.key === 'colony')!
     expect(colony.decayPerTurn).toBe(1) // sim-tuned：decay0 时文明断绝≈0；decay1 后 random 人心尽丧 9.8%
   })
-  it('船体保持每年衰减 3（悬顶之危）', () => {
-    expect(scifi.attributes.find((a) => a.key === 'integrity')!.decayPerTurn).toBe(3)
+  it('船体每年衰减 2（45 回合重校，原 3）', () => {
+    expect(scifi.attributes.find((a) => a.key === 'integrity')!.decayPerTurn).toBe(2)
   })
   it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
     // local.ts magOf 直接读 c.effects；带 outcomes 的选项也须有 effects（约定 effects:{}），否则 Object.values 崩。

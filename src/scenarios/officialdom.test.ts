@@ -4,10 +4,10 @@ import { clampEffects, initState, applyChoice, checkEnding } from '../engine/sta
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('officialdom 长度与圣眷衰减（70岁荣休）', () => {
-  it('maxTurns 扩到 44（进士→70岁荣休）', () => {
-    expect(officialdom.maxTurns).toBe(44)
+  it('maxTurns 扩到 50（进士→致仕归乡）', () => {
+    expect(officialdom.maxTurns).toBe(50)
   })
-  it('圣眷 decay 降为 1（44年长跑可活）', () => {
+  it('圣眷 decay 降为 1（长跑可活）', () => {
     const favor = officialdom.attributes.find((a) => a.key === 'favor')!
     expect(favor.decayPerTurn).toBe(1)
   })
@@ -99,7 +99,7 @@ describe('officialdom 巅峰结局须 maxTurns（不中途白嫖）', () => {
     }
   })
   it('荣休年（满期）高位触发巅峰结局', () => {
-    const r = checkEnding(officialdom, { name: 98, power: 98, favor: 98 }, 44, ['知府', '封疆', '九卿', '阁老'])
+    const r = checkEnding(officialdom, { name: 98, power: 98, favor: 98 }, 50, ['知府', '封疆', '九卿', '阁老'])
     expect(r?.tone).toBeTruthy()
     // 满期高 name&power → 出将入相（最具体在前）
     expect(['出将入相·名垂青史', '权倾朝野·一手遮天', '万民称颂·青天再世', '简在帝心·恩宠无两', '名相贤臣·配享太庙']).toContain(r!.tone)
@@ -108,7 +108,9 @@ describe('officialdom 巅峰结局须 maxTurns（不中途白嫖）', () => {
 
 describe('officialdom 隐藏 endTone', () => {
   it('新增致死与天堂隐藏结局存在且为哨兵 favor<=-1', () => {
-    for (const t of ['文字狱·瘐死诏狱', '站队倾覆·满门抄斩', '简在帝心·骤擢入阁']) {
+    // 注：简在帝心·骤擢入阁 已从「隐藏天堂结局」改为人生里程碑(置 has(骤擢入阁) 续仕途，
+    // 满期 power>=60 才盖棺)，故移出哨兵校验。详见 officialdom.ts。
+    for (const t of ['文字狱·瘐死诏狱', '站队倾覆·满门抄斩']) {
       const e = officialdom.endings.find((x) => x.tone === t)
       expect(e?.condition, t).toBe('favor<=-1')
     }
@@ -136,8 +138,8 @@ describe('officialdom AI 模式', () => {
     expect(sys).toContain('印记')
     expect(sys).toContain('不得越级')
     for (const f of ['知府', '封疆', '九卿', '阁老']) expect(sys).toContain(f)
-    // 隐藏 tone 经词表注入（骤擢入阁 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
-    expect(sys).toContain('骤擢入阁')
+    // 隐藏 tone 经词表注入（瘐死诏狱 不在 systemPrompt 文本，证明 hiddenTones 注入生效）
+    expect(sys).toContain('瘐死诏狱')
   })
   it('systemPrompt 含官阶封顶规则与文字狱极稀指导', () => {
     expect(officialdom.systemPrompt).toContain('官阶')

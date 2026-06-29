@@ -14,26 +14,14 @@ import { builtinScenarios } from '../src/scenarios'
 import { initState, applyChoice } from '../src/engine/state'
 import { localTurn } from '../src/engine/local'
 import { gradeRun } from '../src/engine/grade'
-import { parseCondition } from '../src/engine/condition'
+import { isHiddenSentinel } from '../src/engine/prompt'
+import { makeRng, deathAttrs, LETHAL_TONE as LETHAL } from './_sim-shared'
 import type { Scenario } from '../src/scenarios/schema'
 import type { GameState, TurnResult } from '../src/engine/types'
 
-// 致命基调正则（跨题材通用）：渡劫/突破/凶险失败的横死结局。
-// survive 策略据此避开赌命选项；度量据此把 endTone 强制的死亡计入真死亡。
-const LETHAL = /形神俱灭|横死|暴毙|身死|道消|坐化|羽化|走火|经脉俱断|暴毙荒途|抹杀|殒命|当场/
-
-// 哨兵隐藏结局：condition 为单个 <= 子句、阈值低于该属性死线（永不自然成立，仅由 endTone 触发）。
-// 与 prompt.ts 的 isHiddenSentinel 同款判定，跨题材识别 apex/隐藏死亡/天堂基调。
-function sentinelTones(sc: Scenario): Set<string> {
-  const out = new Set<string>()
-  for (const e of sc.endings) {
-    const c = parseCondition(e.condition)
-    if (c.kind !== 'cmp' || c.op !== '<=') continue
-    const attr = sc.attributes.find((a) => a.key === c.attr)
-    if (attr && attr.deathBelow !== undefined && c.value < attr.deathBelow) out.add(e.tone)
-  }
-  return out
-}
+// 哨兵隐藏结局：复用 prompt.ts 的 isHiddenSentinel（单一判据来源），识别 apex/隐藏死亡/天堂基调。
+const sentinelTones = (sc: Scenario): Set<string> =>
+  new Set(sc.endings.filter((e) => isHiddenSentinel(sc, e.condition)).map((e) => e.tone))
 
 // 题材的境界印记（按 ceilingUnlocks 的 max 升序），用于「最高境界」分布。
 function realmLadder(sc: Scenario): string[] {
@@ -42,21 +30,7 @@ function realmLadder(sc: Scenario): string[] {
   return [...seen.entries()].sort((x, y) => x[1] - y[1]).map(([f]) => f)
 }
 
-// 可复现的伪随机（mulberry32），让每次跑结果稳定、可对照前后改动
-function makeRng(seed: number): () => number {
-  let a = seed >>> 0
-  return () => {
-    a |= 0
-    a = (a + 0x6d2b79f5) | 0
-    let t = Math.imul(a ^ (a >>> 15), 1 | a)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
 type Strategy = (sc: Scenario, st: GameState, tr: TurnResult) => number
-
-const deathAttrs = (sc: Scenario) => sc.attributes.filter((a) => a.deathBelow !== undefined)
 
 const strategies: Record<string, (rng: () => number) => Strategy> = {
   random: (rng) => (_sc, _st, tr) => Math.floor(rng() * tr.choices.length),
