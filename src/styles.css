@@ -1770,6 +1770,62 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
 }
 .modal h3 { margin: 0 0 6px; color: var(--paper); }
+.share-modal { max-width: 720px; }
+.share-modal h3 { text-align: center; color: var(--accent, #c9a05c); letter-spacing: 0.06em; }
+/* 左右两栏：左卡图、右操作+社交。窄屏堆叠（见末尾媒体查询） */
+.share-modal-body { display: flex; gap: 22px; align-items: flex-start; margin-top: 14px; }
+.share-preview {
+  flex: 0 0 300px;
+  max-width: 300px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(201, 160, 92, 0.08), transparent 70%),
+    rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(201, 160, 92, 0.28);
+  border-radius: 6px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+.share-preview img {
+  width: 100%;
+  height: auto;
+  max-height: 62vh;
+  object-fit: contain;
+  display: block;
+  animation: fadeUp 0.25s ease-out both;
+}
+.share-side { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-self: stretch; }
+.share-loading, .share-err { color: var(--muted); padding: 60px 0; font-size: 0.9rem; letter-spacing: 0.08em; }
+.share-loading { animation: pulse 1.2s ease-in-out infinite; }
+.share-err { color: var(--danger, #e0704e); }
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.share-msg { margin: 8px 0 0; color: var(--accent, #c9a05c); font-size: 0.86rem; min-height: 1.1em; }
+.share-modal-actions { display: flex; gap: 8px; }
+.share-modal-actions .primary { flex: 2 1 0; }
+.share-modal-actions button { flex: 1 1 0; }
+.share-social { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.share-social-label { display: block; color: var(--muted); font-size: 0.76rem; margin-bottom: 9px; letter-spacing: 0.05em; }
+.share-social-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.share-social-row button {
+  flex: 0 1 auto;
+  font-size: 0.82rem;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(201, 160, 92, 0.06);
+  border-color: rgba(201, 160, 92, 0.3);
+  transition: background 0.15s, border-color 0.15s;
+}
+.share-social-row button:hover { background: rgba(201, 160, 92, 0.16); border-color: rgba(201, 160, 92, 0.55); }
+.share-tip { margin: 14px 0 0; color: var(--muted); font-size: 0.74rem; line-height: 1.6; opacity: 0.85; }
+.share-close { margin-top: auto; align-self: flex-end; padding-left: 22px; padding-right: 22px; }
+@media (max-width: 600px) {
+  .share-modal-body { flex-direction: column; gap: 16px; }
+  .share-preview { flex: none; max-width: 100%; align-self: center; }
+  .share-close { align-self: stretch; }
+}
 .gen-modal input[type='text'],
 .gen-modal input:not([type]),
 .gen-modal input[type='password'] { width: 100%; }

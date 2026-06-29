@@ -5,7 +5,6 @@ import { bandOf } from '../engine/bands'
 import qrcode from 'qrcode-generator'
 import { hookQuestion } from './hookQuestion'
 import { buildShareUrl, openingIndexOf } from './challengeLink'
-import { downloadBlob } from './download'
 
 export interface CardAchievement {
   icon: string
@@ -298,52 +297,12 @@ export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }
 
-// 取消原生分享时不返回独立的 'cancelled'：统一落到下载兜底（返回 'downloaded'），保证按钮总能产出命运卡文件
-export type ShareResult = 'shared' | 'downloaded' | 'error'
-
-// 一键分享：命运卡（图）+ 钩子问题（文）+ 挑战链接（同款开局）一并带出。
-// 移动端走 navigator.share 原生面板；桌面/不支持时兜底「下载图片 + 复制钩子与链接」。
-export async function shareRun(
-  sc: Scenario,
-  st: GameState,
-  achievements: CardAchievement[] = [],
-  coverUrl?: string,
-): Promise<ShareResult> {
-  let blob: Blob | null = null
-  try {
-    const canvas = await drawShareCard(sc, st, achievements, coverUrl)
-    blob = await canvasToBlob(canvas)
-  } catch {
-    // 出图失败仍可分享文字+链接
-  }
-  const url = buildShareUrl(sc, openingIndexOf(sc, st))
-  const text = hookQuestion(sc, st)
-  const file = blob ? new File([blob], 'qianshi-fate-card.png', { type: 'image/png' }) : null
-
-  const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean }
-  if (file && nav.canShare?.({ files: [file] })) {
-    try {
-      await nav.share({ files: [file], text, url })
-      return 'shared'
-    } catch {
-      // 用户取消原生分享、或分享失败：都落到「下载图片 + 复制链接」兜底，
-      // 保证按钮总能让玩家拿到这张命运卡（与旧「保存结局卡」始终产出文件的行为一致）
-    }
-  }
-  if (blob) downloadBlob(blob, 'qianshi-fate-card.png')
-  try {
-    await navigator.clipboard?.writeText(`${text}\n${url}`)
-  } catch {
-    // 剪贴板不可用不影响图片已下载
-  }
-  return blob ? 'downloaded' : 'error'
-}
-
-// 加载图片用于绘入 canvas；失败（如加载超时）返回 null，分享卡退化为无封面版
+// 加载图片用于绘入 canvas；失败（如加载超时）返回 null，分享卡退化为无封面版。
+// 不设 crossOrigin：封面/节点图都是同源打包资源，设了反而强制 CORS 重新拉取、绕过页面已加载的
+// 缓存图，让每次「生成命运卡」都白等一次网络+解码（这是分享慢的主因）。同源画布也不会被污染。
 function loadImage(url: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
     const img = new Image()
-    img.crossOrigin = 'anonymous'
     img.onload = () => resolve(img)
     img.onerror = () => resolve(null)
     img.src = url

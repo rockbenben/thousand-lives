@@ -3,36 +3,19 @@ import { buildEndingMessages } from '../engine/prompt'
 import { buildSummaryCard } from '../engine/summary'
 import { localEnding } from '../engine/local'
 import { gradeRun } from '../engine/grade'
-import { shareRun } from './shareCard'
+import { ShareCardModal } from './ShareCardModal'
 import { endingImage } from './endingArt'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
 import { chat, friendlyError, isAbortError } from '../ai/client'
 import { loadConfig, recordEnding, seenEndings, loadStats, type SaveGame } from '../storage'
 import { msg } from './messages'
+import { copyText } from './download'
 import type { Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { computeAchievements } from '../engine/achievements'
 import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
-
-// 剪贴板兜底：navigator.clipboard 在非 HTTPS / 旧浏览器下不可用时，用临时 textarea + execCommand
-function legacyCopy(text: string): boolean {
-  try {
-    const ta = document.createElement('textarea')
-    ta.value = text
-    ta.style.position = 'fixed'
-    ta.style.opacity = '0'
-    document.body.appendChild(ta)
-    ta.focus()
-    ta.select()
-    const ok = document.execCommand('copy')
-    document.body.removeChild(ta)
-    return ok
-  } catch {
-    return false
-  }
-}
 
 // 当前已解锁成就（用于分享卡），需在 recordEnding 之后调用以包含本局
 function unlockedAchievements() {
@@ -138,42 +121,16 @@ export function EndingScreen({
   const card = buildSummaryCard(scenario, state, text)
 
   const copy = async () => {
-    // 优先用异步剪贴板 API；非 HTTPS / 旧浏览器下回退到 execCommand，再不行才提示手动复制
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(card)
-      } else if (!legacyCopy(card)) {
-        throw new Error('execCommand copy failed')
-      }
+    // copyText：异步剪贴板 API 优先，非 HTTPS / 旧浏览器自动回退 execCommand
+    if (await copyText(card)) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch {
-      if (legacyCopy(card)) {
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-      } else {
-        setError(msg.copyFailed)
-      }
+    } else {
+      setError(msg.copyFailed)
     }
   }
 
-  const [shareMsg, setShareMsg] = useState('')
-  const share = async () => {
-    setShareMsg('生成中…')
-    const r = await shareRun(
-      scenario,
-      state,
-      unlockedAchievements().map((a) => ({ icon: a.icon, name: a.name })),
-      endingImage(scenario.id, ending.tone),
-    )
-    if (r === 'error') {
-      setShareMsg('')
-        setError(msg.shareCardFailed)
-      return
-    }
-    setShareMsg(r === 'shared' ? '已分享 ✓' : r === 'downloaded' ? '已存图并复制链接 ✓' : '')
-    if (r === 'shared' || r === 'downloaded') setTimeout(() => setShareMsg(''), 2500)
-  }
+  const [showShare, setShowShare] = useState(false)
 
   const art = endingImage(scenario.id, ending.tone)
 
@@ -263,7 +220,7 @@ export function EndingScreen({
       </details>
       <div className="ending-actions">
         <div className="ending-actions-row">
-          <button className="primary" onClick={share}>{shareMsg || '分享命运卡 ⤴'}</button>
+          <button className="primary" onClick={() => setShowShare(true)} title="生成命运卡，预览后复制/保存/分享">分享命运卡 ⤴</button>
           <button onClick={copy}>{copied ? '已复制 ✓' : '复制文字版 ⎘'}</button>
           <button onClick={() => setShowMemoir(true)} title="回看这一生的命运抉择">命途留影 ◷</button>
         </div>
@@ -293,6 +250,15 @@ export function EndingScreen({
         />
       )}
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
+      {showShare && (
+        <ShareCardModal
+          sc={scenario}
+          st={state}
+          achievements={unlockedAchievements().map((a) => ({ icon: a.icon, name: a.name }))}
+          coverUrl={art}
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </div>
   )
 }

@@ -8,7 +8,7 @@ import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../stor
 import { downloadText, safeFilename } from './download'
 import { msg } from './messages'
 import { nodeImage, hasNodeArt } from './nodeArt'
-import { shareRun } from './shareCard'
+import { ShareCardModal } from './ShareCardModal'
 import { FontScaleControl } from './FontScaleControl'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
@@ -221,20 +221,8 @@ export function Play({
     downloadText(`千世书-${safeFilename(scenario.title)}-第${turnNo}${scenario.turnUnit}.json`, exportSaveString(session))
   }
 
-  // 分享当下：把此刻的命运卡（图）+ 钩子 + 挑战链接一并带出
-  const [shareMsg, setShareMsg] = useState('')
-  const shareNow = async () => {
-    setShareMsg('生成中…')
-    const r = await shareRun(scenario, state, [], nodeImage(scenario.id, pendingTurn?.summary))
-    if (r === 'error') {
-      // 与 Ending 一致：出图失败要给反馈，而非把按钮悄悄复位、看着像坏掉的死键
-      setShareMsg(msg.shareFailed)
-      setTimeout(() => aliveRef.current && setShareMsg(''), 2500)
-      return
-    }
-    setShareMsg(r === 'shared' ? '已分享 ✓' : r === 'downloaded' ? '已存图+复制链 ✓' : '')
-    if (r === 'shared' || r === 'downloaded') setTimeout(() => aliveRef.current && setShareMsg(''), 2500)
-  }
+  // 分享当下：打开预览弹窗，所见即所得地复制/保存/分享此刻的命运卡
+  const [showShare, setShowShare] = useState(false)
 
   return (
     <div className="play">
@@ -264,8 +252,8 @@ export function Play({
         >
           搁笔
         </button>
-        <button className="ghost play-act" onClick={shareNow} title="把此刻的命运卡分享出去">
-          {shareMsg || '分享 ⤴'}
+        <button className="ghost play-act" onClick={() => setShowShare(true)} title="生成此刻的命运卡，预览后复制/保存/分享">
+          分享 ⤴
         </button>
         <FontScaleControl compact />
       </header>
@@ -512,6 +500,14 @@ export function Play({
         />
       )}
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
+      {showShare && (
+        <ShareCardModal
+          sc={scenario}
+          st={state}
+          coverUrl={nodeImage(scenario.id, pendingTurn?.summary)}
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </div>
   )
 }
