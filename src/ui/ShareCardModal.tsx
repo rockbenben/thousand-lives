@@ -4,7 +4,7 @@ import type { GameState } from '../engine/types'
 import { drawShareCard, canvasToBlob, type CardAchievement } from './shareCard'
 import { copyImage, downloadBlob, copyText } from './download'
 import { useModalA11y } from './useModalA11y'
-import { buildShareUrl, openingIndexOf } from './challengeLink'
+import { buildShareUrl, openingIndexOf, ogImageUrl } from './challengeLink'
 import { hookQuestion } from './hookQuestion'
 import { socialTargets, openSocialShare } from './socialShare'
 
@@ -70,8 +70,9 @@ export function ShareCardModal({
       flash('已保存到本地 ✓')
     }
   }
-  // 社交分享：挑战链接 + 钩子文案（纯前端 share-intent，只带链接+文字）
+  // 社交分享：挑战链接 + 钩子文案 + 题材封面（微博/QQ空间附 pic，X/Telegram 靠链接 OG meta 带图）
   const link = buildShareUrl(sc, openingIndexOf(sc, st))
+  const ogImg = ogImageUrl(sc)
   const hook = hookQuestion(sc, st)
   const onCopyLink = async () => {
     flash((await copyText(link)) ? '链接已复制 ✓' : '复制失败，请手动选取')
@@ -113,7 +114,7 @@ export function ShareCardModal({
               <span className="share-social-label">分享链接到</span>
               <div className="share-social-row">
                 {socialTargets.map((t) => (
-                  <button key={t.id} onClick={() => openSocialShare(t, link, hook)} title={`分享挑战链接到${t.label}`}>
+                  <button key={t.id} onClick={() => openSocialShare(t, link, hook, ogImg)} title={`分享挑战链接到${t.label}`}>
                     {t.label}
                   </button>
                 ))}
@@ -122,7 +123,7 @@ export function ShareCardModal({
                 </button>
               </div>
             </div>
-            <p className="share-tip">卡面已含钩子文案与挑战二维码；微信/小红书无网页分享接口，请用「复制图片」粘贴或让对方扫码。</p>
+            <p className="share-tip">社交分享自带题材封面预览；想发带你高光时刻的个性化命运卡，请用「复制图片」粘贴，或让对方扫码。微信/小红书无网页分享接口，同样靠复制图/扫码。</p>
             <button className="ghost share-close" onClick={onClose}>关闭</button>
           </div>
         </div>

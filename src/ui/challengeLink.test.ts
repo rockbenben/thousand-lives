@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildShareUrl, parseChallenge } from './challengeLink'
+import { buildShareUrl, parseChallenge, ogImageUrl } from './challengeLink'
 import { builtinScenarios } from '../scenarios'
 import type { Scenario } from '../scenarios/schema'
 
@@ -13,6 +13,12 @@ describe('challengeLink', () => {
     expect(buildShareUrl(sc, 1, 'https://x.io/index.html')).toBe('https://x.io/s/xian-1/')
     const custom = { ...sc, id: 'c1' } as Scenario
     expect(buildShareUrl(custom, 1, 'https://x.io/')).toBe('https://x.io/')
+  })
+  it('ogImageUrl：内置剧本给绝对封面 URL、自定义局 undefined', () => {
+    expect(ogImageUrl(sc, 'https://x.io/')).toBe('https://x.io/og/xian.jpg')
+    expect(ogImageUrl(sc, 'https://x.io/index.html')).toBe('https://x.io/og/xian.jpg')
+    const custom = { ...sc, id: 'c1' } as Scenario
+    expect(ogImageUrl(custom, 'https://x.io/')).toBeUndefined()
   })
   it('parseChallenge 往返', () => {
     if (hasOpenings) expect(parseChallenge('?s=xian&o=0')).toEqual({ scenarioId: 'xian', opening: 0 })

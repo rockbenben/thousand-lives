@@ -28,6 +28,16 @@ export function buildShareUrl(sc: Scenario, openingIndex?: number, base?: string
   return `${dir}s/${seg}/`
 }
 
+// 社交分享用的题材封面绝对 URL（供微博 pic / QQ空间 pics 参数——平台服务端抓取，须绝对地址）。
+// 仅内置剧本有预生成的 /og/<id>.jpg；自定义/生成局无封面，返回 undefined（X/Telegram 仍靠入口页 OG meta）。
+export function ogImageUrl(sc: Scenario, base?: string): string | undefined {
+  if (!builtinScenarios.some((b) => b.id === sc.id)) return undefined
+  const root =
+    base ?? (typeof location !== 'undefined' ? location.origin + location.pathname : '')
+  const dir = root.replace(/[^/]*$/, '')
+  return `${dir}og/${sc.id}.jpg`
+}
+
 // 解析 query 串 → Challenge。剧本须在内置表中；opening 越界/非法则丢弃（回退默认开局）。
 export function parseChallenge(search: string): Challenge | null {
   const p = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
