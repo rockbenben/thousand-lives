@@ -30,6 +30,9 @@ export default defineConfig({
         // 主 bundle 约 1.4MB，抬高单文件上限确保被预缓存
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         navigateFallback: 'index.html',
+        // 仅 SPA 内部路由走 index.html 兜底；静态资源 / 预生成分享入口页 / 任何带扩展名的文件一律放行回源，
+        // 否则 SW 会把它们当导航请求兜成应用外壳 HTML——直接打开图片 URL 会拿到 HTML，/s/ 入口页也会被根 index.html 顶掉
+        navigateFallbackDenylist: [/^\/assets\//, /^\/og\//, /^\/s\//, /\.[^/]+$/],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
