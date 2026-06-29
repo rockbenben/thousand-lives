@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { ZodError } from 'zod'
+import { msg } from './messages'
 import { importScenarioSchema, type Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { hasLocalMode } from '../engine/local'
@@ -70,7 +71,7 @@ export function Home({
       setCustom(loadCustomScenarios())
       setImportError('')
     } catch (e) {
-      setImportError(`剧本导入失败：${importErrorMessage(e)}`)
+      setImportError(`${msg.importFailed}：${importErrorMessage(e)}`)
     }
   }
 

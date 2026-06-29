@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Scenario, Opening } from './scenarios/schema'
 import { initState } from './engine/state'
 import { loadSave, saveSave, clearSave, loadCustomScenarios, type SaveGame } from './storage'
 import { builtinScenarios } from './scenarios'
+import { parseChallenge } from './ui/challengeLink'
 import { Home } from './ui/Home'
 import { Archive } from './ui/Archive'
 import { Setup } from './ui/Setup'
@@ -16,10 +17,30 @@ export type Session = SaveGame
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home')
   const [setupScenario, setSetupScenario] = useState<Scenario | null>(null)
+  const [setupOpening, setSetupOpening] = useState<number | undefined>(undefined)
   const [session, setSession] = useState<Session | null>(null)
+
+  // 挑战链接（?s=&o=）：进入即直达对应题材+开局的设置页（仍由玩家确认模式/Key 再开局）
+  useEffect(() => {
+    if (typeof location === 'undefined') return
+    const ch = parseChallenge(location.search)
+    if (!ch) return
+    const sc = builtinScenarios.find((b) => b.id === ch.scenarioId)
+    if (!sc) return
+    setSetupScenario(sc)
+    setSetupOpening(ch.opening)
+    setScreen('setup')
+    // 清掉 query，避免刷新/返回重复触发
+    try {
+      history.replaceState(null, '', location.origin + location.pathname)
+    } catch {
+      // 某些环境禁用 history API，忽略即可
+    }
+  }, [])
 
   const startSetup = (sc: Scenario) => {
     setSetupScenario(sc)
+    setSetupOpening(undefined)
     setScreen('setup')
   }
 
@@ -116,6 +137,7 @@ export default function App() {
             scenario={setupScenario}
             onStart={startGame}
             onBack={() => setScreen('home')}
+            initialOpening={setupOpening}
           />
         )}
         {screen === 'play' && session && (

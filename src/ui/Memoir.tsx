@@ -3,6 +3,7 @@ import type { GameState } from '../engine/types'
 import { keyMomentIndex } from '../engine/keymoment'
 import { nodeImage } from './nodeArt'
 import { useModalA11y } from './useModalA11y'
+import { msg } from './messages'
 
 // 命途留影：把本局走过的「命运抉择」节点汇成可回溯的剧情卡相册（由 history 推导）。
 export function Memoir({
@@ -53,7 +54,7 @@ export function Memoir({
                     className="memoir-card-art"
                     style={{ backgroundImage: `url(${cardArt})` }}
                     onClick={() => onViewArt?.(cardArt)}
-                    title={onViewArt ? '点击看全图' : undefined}
+                    title={onViewArt ? msg.clickToEnlarge : undefined}
                   />
                 )}
                 <div className="memoir-card-body">

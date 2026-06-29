@@ -6,12 +6,13 @@ import { generateScenario, type GenProgress } from '../ai/generateScenario'
 import { friendlyError, isAbortError } from '../ai/client'
 import { loadConfig, saveConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
+import { msg } from './messages'
 import { useModalA11y } from './useModalA11y'
 
 const providerOptions = PRESETS.map((p) => ({
   value: p.id,
   label: p.label,
-  hint: p.baseURL ? new URL(p.baseURL).host : '自填地址',
+  hint: p.baseURL ? new URL(p.baseURL).host : msg.noBaseUrl,
 }))
 
 const SUGGESTIONS = ['大航海海盗', '赛博朋克侦探', '武侠江湖', '三国谋士', '校园青春', '星际殖民', '民国名伶']

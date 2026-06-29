@@ -1,4 +1,5 @@
 import { useModalA11y } from './useModalA11y'
+import { msg } from './messages'
 
 // 全屏灯箱：完整清晰地看一张图，轻触任意处 / Esc 关闭。
 export function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
@@ -10,7 +11,7 @@ export function Lightbox({ src, onClose }: { src: string; onClose: () => void })
       ref={ref}
       role="dialog"
       aria-modal="true"
-      aria-label="查看配图大图"
+      aria-label={msg.viewLargeImage}
       tabIndex={-1}
     >
       <img className="lightbox-img" src={src} alt="" />

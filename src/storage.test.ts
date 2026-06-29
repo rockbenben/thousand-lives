@@ -129,6 +129,14 @@ describe('save slots', () => {
     expect(listSlots()[0].name).toBe('未命名')
   })
 
+  it('写入失败（如配额满）返回 null 而非抛出（调用方据此提示用户，不假报已存）', () => {
+    const throwing = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError')
+    })
+    expect(saveToSlot('满了', mk(), 1000)).toBeNull()
+    throwing.mockRestore()
+  })
+
   it('listSlots 跳过损坏的存档位', () => {
     saveToSlot('好', mk(), 1000)
     const raw = JSON.parse(store.get('tl.slots')!)

@@ -3,13 +3,13 @@ import { buildEndingMessages } from '../engine/prompt'
 import { buildSummaryCard } from '../engine/summary'
 import { localEnding } from '../engine/local'
 import { gradeRun } from '../engine/grade'
-import { drawShareCard, canvasToBlob } from './shareCard'
+import { shareRun } from './shareCard'
 import { endingImage } from './endingArt'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
-import { safeFilename } from './download'
 import { chat, friendlyError, isAbortError } from '../ai/client'
 import { loadConfig, recordEnding, seenEndings, loadStats, type SaveGame } from '../storage'
+import { msg } from './messages'
 import type { Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { computeAchievements } from '../engine/achievements'
@@ -109,7 +109,7 @@ export function EndingScreen({
     setError('')
     try {
       const config = loadConfig()
-      if (!config) throw new Error('未找到 API 配置，请回到卷首重新设置')
+      if (!config) throw new Error(msg.noApiConfig)
       const t = await chat(
         config,
         buildEndingMessages(scenario, state, ending),
@@ -152,32 +152,27 @@ export function EndingScreen({
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       } else {
-        setError('复制失败：浏览器拒绝了剪贴板访问，请手动选择文本复制')
+        setError(msg.copyFailed)
       }
     }
   }
 
-  const saveImage = async () => {
-    try {
-      const canvas = await drawShareCard(
-        scenario,
-        state,
-        unlockedAchievements().map((a) => ({ icon: a.icon, name: a.name })),
-        endingImage(scenario.id, ending.tone),
-      )
-      const blob = await canvasToBlob(canvas)
-      if (!blob) throw new Error('生成失败')
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `千世书-${safeFilename(scenario.title)}-${safeFilename(grade.title)}.png`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-    } catch {
-      setError('结局卡生成失败，可改用「复制文字版」分享')
+  const [shareMsg, setShareMsg] = useState('')
+  const share = async () => {
+    setShareMsg('生成中…')
+    const r = await shareRun(
+      scenario,
+      state,
+      unlockedAchievements().map((a) => ({ icon: a.icon, name: a.name })),
+      endingImage(scenario.id, ending.tone),
+    )
+    if (r === 'error') {
+      setShareMsg('')
+        setError(msg.shareCardFailed)
+      return
     }
+    setShareMsg(r === 'shared' ? '已分享 ✓' : r === 'downloaded' ? '已存图并复制链接 ✓' : '')
+    if (r === 'shared' || r === 'downloaded') setTimeout(() => setShareMsg(''), 2500)
   }
 
   const art = endingImage(scenario.id, ending.tone)
@@ -245,7 +240,7 @@ export function EndingScreen({
           ending.tone === '死亡' || r.endsWith('耗尽')
             ? `${r || '气数已尽'}，你的人生就此画上句点`
             : r === 'maxTurns' || ending.tone === '落幕'
-              ? `${scenario.maxTurns} ${scenario.turnUnit}大限已至，命途就此落幕`
+              ? (scenario.finale ?? '此生行至尽头，命途就此落幕')
               : ''
         return cause ? <p className="ending-cause">{cause}</p> : null
       })()}
@@ -268,7 +263,7 @@ export function EndingScreen({
       </details>
       <div className="ending-actions">
         <div className="ending-actions-row">
-          <button className="primary" onClick={saveImage}>保存结局卡 🖼</button>
+          <button className="primary" onClick={share}>{shareMsg || '分享命运卡 ⤴'}</button>
           <button onClick={copy}>{copied ? '已复制 ✓' : '复制文字版 ⎘'}</button>
           <button onClick={() => setShowMemoir(true)} title="回看这一生的命运抉择">命途留影 ◷</button>
         </div>

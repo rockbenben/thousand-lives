@@ -2,6 +2,10 @@ import type { Scenario } from '../scenarios/schema'
 import type { GameState } from '../engine/types'
 import { gradeRun } from '../engine/grade'
 import { bandOf } from '../engine/bands'
+import qrcode from 'qrcode-generator'
+import { hookQuestion } from './hookQuestion'
+import { buildShareUrl, openingIndexOf } from './challengeLink'
+import { downloadBlob } from './download'
 
 export interface CardAchievement {
   icon: string
@@ -29,13 +33,19 @@ export async function drawShareCard(
   const achShown = achievements.slice(0, 6)
   const showGoal = !!st.ambition
   const headerH = art ? bannerH : 150 // 无图时退化为暗色刊头
+  // 卡底页脚：钩子问句 + 挑战二维码（自包含——图片被单独转发也带着入口与钩子）
+  const hook = hookQuestion(sc, st)
+  const shareUrl = buildShareUrl(sc, openingIndexOf(sc, st))
+  const footerH = 168
   const H =
     headerH +
     250 +
+    (st.fateHighlight ? 34 : 0) +
     picks.length * 30 +
     (achShown.length ? 44 + achShown.length * 28 : 0) +
     (showGoal ? 84 : 0) +
-    sc.attributes.length * 30
+    sc.attributes.length * 30 +
+    footerH
 
   const canvas = document.createElement('canvas')
   canvas.width = W * dpr
@@ -94,6 +104,14 @@ export async function drawShareCard(
   ctx.font = `400 18px ${serif}`
   ctx.fillText(`历经 ${st.history.length} ${sc.turnUnit}`, pad, y)
   y += 38
+
+  // 命运高光（极端命运事件）：朱砂/翠引出本局最戏剧的一刻
+  if (st.fateHighlight) {
+    ctx.fillStyle = st.fateHighlight.kind === 'disaster' ? '#e0704e' : '#6fae9b'
+    ctx.font = `400 19px ${serif}`
+    ctx.fillText(truncate(ctx, `命运 · ${st.fateHighlight.text}`, W - pad * 2), pad, y)
+    y += 34
+  }
 
   // 分隔
   ctx.strokeStyle = '#28326a'
@@ -179,15 +197,38 @@ export async function drawShareCard(
     }
   }
 
-  // 朱砂印
-  ctx.fillStyle = '#c9503a'
-  ctx.fillRect(W - pad - 56, H - pad - 56, 56, 56)
-  ctx.fillStyle = '#f3e4c8'
-  ctx.font = `400 16px ${serif}`
+  // ── 页脚：钩子问句（左）+ 挑战二维码（右）。固定贴底，自成一带。 ──
+  const footY = H - footerH
+  ctx.strokeStyle = '#28326a'
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(pad, footY)
+  ctx.lineTo(W - pad, footY)
+  ctx.stroke()
+
+  const qrSize = 116
+  const qrX = W - pad - qrSize
+  const qrY = footY + 22
+  drawQR(ctx, shareUrl, qrX, qrY, qrSize)
+  ctx.fillStyle = '#868bb2'
+  ctx.font = `400 15px ${serif}`
   ctx.textAlign = 'center'
-  ctx.fillText('千', W - pad - 28, H - pad - 33)
-  ctx.fillText('世', W - pad - 28, H - pad - 14)
+  ctx.fillText('扫码 · 同款开局', qrX + qrSize / 2, qrY + qrSize + 20)
   ctx.textAlign = 'left'
+
+  // 钩子问句：左侧大字、鎏金，最多两行
+  const hookMaxW = qrX - pad - 24
+  const hookLines = wrapLines(ctx, hook, hookMaxW, `600 23px ${serif}`, 3)
+  ctx.fillStyle = '#ecd28f'
+  ctx.font = `600 23px ${serif}`
+  let hy = footY + 44
+  for (const ln of hookLines) {
+    ctx.fillText(ln, pad, hy)
+    hy += 34
+  }
+  ctx.fillStyle = '#868bb2'
+  ctx.font = `400 16px ${serif}`
+  ctx.fillText('— 千世书', pad, footY + footerH - 22)
 
   // 贴边金色外框（最上层）
   ctx.strokeStyle = 'rgba(203,168,90,0.55)'
@@ -205,8 +246,97 @@ function truncate(ctx: CanvasRenderingContext2D, text: string, maxW: number): st
   return t + '…'
 }
 
+// 按宽度逐字折行（中文无空格），最多 maxLines 行，超出丢弃剩余
+function wrapLines(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxW: number,
+  font: string,
+  maxLines: number,
+): string[] {
+  ctx.font = font
+  const lines: string[] = []
+  let cur = ''
+  for (const ch of text) {
+    if (ctx.measureText(cur + ch).width > maxW) {
+      lines.push(cur)
+      cur = ch
+      if (lines.length === maxLines) {
+        cur = ''
+        break
+      }
+    } else cur += ch
+  }
+  if (cur) lines.push(cur)
+  return lines.slice(0, maxLines)
+}
+
+// 把挑战链接画成二维码（浅底深块 + 安静区，确保可扫）
+function drawQR(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  size: number,
+): void {
+  const qr = qrcode(0, 'M')
+  qr.addData(text)
+  qr.make()
+  const n = qr.getModuleCount()
+  const quiet = 4
+  const cell = size / (n + quiet * 2)
+  ctx.fillStyle = '#f3e4c8'
+  ctx.fillRect(x, y, size, size)
+  ctx.fillStyle = '#0c1126'
+  for (let r = 0; r < n; r++)
+    for (let c = 0; c < n; c++)
+      if (qr.isDark(r, c))
+        ctx.fillRect(x + (c + quiet) * cell, y + (r + quiet) * cell, cell + 0.6, cell + 0.6)
+}
+
 export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+}
+
+// 取消原生分享时不返回独立的 'cancelled'：统一落到下载兜底（返回 'downloaded'），保证按钮总能产出命运卡文件
+export type ShareResult = 'shared' | 'downloaded' | 'error'
+
+// 一键分享：命运卡（图）+ 钩子问题（文）+ 挑战链接（同款开局）一并带出。
+// 移动端走 navigator.share 原生面板；桌面/不支持时兜底「下载图片 + 复制钩子与链接」。
+export async function shareRun(
+  sc: Scenario,
+  st: GameState,
+  achievements: CardAchievement[] = [],
+  coverUrl?: string,
+): Promise<ShareResult> {
+  let blob: Blob | null = null
+  try {
+    const canvas = await drawShareCard(sc, st, achievements, coverUrl)
+    blob = await canvasToBlob(canvas)
+  } catch {
+    // 出图失败仍可分享文字+链接
+  }
+  const url = buildShareUrl(sc, openingIndexOf(sc, st))
+  const text = hookQuestion(sc, st)
+  const file = blob ? new File([blob], 'qianshi-fate-card.png', { type: 'image/png' }) : null
+
+  const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean }
+  if (file && nav.canShare?.({ files: [file] })) {
+    try {
+      await nav.share({ files: [file], text, url })
+      return 'shared'
+    } catch {
+      // 用户取消原生分享、或分享失败：都落到「下载图片 + 复制链接」兜底，
+      // 保证按钮总能让玩家拿到这张命运卡（与旧「保存结局卡」始终产出文件的行为一致）
+    }
+  }
+  if (blob) downloadBlob(blob, 'qianshi-fate-card.png')
+  try {
+    await navigator.clipboard?.writeText(`${text}\n${url}`)
+  } catch {
+    // 剪贴板不可用不影响图片已下载
+  }
+  return blob ? 'downloaded' : 'error'
 }
 
 // 加载图片用于绘入 canvas；失败（如加载超时）返回 null，分享卡退化为无封面版

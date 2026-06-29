@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { msg } from './messages'
 import { builtinScenarios } from '../scenarios'
 import {
   listSlots,
@@ -58,7 +59,7 @@ export function Archive({
       setSaveError('')
       onLoadGame(game)
     } catch (e) {
-      setSaveError(`存档导入失败：${e instanceof Error ? e.message : String(e)}`)
+      setSaveError(`${msg.saveImportFailed}：${e instanceof Error ? e.message : String(e)}`)
     }
   }
   const exportSlot = (slot: SaveSlot) =>
@@ -348,8 +349,8 @@ function EndingDetailModal({
             className="ed-art"
             style={{ backgroundImage: `url(${art})` }}
             onClick={() => onViewArt(art)}
-            title="点击看全图"
-            aria-label="查看大图"
+            title={msg.clickToEnlarge}
+            aria-label={msg.viewLargeImage}
           >
             <span className="storycard-zoom" aria-hidden="true">⤢</span>
           </button>

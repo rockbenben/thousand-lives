@@ -11,6 +11,7 @@ export function buildSummaryCard(sc: Scenario, st: GameState, endingText: string
     `《千世书 · ${sc.title}》`,
     `结局：${st.ended?.tone ?? '进行中'} — 历经 ${st.history.length} ${sc.turnUnit}`,
     `评价：${grade.rating} 级`,
+    ...(st.fateHighlight ? [`命运：${st.fateHighlight.text}`] : []),
     `最终属性：${sc.attributes.map((a) => `${a.name} ${st.attributes[a.key]}`).join(' / ')}`,
     '',
     '关键抉择：',

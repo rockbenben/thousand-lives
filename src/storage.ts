@@ -165,9 +165,15 @@ function rawSlots(): unknown[] {
   }
 }
 
-export function saveToSlot(name: string, game: SaveGame, now: number): SaveSlot {
+export function saveToSlot(name: string, game: SaveGame, now: number): SaveSlot | null {
   const slot: SaveSlot = { id: `slot_${now}`, name: name.trim() || '未命名', savedAt: now, game: { ...game, v: SAVE_VERSION } }
-  localStorage.setItem(SLOTS_KEY, JSON.stringify([...rawSlots(), slot]))
+  try {
+    localStorage.setItem(SLOTS_KEY, JSON.stringify([...rawSlots(), slot]))
+  } catch (e) {
+    // 配额满等写入失败：返回 null 让调用方提示用户。不能静默吞掉——否则界面会假报「已存 ✓」而存档实际未落盘
+    console.warn('存档位写入失败', e)
+    return null
+  }
   return slot
 }
 

@@ -10,6 +10,12 @@ function hasDeathClause(c: Condition, deathBelow: Map<string, number>): boolean 
   )
 }
 
+// 局内状态里开局身份的规范字符串（name——prompt）：initState 写入与分享链反查开局下标两端共用，
+// 单一来源避免格式漂移（曾因两处各拼一份，改分隔符会让挑战链静默丢 ?o=）。
+export function openingLabel(o: Opening): string {
+  return `${o.name}——${o.prompt}`
+}
+
 export function initState(
   sc: Scenario,
   opening?: Opening,
@@ -23,7 +29,7 @@ export function initState(
     attributes,
     history: [],
     inventory: [],
-    opening: opening ? `${opening.name}——${opening.prompt}` : undefined,
+    opening: opening ? openingLabel(opening) : undefined,
     ambition: ambition?.trim() || undefined,
     mode,
     memory: [],
@@ -180,7 +186,7 @@ export function reachableEndingTones(sc: Scenario): string[] {
 
 // 「命运无常」：本地模式下同一选择偶有意外转折，结果好于或坏于预期，
 // 使相同抉择也可能走向不同。仅在传入 rng 时启用（AI 模式/测试保持确定性）。
-const FORTUNE_CHANCE = 0.18
+const FORTUNE_CHANCE = 0.10
 // 转折提示文案池:多样化,避免反复看到同一句而失了「无常」的彩头感
 const FORTUNE_GOOD = [
   '命运无常 · 时来运转——这一步竟比预想的更顺。',
@@ -199,7 +205,10 @@ const FORTUNE_BAD = [
 export function rollFortune(
   effects: Record<string, number>,
   rng: () => number,
+  turnIndex?: number,
 ): { effects: Record<string, number>; twist?: string } {
+  // 前 1 回合不触发命运无常（开局先让玩家站稳；turnIndex = 已完成回合数，0 即首回合）
+  if (turnIndex !== undefined && turnIndex < 1) return { effects }
   const hasEffect = Object.values(effects).some((v) => typeof v === 'number' && v !== 0)
   if (!hasEffect || rng() >= FORTUNE_CHANCE) return { effects }
   const good = rng() < 0.5
@@ -210,6 +219,54 @@ export function rollFortune(
   }
   const pool = good ? FORTUNE_GOOD : FORTUNE_BAD
   return { effects: scaled, twist: pool[Math.floor(rng() * pool.length) % pool.length] }
+}
+
+// ── 极端命运事件：稀有的大开大合，制造可分享的「卧槽」瞬间 ──
+// 不是数值微调，而是一段生动文案 + 大幅后果；命中记入 GameState.fateHighlight 供命运卡引用。
+const EXTREME_CHANCE = 0.018
+const EXTREME_WINDFALL = [
+  '天降横财——一笔泼天的造化兜头砸来，半生奔忙忽成笑谈。',
+  '时来天地皆同力——莫名的际遇接踵而至，你竟一步登天。',
+  '绝处逢生——本已万念俱灰，命运却在此刻陡然翻盘。',
+  '贵人天降——一位素不相识者倾力相助，局面豁然开朗。',
+  '福星高照——这一程顺得不可思议，连你自己都不敢信。',
+]
+const EXTREME_DISASTER = [
+  '飞来横祸——一场无妄之灾兜头罩下，多年经营毁于一旦。',
+  '运去英雄不自由——天意忽然翻脸，你被推入万劫深渊。',
+  '祸不单行——厄运接二连三，竟没给你半分喘息。',
+  '小人暗算——你算尽了天下，独独没算到背后这一刀。',
+  '天降大难——一夕之间，你从云端跌落泥淖。',
+]
+
+export interface ExtremeFate {
+  text: string
+  kind: 'windfall' | 'disaster'
+  effects: Record<string, number>
+}
+
+// 极端命运比命运无常更狠（可致命），故放行更晚：前 EXTREME_SKIP_TURNS 回合不触发。
+const EXTREME_SKIP_TURNS = 2
+// 后果按各属性量程（max-min）缩放，跨题材轻重一致：windfall 普涨 35%，disaster 普跌 22%、致命属性重击 40%。
+export function rollExtremeFate(
+  sc: Scenario,
+  rng: () => number,
+  turnIndex?: number,
+): ExtremeFate | null {
+  if (turnIndex !== undefined && turnIndex < EXTREME_SKIP_TURNS) return null
+  if (rng() >= EXTREME_CHANCE) return null
+  const windfall = rng() < 0.5
+  const range = (a: Attribute) => Math.max(1, a.max ?? 100) // 下限隐含 0，量程≈max
+  const effects: Record<string, number> = {}
+  for (const a of sc.attributes) {
+    if (windfall) effects[a.key] = Math.round(range(a) * 0.35) // clampEffects 收口到上限
+    else effects[a.key] = a.deathBelow !== undefined
+      ? -Math.round(range(a) * 0.4)
+      : -Math.round(range(a) * 0.22)
+  }
+  const pool = windfall ? EXTREME_WINDFALL : EXTREME_DISASTER
+  const text = pool[Math.floor(rng() * pool.length) % pool.length]
+  return { text, kind: windfall ? 'windfall' : 'disaster', effects }
 }
 
 // 应用印记增减：先去掉 clear，再并入 set（去重）
@@ -247,10 +304,11 @@ export function applyChoice(
   if (!choice) throw new Error(`选项不存在: ${choiceIdx}`)
   const flags0 = st.flags ?? []
 
-  // 有 outcomes 则掷骰取一分支（跳过命运无常）；否则走旧 effects + 命运无常
+  // 有 outcomes 则掷骰取一分支（命运无常跳过——outcomes 自带变数）；极端命运是「天意」、对两路都掷
   const picked = rng ? rollOutcome(choice, rng) : (choice.outcomes?.[0] ?? null)
   let baseEffects: Record<string, number>
   let twist: string | undefined
+  let fateHighlight: GameState['fateHighlight'] | undefined
   let setFlags = choice.flagsSet
   let clearFlags = choice.flagsClear
   let endTone = choice.endTone
@@ -265,10 +323,27 @@ export function applyChoice(
     reaction = picked.reaction ?? reaction
     if (picked.itemsGained) itemsGained = picked.itemsGained
     if (picked.itemsLost) itemsLost = picked.itemsLost
+    // 极端命运独立于 outcomes：选了 outcomes 分支也可被横祸/横财命中——否则 outcomes 化的剧本永不触发命运卡高光
+    if (rng) {
+      const extreme = rollExtremeFate(sc, rng, st.history.length)
+      if (extreme) {
+        baseEffects = mergeEffects(baseEffects, extreme.effects)
+        twist = extreme.text
+        fateHighlight = { text: extreme.text, kind: extreme.kind, turn: st.history.length + 1 }
+      }
+    }
   } else if (rng) {
-    const f = rollFortune(choice.effects, rng)
-    baseEffects = f.effects
-    twist = f.twist
+    // 无 outcomes：先掷极端命运（前 2 回合不触发）；未中再走命运无常（前 1 回合不触发，outcomes 自带变数故仅此路掷）
+    const extreme = rollExtremeFate(sc, rng, st.history.length)
+    if (extreme) {
+      baseEffects = mergeEffects(choice.effects, extreme.effects)
+      twist = extreme.text
+      fateHighlight = { text: extreme.text, kind: extreme.kind, turn: st.history.length + 1 }
+    } else {
+      const f = rollFortune(choice.effects, rng, st.history.length)
+      baseEffects = f.effects
+      twist = f.twist
+    }
   } else {
     baseEffects = choice.effects
   }
@@ -297,6 +372,8 @@ export function applyChoice(
     inventory: applyItems(st.inventory ?? [], { ...turnRes, itemsGained, itemsLost }),
     memory: applyMemory(st.memory, turnRes.memoryAdd),
     goalProgress: nextProgress(st.goalProgress, turnRes.goalProgress),
+    // 首个极端命运一旦定格便保留，不被后续极端事件覆盖（命运卡引用「这一生第一次被命运拨动」的瞬间）
+    ...(fateHighlight && !st.fateHighlight ? { fateHighlight } : {}),
     ended,
   }
 }

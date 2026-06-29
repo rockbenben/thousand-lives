@@ -1,4 +1,5 @@
 import { useModalA11y } from './useModalA11y'
+import { msg } from './messages'
 
 // 命运抉择独立大卡：走到关键节点时弹出，完整清晰呈现节点配图 + 命运抉择标题，
 // 轻触图可看全图，点「继续」收起进入抉择。
@@ -31,8 +32,8 @@ export function StoryCard({
             className="storycard-art"
             style={{ backgroundImage: `url(${art})` }}
             onClick={onViewArt}
-            title="点击看全图"
-            aria-label="查看大图"
+            title={msg.clickToEnlarge}
+            aria-label={msg.viewLargeImage}
           >
             <span className="storycard-zoom" aria-hidden="true">⤢</span>
           </button>

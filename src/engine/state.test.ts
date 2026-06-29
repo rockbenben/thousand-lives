@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
-import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollOutcome, applyFlags, reachableEndingTones } from './state'
+import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollExtremeFate, rollOutcome, applyFlags, reachableEndingTones } from './state'
 import { builtinScenarios } from '../scenarios'
 import type { TurnResult } from './types'
 
@@ -132,6 +132,81 @@ describe('rollFortune（命运无常）', () => {
     const { twist } = rollFortune({}, () => 0)
     expect(twist).toBeUndefined()
   })
+  it('前 1 回合（turnIndex<1）不触发，即便 rng=0', () => {
+    const { twist } = rollFortune({ gold: 10 }, () => 0, 0)
+    expect(twist).toBeUndefined()
+  })
+  it('turnIndex>=1 正常按概率触发', () => {
+    const seq = [0.05, 0.1, 0]; let i = 0
+    const { twist } = rollFortune({ gold: 10 }, () => seq[i++], 1)
+    expect(twist).toContain('命运无常')
+  })
+  it('频率降到 0.10：rng=0.12 不触发', () => {
+    const { twist } = rollFortune({ gold: 10 }, () => 0.12, 1)
+    expect(twist).toBeUndefined()
+  })
+})
+
+describe('rollExtremeFate（极端命运事件）', () => {
+  it('rng 高于极端阈值不触发', () => {
+    expect(rollExtremeFate(sc, () => 0.9)).toBeNull()
+  })
+  it('前 2 回合不触发（turnIndex<2），即便 rng=0', () => {
+    expect(rollExtremeFate(sc, () => 0, 0)).toBeNull()
+    expect(rollExtremeFate(sc, () => 0, 1)).toBeNull()
+    expect(rollExtremeFate(sc, () => 0, 2)).not.toBeNull() // 第 3 回合放行
+  })
+  it('windfall：大幅普涨（按量程缩放）+ 文案', () => {
+    const seq = [0.001, 0.1, 0]; let i = 0 // ①<0.018 触发 ②<0.5 windfall ③文案 idx
+    const ef = rollExtremeFate(sc, () => seq[i++])
+    expect(ef).not.toBeNull()
+    expect(ef!.kind).toBe('windfall')
+    expect(ef!.text.length).toBeGreaterThan(0)
+    expect(Object.values(ef!.effects).some((v) => v > 0)).toBe(true)
+  })
+  it('disaster：致命属性跌幅大于普通属性', () => {
+    const seq = [0.001, 0.9, 0]; let i = 0 // ②>=0.5 disaster
+    const ef = rollExtremeFate(sc, () => seq[i++])!
+    expect(ef.kind).toBe('disaster')
+    const deathKey = sc.attributes.find((a) => a.deathBelow !== undefined)?.key
+    const normalKey = sc.attributes.find((a) => a.deathBelow === undefined)?.key
+    expect(Object.values(ef.effects).some((v) => v < 0)).toBe(true)
+    if (deathKey && normalKey) expect(ef.effects[deathKey]).toBeLessThan(ef.effects[normalKey])
+  })
+  it('applyChoice 命中极端命运记入 fateHighlight（第 3 回合起）', () => {
+    // 极端命运前 2 回合不触发，先空走 2 回合
+    const st2 = applyChoice(sc, applyChoice(sc, initState(sc), turn({}), 0), turn({}), 0)
+    const seq = [0.001, 0.1, 0, 0.9, 0.9]; let i = 0
+    const rng = () => (i < seq.length ? seq[i++] : 0.9)
+    const next = applyChoice(sc, st2, turn({ gold: 5 }), 0, rng)
+    expect(next.fateHighlight).toBeDefined()
+    expect(next.fateHighlight!.kind).toBe('windfall')
+    expect(next.fateHighlight!.turn).toBe(3)
+  })
+  it('已有 fateHighlight 后再命中极端命运不覆盖（保留首个戏剧瞬间）', () => {
+    const st2 = applyChoice(sc, applyChoice(sc, initState(sc), turn({}), 0), turn({}), 0)
+    const seq = [0.001, 0.1, 0, 0.9, 0.9]; let i = 0
+    const first = applyChoice(sc, st2, turn({ gold: 5 }), 0, () => (i < seq.length ? seq[i++] : 0.9))
+    expect(first.fateHighlight!.kind).toBe('windfall')
+    // 再强制命中第二次极端命运（disaster）：应保留首个 windfall（turn 3），不被覆盖
+    const seq2 = [0.001, 0.9, 0, 0.9, 0.9]; let j = 0
+    const second = applyChoice(sc, first, turn({ gold: 5 }), 0, () => (j < seq2.length ? seq2[j++] : 0.9))
+    expect(second.fateHighlight).toEqual(first.fateHighlight)
+    expect(second.fateHighlight!.turn).toBe(3)
+  })
+  it('极端命运对 outcomes 选项同样触发（不再只在 effects-only 选项,否则 outcomes 化剧本永不触发命运卡高光）', () => {
+    const st2 = applyChoice(sc, applyChoice(sc, initState(sc), turn({}), 0), turn({}), 0)
+    const outcomeTurn: TurnResult = {
+      narrative: '剧情', summary: '摘要',
+      choices: [{ text: '行动', effects: {}, outcomes: [{ weight: 1, effects: { gold: 5 } }] }],
+    }
+    // seq[0]→rollOutcome 取唯一分支；其后 0.001<0.018 触发极端命运、0.1<0.5 windfall、0 取文案
+    const seq = [0.5, 0.001, 0.1, 0, 0.9]; let i = 0
+    const next = applyChoice(sc, st2, outcomeTurn, 0, () => (i < seq.length ? seq[i++] : 0.9))
+    expect(next.fateHighlight).toBeDefined()
+    expect(next.fateHighlight!.kind).toBe('windfall')
+    expect(next.attributes.gold).toBeGreaterThan(55) // 极端命运后果已叠加进 outcome 的 gold:5
+  })
 })
 
 describe('decayPerTurn（每回合自动衰减）', () => {
@@ -166,12 +241,15 @@ describe('decayPerTurn（每回合自动衰减）', () => {
   })
 
   it('衰减不受命运无常缩放（仅 effect 被缩放）', () => {
-    // rng 触发正向转折放大 effect，但衰减恒为 -2：power +10 被放大、life 仍只 -2
-    const seq = [0.05, 0.1, 0]
+    // 极端命运前 2 回合不触发，故先空走 2 回合，第 3 回合再测命运无常缩放
+    const init = initState(decaySc, undefined, undefined, 'local')
+    const st2 = applyChoice(decaySc, applyChoice(decaySc, init, t({}), 0), t({}), 0)
+    // rng：① ≥0.018 跳过极端命运 ② <0.10 触发命运无常 ③ <0.5 判 good ④ 文案 idx
+    const seq = [0.5, 0.05, 0.1, 0]
     let i = 0
-    const st = applyChoice(decaySc, initState(decaySc, undefined, undefined, 'local'), t({ power: 10 }), 0, () => seq[i++])
-    expect(st.attributes.power).toBeGreaterThan(20)
-    expect(st.attributes.life).toBe(58)
+    const st = applyChoice(decaySc, st2, t({ power: 10 }), 0, () => seq[i++])
+    expect(st.attributes.power).toBeGreaterThan(20) // power +10 被正向放大
+    expect(st.attributes.life).toBe(st2.attributes.life - 2) // 衰减恒 -2，不被缩放
   })
 
   it('持续衰减可触发死亡结局', () => {

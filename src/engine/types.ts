@@ -76,5 +76,7 @@ export interface GameState {
   goalProgress?: number
   // 印记：隐藏的具名状态（身份/机缘/因果种子），门控事件、结局、属性封顶
   flags?: string[]
+  // 本局首个极端命运瞬间（windfall/disaster）——一旦发生即定格、不被后续极端事件覆盖，供命运卡分享引用
+  fateHighlight?: { text: string; kind: 'windfall' | 'disaster'; turn: number }
   ended?: Ending
 }

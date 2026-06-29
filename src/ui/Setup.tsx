@@ -6,22 +6,27 @@ import { PRESETS, matchPreset, findPreset } from '../ai/presets'
 import { hasLocalMode } from '../engine/local'
 import { loadConfig, saveConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
+import { msg } from './messages'
+import { FontScaleControl } from './FontScaleControl'
 import { covers } from './covers'
 
 const providerOptions = PRESETS.map((p) => ({
   value: p.id,
   label: p.label,
-  hint: p.baseURL ? new URL(p.baseURL).host : '自填地址',
+  hint: p.baseURL ? new URL(p.baseURL).host : msg.noBaseUrl,
 }))
 
 export function Setup({
   scenario,
   onStart,
   onBack,
+  initialOpening,
 }: {
   scenario: Scenario
   onStart: (sc: Scenario, opening?: Opening, ambition?: string, mode?: 'ai' | 'local') => void
   onBack: () => void
+  // 挑战链接预选的开局下标（?o=）；缺省取首个开局
+  initialOpening?: number
 }) {
   const saved = loadConfig()
   const [presetId, setPresetId] = useState(() =>
@@ -31,7 +36,9 @@ export function Setup({
   const [baseURL, setBaseURL] = useState(saved?.baseURL ?? PRESETS[0].baseURL)
   const [apiKey, setApiKey] = useState(saved?.apiKey ?? '')
   const [model, setModel] = useState(saved?.model ?? PRESETS[0].models[0] ?? '')
-  const [opening, setOpening] = useState<Opening | undefined>(scenario.openings?.[0])
+  const [opening, setOpening] = useState<Opening | undefined>(
+    scenario.openings?.[initialOpening ?? 0] ?? scenario.openings?.[0],
+  )
   const [customId, setCustomId] = useState(false)
   const [customIdText, setCustomIdText] = useState('')
   const [ambition, setAmbition] = useState('')
@@ -281,6 +288,11 @@ export function Setup({
         />
       </section>
       )}
+
+      <section className="panel">
+        <h3>显示</h3>
+        <FontScaleControl />
+      </section>
 
       <button
         className="primary start-btn"

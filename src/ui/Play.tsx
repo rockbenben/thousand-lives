@@ -6,7 +6,10 @@ import { friendlyError, isAbortError } from '../ai/client'
 import { localSource, aiSource } from '../ai/turnSource'
 import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../storage'
 import { downloadText, safeFilename } from './download'
+import { msg } from './messages'
 import { nodeImage, hasNodeArt } from './nodeArt'
+import { shareRun } from './shareCard'
+import { FontScaleControl } from './FontScaleControl'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
 import { StoryCard } from './StoryCard'
@@ -33,7 +36,7 @@ export function Play({
         ? localSource()
         : aiSource(() => {
             const c = loadConfig()
-            if (!c) throw new Error('未找到 API 配置，请回到卷首重新设置')
+            if (!c) throw new Error(msg.noApiConfig)
             return c
           }),
     [state.mode],
@@ -206,7 +209,10 @@ export function Play({
   const saveSlot = () => {
     const name = window.prompt('存档名称：', `${scenario.title} 第${turnNo}${scenario.turnUnit}`)
     if (name === null) return
-    saveToSlot(name, session, Date.now())
+    if (!saveToSlot(name, session, Date.now())) {
+      window.alert(msg.saveSlotFailed)
+      return
+    }
     setSaved(true)
     setTimeout(() => aliveRef.current && setSaved(false), 2000)
   }
@@ -215,12 +221,27 @@ export function Play({
     downloadText(`千世书-${safeFilename(scenario.title)}-第${turnNo}${scenario.turnUnit}.json`, exportSaveString(session))
   }
 
+  // 分享当下：把此刻的命运卡（图）+ 钩子 + 挑战链接一并带出
+  const [shareMsg, setShareMsg] = useState('')
+  const shareNow = async () => {
+    setShareMsg('生成中…')
+    const r = await shareRun(scenario, state, [], nodeImage(scenario.id, pendingTurn?.summary))
+    if (r === 'error') {
+      // 与 Ending 一致：出图失败要给反馈，而非把按钮悄悄复位、看着像坏掉的死键
+      setShareMsg(msg.shareFailed)
+      setTimeout(() => aliveRef.current && setShareMsg(''), 2500)
+      return
+    }
+    setShareMsg(r === 'shared' ? '已分享 ✓' : r === 'downloaded' ? '已存图+复制链 ✓' : '')
+    if (r === 'shared' || r === 'downloaded') setTimeout(() => aliveRef.current && setShareMsg(''), 2500)
+  }
+
   return (
     <div className="play">
       <header className="play-header">
         <span className="play-title">{scenario.emoji} {scenario.title}</span>
         <span className="play-turn">
-          第 {turnNo} / {scenario.maxTurns} {scenario.turnUnit}
+          第 {turnNo} {scenario.turnUnit}
         </span>
         <button
           className={`play-act auto-toggle ${auto ? 'on' : 'ghost'}`}
@@ -243,6 +264,10 @@ export function Play({
         >
           搁笔
         </button>
+        <button className="ghost play-act" onClick={shareNow} title="把此刻的命运卡分享出去">
+          {shareMsg || '分享 ⤴'}
+        </button>
+        <FontScaleControl compact />
       </header>
 
       <div className="attr-panel">
@@ -330,7 +355,7 @@ export function Play({
                   className="turn-art"
                   style={{ backgroundImage: `url(${art})` }}
                   onClick={() => setLightbox(art)}
-                  title="点击看全图"
+                  title={msg.clickToEnlarge}
                 />
               )}
               <div className="turn-no">
@@ -341,8 +366,8 @@ export function Play({
                   className="turn-art thumb"
                   style={{ backgroundImage: `url(${art})` }}
                   onClick={() => setLightbox(art)}
-                  title="点击看全图"
-                  aria-label="查看此节点配图"
+                  title={msg.clickToEnlarge}
+                  aria-label={msg.viewNodeArt}
                 />
               )}
               <p className="narrative">{t.narrative}</p>
@@ -360,7 +385,7 @@ export function Play({
                 className="turn-art"
                 style={{ backgroundImage: `url(${keyArt})` }}
                 onClick={() => setLightbox(keyArt)}
-                title="点击看全图"
+                title={msg.clickToEnlarge}
               />
             )}
             <div className="turn-no">
@@ -371,8 +396,8 @@ export function Play({
                 className="turn-art thumb"
                 style={{ backgroundImage: `url(${curArt})` }}
                 onClick={() => setLightbox(curArt)}
-                title="点击看全图"
-                aria-label="查看此节点配图"
+                title={msg.clickToEnlarge}
+                aria-label={msg.viewNodeArt}
               />
             )}
             {loading && streamText ? (
@@ -411,7 +436,7 @@ export function Play({
 
       {pendingTurn && !loading && !pendingAction && (
         <div className={`choices ${keyMoment ? 'key-moment' : ''}`}>
-          {auto && <p className="auto-hint">托管中 · AI 正替你的角色抉择，点任意选项或「托管 ⏸」可随时接管</p>}
+          {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或「托管 ⏸」可随时接管</p>}
           {pendingTurn.choices.map((c, i) => {
             const fx = scenario.attributes
               .map((a) => ({ name: a.name, v: c.effects[a.key] ?? 0 }))
