@@ -8,6 +8,7 @@ import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../stor
 import { downloadText, safeFilename } from './download'
 import { msg } from './messages'
 import { nodeImage, hasNodeArt } from './nodeArt'
+import { covers } from './covers'
 import { ShareCardModal } from './ShareCardModal'
 import { FontScaleControl } from './FontScaleControl'
 import { Memoir } from './Memoir'
@@ -48,7 +49,12 @@ export function Play({
   const [customText, setCustomText] = useState('')
   const [auto, setAuto] = useState(false)
   const [showMemoir, setShowMemoir] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  // 看全图：轻触隐去卷文、看清整张场景画；再触恢复
+  const [peek, setPeek] = useState(false)
   const [lightbox, setLightbox] = useState<string | null>(null)
+  // 正文是否已落定：决定「画卷书页」节奏中选项何时淡入（打字机写完 / 流式收尾后才现）
+  const [proseDone, setProseDone] = useState(false)
   const busyRef = useRef(false)
   const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   // 玩家退出后组件卸载，迟到的 AI 响应不能再写回 session，否则会复活已清除的存档
@@ -152,6 +158,11 @@ export function Play({
     scrollLogBottom(true)
   })
 
+  // 新回合开始即收起选项；正文（流式/打字机）落定后再让它们淡入，营造「写完→你接话」的呼吸
+  useEffect(() => {
+    setProseDone(false)
+  }, [pendingTurn])
+
   // AI 托管：本回合呈现后，隔一会自动替角色做选择（用 AI 推荐，否则随机），形成自动演进
   useEffect(() => {
     if (autoTimer.current) {
@@ -200,6 +211,12 @@ export function Play({
     ? nodeImage(scenario.id, pendingTurn?.summary)
     : undefined
   const keyArt = keyMoment ? curArt : undefined
+  // 命途长卷 VN：整屏场景画始终解析出一张图（专属→主题→封面），随当前节点流转作世界背景
+  const sceneArt = nodeImage(scenario.id, pendingTurn?.summary)
+  // 上一回合：把你刚才的抉择与他人即时反馈作为新场景的承接引子（VN 里不再有竖向历史可回看）
+  const lastTurn = state.history[state.history.length - 1]
+  // 氛围底图：该剧本封面，压暗+模糊作远景视差层（自定义剧本无封面则不铺）
+  const ambientBg = covers[scenario.id]
   const [cardSeen, setCardSeen] = useState(0) // 已看过弹卡的最高关键回合号
   // 命运抉择独立大卡:本回合是关键节点、剧情已就绪、非托管/结算/加载时弹出一次
   const showStoryCard =
@@ -225,168 +242,177 @@ export function Play({
   const [showShare, setShowShare] = useState(false)
 
   return (
-    <div className="play">
-      <header className="play-header">
-        <span className="play-title">{scenario.emoji} {scenario.title}</span>
-        <span className="play-turn">
-          第 {turnNo} {scenario.turnUnit}
-        </span>
-        <button
-          className={`play-act auto-toggle ${auto ? 'on' : 'ghost'}`}
-          onClick={() => setAuto((v) => !v)}
-          title="开启后由 AI 替你的角色自动抉择、自动演进"
-        >
-          {auto ? '托管中 ⏸' : '托管 ▶'}
-        </button>
-        <button className="ghost play-act" onClick={() => setShowMemoir(true)} title="回看本局走过的命运抉择">
-          留影
-        </button>
-        <button className="ghost play-act" onClick={saveSlot}>{saved ? '已存 ✓' : '存档'}</button>
-        <button className="ghost play-act" onClick={exportSave}>导出</button>
-        <button
-          className="ghost play-act"
-          onClick={() => {
-            if (window.confirm('搁笔离场会舍弃这段未写完的人生（已存档的不受影响），确定？')) onQuit()
-          }}
-          title="回到卷首，未存档的进度将舍弃"
-        >
-          搁笔
-        </button>
-        <button className="ghost play-act" onClick={() => setShowShare(true)} title="生成此刻的命运卡，预览后复制/保存/分享">
-          分享 ⤴
-        </button>
-        <FontScaleControl compact />
-      </header>
+    <div className={`play vn ${peek ? 'peek' : ''}`}>
+      {ambientBg && (
+        <div
+          className="play-ambient"
+          style={{ backgroundImage: `url(${ambientBg})` }}
+          aria-hidden="true"
+        />
+      )}
+      <div className="vn-stage" onClick={() => peek && setPeek(false)}>
+      {sceneArt && (
+        <div
+          className="vn-scene"
+          key={sceneArt}
+          style={{ backgroundImage: `url(${sceneArt})` }}
+          aria-hidden="true"
+        />
+      )}
+      <div className="vn-scrim" aria-hidden="true" />
 
-      <div className="attr-panel">
-        {scenario.attributes.map((a) => {
-          const value = state.attributes[a.key]
-          const ratio = value / a.max
-          const delta = deltas[a.key] ?? 0
-          const band = bandOf(a, value)
-          return (
-            <div key={a.key} className="attr">
-              <span className="attr-name">{a.name}</span>
-              <div className="attr-bar">
-                <div
-                  className={`attr-fill sev-${band.severity}`}
-                  style={{ width: `${ratio * 100}%` }}
-                />
+      <header className="vn-hud">
+        <div className="vn-hud-row">
+          <span className="vn-title">{scenario.emoji} {scenario.title}</span>
+          {auto && <span className="play-auto-flag" title="托管中：AI 正替你的角色演进">托管中</span>}
+          <button
+            className="vn-eye"
+            onClick={() => setPeek((v) => !v)}
+            title={peek ? '显示卷文' : '看全图（轻触画面恢复）'}
+            aria-label={peek ? '显示卷文' : '看全图'}
+          >
+            {peek ? '文' : '图'}
+          </button>
+          <div className="play-menu">
+          <button
+            className={`play-menu-btn ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-haspopup="true"
+            aria-expanded={menuOpen}
+            aria-label="卷宗 · 更多"
+            title="卷宗"
+          >
+            卷
+          </button>
+          {menuOpen && (
+            <>
+              <div className="play-menu-backdrop" onClick={() => setMenuOpen(false)} />
+              <div className="play-menu-panel" role="menu">
+                <button
+                  className={`play-menu-item ${auto ? 'on' : ''}`}
+                  role="menuitem"
+                  onClick={() => setAuto((v) => !v)}
+                  title="开启后由 AI 替你的角色自动抉择、自动演进"
+                >
+                  <span>{auto ? '停止托管' : '交由 AI 托管'}</span>
+                  <span className="play-menu-glyph">{auto ? '⏸' : '▶'}</span>
+                </button>
+                <button className="play-menu-item" role="menuitem" onClick={() => { setShowMemoir(true); setMenuOpen(false) }}>
+                  <span>命途留影</span><span className="play-menu-glyph">☰</span>
+                </button>
+                <button className="play-menu-item" role="menuitem" onClick={() => { setShowShare(true); setMenuOpen(false) }}>
+                  <span>分享此刻</span><span className="play-menu-glyph">⤴</span>
+                </button>
+                <div className="play-menu-sep" />
+                <button className="play-menu-item" role="menuitem" onClick={saveSlot}>
+                  <span>{saved ? '已存入卷宗' : '存档'}</span><span className="play-menu-glyph">{saved ? '✓' : '⌑'}</span>
+                </button>
+                <button className="play-menu-item" role="menuitem" onClick={() => { exportSave(); setMenuOpen(false) }}>
+                  <span>导出存档</span><span className="play-menu-glyph">↧</span>
+                </button>
+                <div className="play-menu-sep" />
+                <div className="play-menu-fontrow">
+                  <span className="play-menu-fontlabel">字号</span>
+                  <FontScaleControl compact />
+                </div>
+                <div className="play-menu-sep" />
+                <button
+                  className="play-menu-item danger"
+                  role="menuitem"
+                  onClick={() => {
+                    if (window.confirm('搁笔离场会舍弃这段未写完的人生（已存档的不受影响），确定？')) onQuit()
+                  }}
+                  title="回到卷首，未存档的进度将舍弃"
+                >
+                  <span>搁笔离场</span><span className="play-menu-glyph">↩</span>
+                </button>
               </div>
-              <span className={`attr-band sev-${band.severity}`}>{band.label}</span>
-              <span className="attr-value">
-                {value}
-                {delta !== 0 && (
-                  <span
-                    key={state.history.length}
-                    className={`attr-delta ${delta > 0 ? 'up' : 'down'}`}
-                  >
-                    {delta > 0 ? `+${delta}` : delta}
-                  </span>
-                )}
+            </>
+          )}
+          </div>
+        </div>
+        <div className="vn-vitals">
+          {scenario.attributes.map((a) => {
+            const value = state.attributes[a.key]
+            const delta = deltas[a.key] ?? 0
+            const band = bandOf(a, value)
+            return (
+              <span key={a.key} className="vn-vital" title={`${a.name} ${value}/${a.max} · ${band.label}`}>
+                <span className="vn-vital-name">{a.name}</span>
+                <span className={`vn-vital-band sev-${band.severity}`}>{band.label}</span>
+                <span className="vn-vital-val">
+                  {value}
+                  {delta !== 0 && (
+                    <span key={state.history.length} className={`attr-delta ${delta > 0 ? 'up' : 'down'}`}>
+                      {delta > 0 ? `+${delta}` : delta}
+                    </span>
+                  )}
+                </span>
               </span>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+      </header>
       </div>
 
-      {state.ambition && (
-        <div className="ambition-bar">
-          <span className="ambition-label">目标</span>
-          <span className="ambition-text">{state.ambition}</span>
-          {typeof state.goalProgress === 'number' && (
-            <span className="goal-progress" title={`目标完成度 ${state.goalProgress}%`}>
-              <span className="goal-progress-track">
-                <span
-                  className="goal-progress-fill"
-                  style={{ width: `${Math.min(100, Math.max(0, state.goalProgress))}%` }}
-                />
-              </span>
-              <span className="goal-progress-pct">{state.goalProgress}%</span>
+      <section className="vn-panel">
+        {scenario.maxTurns ? (
+          <div className="vn-path" aria-hidden="true">
+            <span className="vn-path-track">
+              <span
+                className="vn-path-fill"
+                style={{ width: `${Math.min(100, (turnNo / scenario.maxTurns) * 100)}%` }}
+              />
             </span>
+            <span className="vn-path-label">命途 {turnNo} / {scenario.maxTurns} {scenario.turnUnit}</span>
+          </div>
+        ) : null}
+        <div className="vn-panel-head">
+          <span className="vn-scene-label">
+            {keyMoment ? '☰ ' : ''}第 {turnNo} {scenario.turnUnit}
+            {pendingTurn?.summary ? ` · ${pendingTurn.summary}` : ''}
+          </span>
+          {sceneArt && (
+            <button
+              className="vn-zoom"
+              onClick={() => setLightbox(sceneArt)}
+              title={msg.clickToEnlarge}
+              aria-label={msg.viewNodeArt}
+            >
+              ⛶
+            </button>
           )}
         </div>
-      )}
 
-      {(state.inventory ?? []).length > 0 && (
-        <div className="inventory">
-          <span className="inventory-label">行囊</span>
-          {(state.inventory ?? []).map((it) => (
-            <span key={it} className="item-chip">{it}</span>
-          ))}
-        </div>
-      )}
-
-      {(state.memory ?? []).length > 0 && (
-        <details className="memory">
-          <summary>
-            <span className="memory-label">记忆</span>
-            <span className="memory-count">{(state.memory ?? []).length}</span>
-          </summary>
-          <ul className="memory-list">
-            {(state.memory ?? []).map((m, i) => (
-              <li key={i}>{m}</li>
-            ))}
-          </ul>
-        </details>
-      )}
-
-      <div className="log" ref={logRef}>
-        {state.history.length === 0 && <p className="intro">{scenario.intro}</p>}
-        {state.history.map((t, i) => {
-          const km = isKeyMoment(i + 1, scenario.maxTurns)
-          const art = hasNodeArt(scenario.id, t.summary) ? nodeImage(scenario.id, t.summary) : undefined
-          return (
-            <div key={i} className={`turn ${km ? 'key-moment' : ''} ${art && !km ? 'has-thumb' : ''}`}>
-              {art && km && (
-                <div
-                  className="turn-art"
-                  style={{ backgroundImage: `url(${art})` }}
-                  onClick={() => setLightbox(art)}
-                  title={msg.clickToEnlarge}
-                />
-              )}
-              <div className="turn-no">
-                <span>{km ? '☰ ' : ''}第 {i + 1} {scenario.turnUnit}{t.summary ? ` · ${t.summary}` : ''}</span>
-              </div>
-              {art && !km && (
-                <button
-                  className="turn-art thumb"
-                  style={{ backgroundImage: `url(${art})` }}
-                  onClick={() => setLightbox(art)}
-                  title={msg.clickToEnlarge}
-                  aria-label={msg.viewNodeArt}
-                />
-              )}
-              <p className="narrative">{t.narrative}</p>
-              <p className="picked">{t.choiceText}</p>
-              {t.reaction && <p className="reaction">{t.reaction}</p>}
-              {t.twist && <p className="twist">{t.twist}</p>}
-            </div>
-          )
-        })}
-
-        {(pendingTurn || streamText) && (
-          <div className={`turn current ${keyMoment ? 'key-moment' : ''} ${curArt && !keyMoment ? 'has-thumb' : ''}`}>
-            {keyMoment && keyArt && (
-              <div
-                className="turn-art"
-                style={{ backgroundImage: `url(${keyArt})` }}
-                onClick={() => setLightbox(keyArt)}
-                title={msg.clickToEnlarge}
-              />
+        {state.ambition && (
+          <div className="ambition-bar vn-ambition">
+            <span className="ambition-label">目标</span>
+            <span className="ambition-text">{state.ambition}</span>
+            {typeof state.goalProgress === 'number' && (
+              <span className="goal-progress" title={`目标完成度 ${state.goalProgress}%`}>
+                <span className="goal-progress-track">
+                  <span
+                    className="goal-progress-fill"
+                    style={{ width: `${Math.min(100, Math.max(0, state.goalProgress))}%` }}
+                  />
+                </span>
+                <span className="goal-progress-pct">{state.goalProgress}%</span>
+              </span>
             )}
-            <div className="turn-no">
-              <span>{keyMoment ? '☰ ' : ''}第 {turnNo} {scenario.turnUnit}{pendingTurn?.summary ? ` · ${pendingTurn.summary}` : ''}</span>
+          </div>
+        )}
+
+        <div className="vn-body" ref={logRef}>
+          {lastTurn && (lastTurn.reaction || lastTurn.twist) && (
+            <div className="vn-recap">
+              {lastTurn.choiceText && <p className="picked">{lastTurn.choiceText}</p>}
+              {lastTurn.reaction && <p className="reaction">{lastTurn.reaction}</p>}
+              {lastTurn.twist && <p className="twist">{lastTurn.twist}</p>}
             </div>
-            {curArt && !keyMoment && (
-              <button
-                className="turn-art thumb"
-                style={{ backgroundImage: `url(${curArt})` }}
-                onClick={() => setLightbox(curArt)}
-                title={msg.clickToEnlarge}
-                aria-label={msg.viewNodeArt}
-              />
+          )}
+          <div className="vn-prose">
+            {state.history.length === 0 && !pendingTurn && !streamText && !loading && (
+              <p className="intro">{scenario.intro}</p>
             )}
             {loading && streamText ? (
               // 正在流式生成（含自定义行动结算：此时 pendingTurn 仍是旧场景，须优先显示流式新内容）
@@ -402,27 +428,25 @@ export function Play({
                   key={state.history.length}
                   text={pendingTurn.narrative}
                   onType={scrollLogBottom}
+                  onDone={() => setProseDone(true)}
                 />
               )
-            ) : (
+            ) : streamText ? (
               <p className="narrative">
                 {streamText}
                 <span className="caret">▍</span>
               </p>
+            ) : null}
+            {loading && !streamText && <p className="loading">命运正在落笔…</p>}
+            {error && (
+              <div className="error-box">
+                <p>{error}</p>
+                <button onClick={runTurn}>重试本回合</button>
+              </div>
             )}
           </div>
-        )}
 
-        {loading && !streamText && <p className="loading">命运正在落笔…</p>}
-        {error && (
-          <div className="error-box">
-            <p>{error}</p>
-            <button onClick={runTurn}>重试本回合</button>
-          </div>
-        )}
-      </div>
-
-      {pendingTurn && !loading && !pendingAction && (
+      {pendingTurn && !loading && !pendingAction && (streamedRef.current || proseDone) && (
         <div className={`choices ${keyMoment ? 'key-moment' : ''}`}>
           {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或「托管 ⏸」可随时接管</p>}
           {pendingTurn.choices.map((c, i) => {
@@ -482,6 +506,33 @@ export function Play({
             ))}
         </div>
       )}
+        </div>
+        {((state.inventory ?? []).length > 0 || (state.memory ?? []).length > 0) && (
+          <div className="vn-meta">
+            {(state.inventory ?? []).length > 0 && (
+              <div className="inventory">
+                <span className="inventory-label">行囊</span>
+                {(state.inventory ?? []).map((it) => (
+                  <span key={it} className="item-chip">{it}</span>
+                ))}
+              </div>
+            )}
+            {(state.memory ?? []).length > 0 && (
+              <details className="memory">
+                <summary>
+                  <span className="memory-label">记忆</span>
+                  <span className="memory-count">{(state.memory ?? []).length}</span>
+                </summary>
+                <ul className="memory-list">
+                  {(state.memory ?? []).map((m, i) => (
+                    <li key={i}>{m}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </div>
+        )}
+      </section>
 
       {showStoryCard && (
         <StoryCard

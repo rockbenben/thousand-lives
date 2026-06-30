@@ -4,10 +4,12 @@ export function Typewriter({
   text,
   speed = 18,
   onType,
+  onDone,
 }: {
   text: string
   speed?: number
   onType?: () => void
+  onDone?: () => void
 }) {
   const [len, setLen] = useState(0)
 
@@ -23,6 +25,12 @@ export function Typewriter({
   useEffect(() => {
     onType?.()
   }, [len, onType])
+
+  // 正文落定后通知父组件（用于「选项在正文写完后再淡入」的呼吸节奏）
+  useEffect(() => {
+    if (text.length > 0 && len >= text.length) onDone?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [len, text])
 
   return (
     <p className="narrative typewriter" onClick={() => setLen(text.length)} title="点击跳过">
