@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
-  loadConfig, saveConfig, loadSave, saveSave, clearSave,
+  loadConfig, saveConfig, loadPresetConfig, loadSave, saveSave, clearSave,
   loadCustomScenarios, addCustomScenario,
   listSlots, saveToSlot, deleteSlot, exportSaveString, parseSaveFile, validateSaveGame,
   recordEnding, seenEndings, SAVE_VERSION,
@@ -33,6 +33,26 @@ describe('config', () => {
     expect(loadConfig()).toBeNull()
     store.set('tl.config', JSON.stringify({ provider: 'openai' }))
     expect(loadConfig()).toBeNull()
+  })
+  it('按服务商分别存储：切换活跃预设不串用/不丢别家 key', () => {
+    const a: AIConfig = { provider: 'openai', apiKey: 'sk-a', model: 'm-a', presetId: 'deepseek' }
+    const b: AIConfig = { provider: 'openai', apiKey: 'sk-b', model: 'm-b', presetId: 'mimo' }
+    saveConfig(a)
+    saveConfig(b) // b 成为活跃
+    expect(loadConfig()).toEqual(b)
+    // 各服务商各记各的 key，互不覆盖
+    expect(loadPresetConfig('deepseek')).toEqual(a)
+    expect(loadPresetConfig('mimo')).toEqual(b)
+    expect(loadPresetConfig('anthropic')).toBeUndefined()
+    // 切回 a 服务商即恢复其专属 key
+    saveConfig(a)
+    expect(loadConfig()).toEqual(a)
+    expect(loadPresetConfig('mimo')).toEqual(b) // b 仍在
+  })
+  it('迁移旧的扁平 AIConfig 格式', () => {
+    store.set('tl.config', JSON.stringify({ provider: 'openai', apiKey: 'sk-old', model: 'gpt', presetId: 'openai' }))
+    expect(loadConfig()).toEqual({ provider: 'openai', apiKey: 'sk-old', model: 'gpt', presetId: 'openai' })
+    expect(loadPresetConfig('openai')?.apiKey).toBe('sk-old')
   })
 })
 

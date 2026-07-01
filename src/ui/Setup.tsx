@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
 import type { Scenario, Opening } from '../scenarios/schema'
-import type { AIConfig, Provider } from '../ai/types'
 import { chat, friendlyError } from '../ai/client'
-import { PRESETS, matchPreset, findPreset } from '../ai/presets'
+import { PRESETS } from '../ai/presets'
 import { hasLocalMode } from '../engine/local'
-import { loadConfig, saveConfig } from '../storage'
+import { loadConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
+import { useAIConfig } from './useAIConfig'
 import { msg } from './messages'
 import { covers } from './covers'
 
@@ -27,14 +27,16 @@ export function Setup({
   // 挑战链接预选的开局下标（?o=）；缺省取首个开局
   initialOpening?: number
 }) {
-  const saved = loadConfig()
-  const [presetId, setPresetId] = useState(() =>
-    saved ? matchPreset(saved.provider, saved.baseURL ?? '', saved.presetId).id : PRESETS[0].id,
-  )
-  const [provider, setProvider] = useState<Provider>(saved?.provider ?? PRESETS[0].provider)
-  const [baseURL, setBaseURL] = useState(saved?.baseURL ?? PRESETS[0].baseURL)
-  const [apiKey, setApiKey] = useState(saved?.apiKey ?? '')
-  const [model, setModel] = useState(saved?.model ?? PRESETS[0].models[0] ?? '')
+  const [testResult, setTestResult] = useState('')
+  // 每次配置变更/发起测试都自增；在途测试结算时若已变更则丢弃其结果，避免旧配置的”连接成功/失败”覆盖当前
+  const testSeq = useRef(0)
+  // AI 配置（受控 + 改即存 + key 跟服务商走）；任一字段变更即让旧的连接测试结果失效
+  const cfg = useAIConfig(() => {
+    setTestResult('')
+    testSeq.current++
+  })
+  const savedConfig = loadConfig() // 仅用于下方「模式默认」判断（已配过 Key 则默认 AI）
+
   const [opening, setOpening] = useState<Opening | undefined>(
     scenario.openings?.[initialOpening ?? 0] ?? scenario.openings?.[0],
   )
@@ -42,14 +44,11 @@ export function Setup({
   const [customIdText, setCustomIdText] = useState('')
   const [ambition, setAmbition] = useState('')
   const [testing, setTesting] = useState(false)
-  const [testResult, setTestResult] = useState('')
-  // 每次配置变更/发起测试都自增；在途测试结算时若已变更则丢弃其结果，避免旧配置的“连接成功/失败”覆盖当前
-  const testSeq = useRef(0)
 
   // 模式：本地（无需 Key）/ AI 驱动。剧本无本地事件时只能 AI；默认无 Key 选本地、有 Key 选 AI
   const localAvailable = hasLocalMode(scenario)
   const [mode, setMode] = useState<'ai' | 'local'>(
-    localAvailable && !saved ? 'local' : 'ai',
+    localAvailable && !savedConfig ? 'local' : 'ai',
   )
 
   // 最终身份：自定义优先，否则用选中的预设开局
@@ -60,35 +59,10 @@ export function Setup({
         : undefined
       : opening
 
-  const preset = findPreset(presetId)!
-
-  // 任一配置字段变化后，旧的连接测试结果即失效
-  const update = <T,>(setter: (v: T) => void) => (v: T) => {
-    setter(v)
-    setTestResult('')
-    testSeq.current++ // 配置已改：使在途测试结果失效
-  }
-  const changePreset = (id: string) => {
-    const p = findPreset(id)!
-    setPresetId(id)
-    setProvider(p.provider)
-    setBaseURL(p.baseURL)
-    setModel(p.models[0] ?? '')
-    setTestResult('')
-    testSeq.current++
-  }
-
-  const config = (): AIConfig => ({
-    provider,
-    baseURL: baseURL.trim() || undefined,
-    apiKey: apiKey.trim(),
-    model: model.trim(),
-    presetId,
-  })
   // 本地模式无需配置；AI 模式需要 key + model。另：选了「自定义身份」却没写，则不放行——
   // 否则会以「无身份」静默开局，玩家明明选了自设身份却丢失（finalOpening 此时返回 undefined）。
   const ready =
-    (mode === 'local' || (apiKey.trim() !== '' && model.trim() !== '')) &&
+    (mode === 'local' || (cfg.apiKey.trim() !== '' && cfg.model.trim() !== '')) &&
     !(customId && customIdText.trim() === '')
 
   const testConnection = async () => {
@@ -96,7 +70,7 @@ export function Setup({
     setTesting(true)
     setTestResult('')
     try {
-      await chat(config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }])
+      await chat(cfg.config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }])
       if (testSeq.current === seq) setTestResult('✅ 连接成功')
     } catch (e) {
       if (testSeq.current === seq) setTestResult(`❌ ${friendlyError(e)}`)
@@ -155,16 +129,16 @@ export function Setup({
         <label>
           <span className="label-row">
             服务商（可搜索）
-            {preset.docs && (
-              <a className="ext" href={preset.docs} target="_blank" rel="noreferrer">
+            {cfg.preset.docs && (
+              <a className="ext" href={cfg.preset.docs} target="_blank" rel="noreferrer">
                 API 文档 ↗
               </a>
             )}
           </span>
           <SearchSelect
             options={providerOptions}
-            value={presetId}
-            onChange={(id) => changePreset(id)}
+            value={cfg.presetId}
+            onChange={cfg.changePreset}
             placeholder="搜索服务商…"
           />
         </label>
@@ -172,12 +146,12 @@ export function Setup({
           Base URL（可改为代理或区域地址）
           <input
             list="endpoint-options"
-            value={baseURL}
-            onChange={(e) => update(setBaseURL)(e.target.value)}
-            placeholder={preset.baseURL || 'https://api.openai.com/v1'}
+            value={cfg.baseURL}
+            onChange={(e) => cfg.changeBaseURL(e.target.value)}
+            placeholder={cfg.preset.baseURL || 'https://api.openai.com/v1'}
           />
           <datalist id="endpoint-options">
-            {(preset.endpoints ?? []).map((ep) => (
+            {(cfg.preset.endpoints ?? []).map((ep) => (
               <option key={ep.url} value={ep.url}>{ep.label}</option>
             ))}
           </datalist>
@@ -185,8 +159,8 @@ export function Setup({
         <label>
           <span className="label-row">
             API Key
-            {preset.apiKeyUrl && (
-              <a className="ext" href={preset.apiKeyUrl} target="_blank" rel="noreferrer">
+            {cfg.preset.apiKeyUrl && (
+              <a className="ext" href={cfg.preset.apiKeyUrl} target="_blank" rel="noreferrer">
                 获取 Key ↗
               </a>
             )}
@@ -194,8 +168,8 @@ export function Setup({
           <input
             type="password"
             autoComplete="off"
-            value={apiKey}
-            onChange={(e) => update(setApiKey)(e.target.value)}
+            value={cfg.apiKey}
+            onChange={(e) => cfg.changeApiKey(e.target.value)}
             placeholder="sk-..."
           />
         </label>
@@ -203,10 +177,10 @@ export function Setup({
           模型（可搜索，也可直接输入任意模型名）
           <SearchSelect
             allowCustom
-            options={preset.models.map((m) => ({ value: m }))}
-            value={model}
-            onChange={(v) => update(setModel)(v)}
-            placeholder={preset.models[0] ?? '模型名'}
+            options={cfg.preset.models.map((m) => ({ value: m }))}
+            value={cfg.model}
+            onChange={cfg.changeModel}
+            placeholder={cfg.preset.models[0] ?? '模型名'}
           />
         </label>
         <p className="hint">
@@ -298,7 +272,7 @@ export function Setup({
         className="primary start-btn"
         disabled={!ready}
         onClick={() => {
-          if (mode === 'ai') saveConfig(config())
+          // 配置已在编辑时即时落盘（useAIConfig），此处无需再存
           onStart(scenario, finalOpening(), mode === 'ai' ? ambition : '', mode)
         }}
       >

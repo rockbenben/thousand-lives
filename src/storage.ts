@@ -6,8 +6,9 @@ import { builtinScenarios } from './scenarios'
 
 // 内置剧本的存档快照可能是旧版本（无 bands/directive 等）；加载时用当前定义刷新，
 // 让已存的内置剧本游戏立刻享受到引擎/内容更新。属性 key 不变，结算不受影响。
-// 但 maxTurns 是玩家在开局选的「人生长度」（Setup 用 {...内置, maxTurns} 克隆），
-// 属于玩家选择而非内置定义——必须从存档保留，否则续玩时寿命被悄悄还原成基准值。
+// maxTurns 从存档保留、不取基准：早期版本曾让玩家在开局选「人生长度」并把非基准值写进存档，
+// 保留它可避免这类旧存档续玩时寿命被悄悄还原成基准值。
+//（当前 Setup 已不提供长度选择，新存档此值即基准，保留为无害的向后兼容兜底。）
 function refreshBuiltin(sc: Scenario): Scenario {
   const base = builtinScenarios.find((b) => b.id === sc.id)
   if (!base) return sc
@@ -49,7 +50,8 @@ export function validateSaveGame(data: unknown): SaveGame | null {
     if (d.v !== SAVE_VERSION) return null
     scenarioSchema.parse(d.scenario)
     if (!d.state || typeof d.state !== 'object' || !Array.isArray(d.state.history)) return null
-    // attributes 必须是非空普通对象——否则进 Play 渲染 state.attributes[key] 直接崩溃(白屏)
+    // attributes 必须是普通对象（非 null / 数组）——否则 Play 里 state.attributes[key] 在 null 上属性访问会抛错崩溃(白屏)。
+    // 注：此处不校验键是否齐全或值为数字（缺键 / 非数值只会渲染成 NaN，不会崩溃）
     const attrs = d.state.attributes
     if (!attrs || typeof attrs !== 'object' || Array.isArray(attrs)) return null
     const scenario = refreshBuiltin(d.scenario)
@@ -63,19 +65,63 @@ export function validateSaveGame(data: unknown): SaveGame | null {
   }
 }
 
-export function loadConfig(): AIConfig | null {
+// AI 配置按服务商预设分别存储：每个预设各记自己的 key/baseURL/model（key 跟服务商走，
+// 切换服务商不会串用别家的 key），activePresetId 标记当前在用的一个。
+interface AIConfigStore {
+  activePresetId?: string
+  presets: Record<string, AIConfig>
+}
+
+// 读并规整配置存储：兼容旧的「单个扁平 AIConfig」格式（迁移为单预设 map）。
+function readAIConfigStore(): AIConfigStore {
   try {
     const raw = localStorage.getItem(CONFIG_KEY)
-    if (!raw) return null
-    const c = JSON.parse(raw) as AIConfig
-    return c.provider && c.apiKey && c.model ? c : null
+    if (!raw) return { presets: {} }
+    const obj = JSON.parse(raw) as Record<string, unknown>
+    if (!obj || typeof obj !== 'object') return { presets: {} }
+    // 新格式：{ activePresetId, presets }
+    if (obj.presets && typeof obj.presets === 'object' && !Array.isArray(obj.presets)) {
+      return {
+        activePresetId: typeof obj.activePresetId === 'string' ? obj.activePresetId : undefined,
+        presets: obj.presets as Record<string, AIConfig>,
+      }
+    }
+    // 旧格式：扁平 AIConfig —— 以其 presetId/provider 为键迁移为单预设 map
+    if (typeof obj.provider === 'string') {
+      const c = obj as unknown as AIConfig
+      const id = c.presetId || c.provider
+      return { activePresetId: id, presets: { [id]: c } }
+    }
+    return { presets: {} }
   } catch {
-    return null
+    return { presets: {} }
   }
 }
 
+// 当前活跃服务商的完整配置；缺 provider/apiKey/model 之一即视为未配置，返回 null。
+export function loadConfig(): AIConfig | null {
+  const store = readAIConfigStore()
+  const c = store.activePresetId ? store.presets[store.activePresetId] : undefined
+  return c && c.provider && c.apiKey && c.model ? c : null
+}
+
+// 取某服务商预设已存的配置（切换服务商时恢复其专属 key/baseURL/model）；未配置过返回 undefined。
+export function loadPresetConfig(presetId: string): AIConfig | undefined {
+  return readAIConfigStore().presets[presetId]
+}
+
+// 保存某服务商配置并置为当前活跃（配置一经修改即调用，不必等到开局）。
+// 按 presetId（无则 provider）归档，使每个服务商各记各的 key。
 export function saveConfig(c: AIConfig): void {
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(c))
+  const store = readAIConfigStore()
+  const id = c.presetId || c.provider
+  store.presets[id] = c
+  store.activePresetId = id
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(store))
+  } catch {
+    // 配额满等写入失败不打断配置流程（内存态 UI 仍可用）
+  }
 }
 
 export function loadSave(): SaveGame | null {

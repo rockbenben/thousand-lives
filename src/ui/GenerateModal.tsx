@@ -1,11 +1,10 @@
 import { useRef, useState } from 'react'
 import type { Scenario } from '../scenarios/schema'
-import type { AIConfig, Provider } from '../ai/types'
-import { PRESETS, matchPreset, findPreset } from '../ai/presets'
+import { PRESETS } from '../ai/presets'
 import { generateScenario, type GenProgress } from '../ai/generateScenario'
 import { friendlyError, isAbortError } from '../ai/client'
-import { loadConfig, saveConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
+import { useAIConfig } from './useAIConfig'
 import { msg } from './messages'
 import { useModalA11y } from './useModalA11y'
 
@@ -26,14 +25,8 @@ export function GenerateModal({
   onClose: () => void
   onCreated: (sc: Scenario) => void
 }) {
-  const saved = loadConfig()
-  const [presetId, setPresetId] = useState(() =>
-    saved ? matchPreset(saved.provider, saved.baseURL ?? '', saved.presetId).id : PRESETS[0].id,
-  )
-  const [provider, setProvider] = useState<Provider>(saved?.provider ?? PRESETS[0].provider)
-  const [baseURL, setBaseURL] = useState(saved?.baseURL ?? PRESETS[0].baseURL)
-  const [apiKey, setApiKey] = useState(saved?.apiKey ?? '')
-  const [model, setModel] = useState(saved?.model ?? PRESETS[0].models[0] ?? '')
+  // AI 配置（受控 + 改即存 + key 跟服务商走），与设置页共用一份逻辑
+  const cfg = useAIConfig()
 
   const [theme, setTheme] = useState('')
   const [target, setTarget] = useState(40)
@@ -42,33 +35,17 @@ export function GenerateModal({
   const [error, setError] = useState('')
   const abortRef = useRef<AbortController | null>(null)
 
-  const preset = findPreset(presetId)!
-  const changePreset = (id: string) => {
-    const p = findPreset(id)!
-    setPresetId(id)
-    setProvider(p.provider)
-    setBaseURL(p.baseURL)
-    setModel(p.models[0] ?? '')
-  }
-
-  const ready = theme.trim() !== '' && apiKey.trim() !== '' && model.trim() !== '' && !busy
+  const ready = theme.trim() !== '' && cfg.apiKey.trim() !== '' && cfg.model.trim() !== '' && !busy
 
   const run = async () => {
-    const cfg: AIConfig = {
-      provider,
-      baseURL: baseURL.trim() || undefined,
-      apiKey: apiKey.trim(),
-      model: model.trim(),
-      presetId,
-    }
-    saveConfig(cfg)
+    // 配置已在编辑时即时落盘（useAIConfig）；此处直接用当前配置生成
     setBusy(true)
     setError('')
     setProgress({ phase: 'skeleton', events: 0, target })
     const ac = new AbortController()
     abortRef.current = ac
     try {
-      const sc = await generateScenario(cfg, theme.trim(), {
+      const sc = await generateScenario(cfg.config(), theme.trim(), {
         target,
         existingIds,
         signal: ac.signal,
@@ -145,40 +122,40 @@ export function GenerateModal({
           <span className="hint">数量越多越耐玩，但更耗时、更费 API 额度（按你自己的 Key 计）。</span>
         </label>
 
-        <details className="gen-config" open={!apiKey}>
+        <details className="gen-config" open={!cfg.apiKey}>
           <summary>AI 服务配置（与游戏共用，仅保存在本浏览器）</summary>
           <label>
             服务商
             <SearchSelect
               options={providerOptions}
-              value={presetId}
-              onChange={changePreset}
+              value={cfg.presetId}
+              onChange={cfg.changePreset}
               placeholder="搜索服务商…"
             />
           </label>
           <label>
             Base URL
-            <input value={baseURL} onChange={(e) => setBaseURL(e.target.value)} placeholder={preset.baseURL} />
+            <input value={cfg.baseURL} onChange={(e) => cfg.changeBaseURL(e.target.value)} placeholder={cfg.preset.baseURL} />
           </label>
           <label>
             <span className="label-row">
               API Key
-              {preset.apiKeyUrl && (
-                <a className="ext" href={preset.apiKeyUrl} target="_blank" rel="noreferrer">
+              {cfg.preset.apiKeyUrl && (
+                <a className="ext" href={cfg.preset.apiKeyUrl} target="_blank" rel="noreferrer">
                   获取 Key ↗
                 </a>
               )}
             </span>
-            <input type="password" autoComplete="off" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="sk-..." />
+            <input type="password" autoComplete="off" value={cfg.apiKey} onChange={(e) => cfg.changeApiKey(e.target.value)} placeholder="sk-..." />
           </label>
           <label>
             模型
             <SearchSelect
               allowCustom
-              options={preset.models.map((m) => ({ value: m }))}
-              value={model}
-              onChange={setModel}
-              placeholder={preset.models[0] ?? '模型名'}
+              options={cfg.preset.models.map((m) => ({ value: m }))}
+              value={cfg.model}
+              onChange={cfg.changeModel}
+              placeholder={cfg.preset.models[0] ?? '模型名'}
             />
           </label>
         </details>
