@@ -110,13 +110,18 @@ export function loadPresetConfig(presetId: string): AIConfig | undefined {
   return readAIConfigStore().presets[presetId]
 }
 
-// 保存某服务商配置并置为当前活跃（配置一经修改即调用，不必等到开局）。
-// 按 presetId（无则 provider）归档，使每个服务商各记各的 key。
+// 保存某服务商配置并置为当前活跃（配置一经修改即调用，不必等到开局）。按 presetId（无则 provider）归档。
+// 仅落盘「完整可用」（含 provider+apiKey+model）的配置：空 / 仅默认（无 key）不存，
+// 并清掉该服务商可能残留的空条目、不改动当前活跃项——避免只是切过去看一眼就留下噪声条目。
 export function saveConfig(c: AIConfig): void {
   const store = readAIConfigStore()
   const id = c.presetId || c.provider
-  store.presets[id] = c
-  store.activePresetId = id
+  if (c.provider && c.apiKey && c.model) {
+    store.presets[id] = c
+    store.activePresetId = id
+  } else {
+    delete store.presets[id]
+  }
   try {
     localStorage.setItem(CONFIG_KEY, JSON.stringify(store))
   } catch {

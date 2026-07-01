@@ -49,6 +49,14 @@ describe('config', () => {
     expect(loadConfig()).toEqual(a)
     expect(loadPresetConfig('mimo')).toEqual(b) // b 仍在
   })
+  it('空 / 仅默认（无 key）的配置不落盘，切到未配置服务商不覆盖原活跃项', () => {
+    const mimo: AIConfig = { provider: 'openai', apiKey: 'sk-m', model: 'mimo', presetId: 'mimo' }
+    saveConfig(mimo)
+    // 切到 DeepSeek「看一眼」：只有默认、没填 key —— 不应留下条目，活跃项仍是 mimo
+    saveConfig({ provider: 'openai', baseURL: 'https://api.deepseek.com', apiKey: '', model: 'deepseek-v4-flash', presetId: 'deepseek' })
+    expect(loadPresetConfig('deepseek')).toBeUndefined()
+    expect(loadConfig()).toEqual(mimo)
+  })
   it('迁移旧的扁平 AIConfig 格式', () => {
     store.set('tl.config', JSON.stringify({ provider: 'openai', apiKey: 'sk-old', model: 'gpt', presetId: 'openai' }))
     expect(loadConfig()).toEqual({ provider: 'openai', apiKey: 'sk-old', model: 'gpt', presetId: 'openai' })
