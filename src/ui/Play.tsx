@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { applyChoice, resolveCustomAction } from '../engine/state'
+import { applyChoice, resolveCustomAction, effectiveCeiling } from '../engine/state'
 import { bandOf } from '../engine/bands'
 import { isKeyMoment } from '../engine/keymoment'
 import { friendlyError, isAbortError } from '../ai/client'
@@ -85,6 +85,7 @@ export function Play({
     attrTrack.current = { attrs: state.attributes, deltas }
   }
   const deltas = attrTrack.current.deltas
+  const flags = state.flags ?? []
 
   // 生成下一回合；resolving=自定义行动结算（此时 pendingTurn 仍是行动发生的场景）。
   // 流式来源（AI）显示「落笔中」并接收逐字回调、可中断；非流式来源（本地）即时产出、不显示加载态，
@@ -327,12 +328,21 @@ export function Play({
             const value = state.attributes[a.key]
             const delta = deltas[a.key] ?? 0
             const band = bandOf(a, value)
+            // 已达当前上限、且上限低于该属性的绝对 max（说明有更高上限被印记锁着）→ 封顶，需晋阶方可再涨
+            const cap = effectiveCeiling(a, flags)
+            const atCap = value >= cap && cap < a.max
+            const capHint = `已达${scenario.tierLabel ?? ''}上限，需晋阶突破方可提升`
             return (
-              <span key={a.key} className="vn-vital" title={`${a.name} ${value}/${a.max} · ${band.label}`}>
+              <span
+                key={a.key}
+                className="vn-vital"
+                title={atCap ? `${a.name} ${value}/${cap}（${capHint}）` : `${a.name} ${value}/${a.max} · ${band.label}`}
+              >
                 <span className="vn-vital-name">{a.name}</span>
                 <span className={`vn-vital-band sev-${band.severity}`}>{band.label}</span>
                 <span className="vn-vital-val">
                   {value}
+                  {atCap && <span className="vn-vital-cap" title={capHint}>满</span>}
                   {delta !== 0 && (
                     <span key={state.history.length} className={`attr-delta ${delta > 0 ? 'up' : 'down'}`}>
                       {delta > 0 ? `+${delta}` : delta}
@@ -444,24 +454,43 @@ export function Play({
         <div className={`choices ${keyMoment ? 'key-moment' : ''}`}>
           {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或「托管 ⏸」可随时接管</p>}
           {pendingTurn.choices.map((c, i) => {
+            // 明牌显示「实际生效值」：把选项 effect 按当前值 + 有效上限/下限 0 夹一遍，
+            // 与 clampEffects 同口径。正向增益被上限吞掉时标记为「满」，不再虚标一个加不上去的 +N。
             const fx = scenario.attributes
-              .map((a) => ({ name: a.name, v: c.effects[a.key] ?? 0 }))
-              .filter((f) => f.v !== 0)
+              .map((a) => {
+                const raw = c.effects[a.key] ?? 0
+                if (raw === 0) return null
+                const cur = state.attributes[a.key]
+                const eff = Math.min(effectiveCeiling(a, flags), Math.max(0, cur + raw)) - cur
+                return { name: a.name, v: eff, capped: raw > 0 && eff <= 0 }
+              })
+              .filter((f): f is { name: string; v: number; capped: boolean } => f !== null && (f.v !== 0 || f.capped))
             const isRec = auto && pendingTurn.recommend === i
             return (
               <button key={i} className={`choice ${isRec ? 'recommended' : ''}`} onClick={() => pick(i)}>
                 <span className="choice-text">{isRec ? '➤ ' : ''}{c.text}</span>
                 {fx.length > 0 && (
                   <span className="choice-fx">
-                    {fx.map((f) => (
-                      <span
-                        key={f.name}
-                        className={`fx ${f.v > 0 ? 'up' : 'down'}`}
-                        aria-label={`${f.name}${f.v > 0 ? '提升' : '降低'}${Math.abs(f.v)}`}
-                      >
-                        {f.name} {f.v > 0 ? `+${f.v}` : f.v}
-                      </span>
-                    ))}
+                    {fx.map((f) =>
+                      f.capped ? (
+                        <span
+                          key={f.name}
+                          className="fx capped"
+                          title="已达上限，需晋阶突破方可提升"
+                          aria-label={`${f.name}已达上限，此增益不生效`}
+                        >
+                          {f.name} 满
+                        </span>
+                      ) : (
+                        <span
+                          key={f.name}
+                          className={`fx ${f.v > 0 ? 'up' : 'down'}`}
+                          aria-label={`${f.name}${f.v > 0 ? '提升' : '降低'}${Math.abs(f.v)}`}
+                        >
+                          {f.name} {f.v > 0 ? `+${f.v}` : f.v}
+                        </span>
+                      ),
+                    )}
                   </span>
                 )}
               </button>

@@ -1305,6 +1305,8 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
 .fx::before { content: '·'; opacity: 0.7; }
 .fx.up { color: var(--jade); }
 .fx.down { color: var(--cinnabar-bright); }
+/* 增益被上限吞掉：暗金「满」，提示此选项对该属性无实际作用、需晋阶方能再涨 */
+.fx.capped { color: var(--gold); opacity: 0.7; }
 
 /* 命运抉择时的选项：金色化、辉光，落子如卜 */
 .choices.key-moment { position: relative; }
@@ -1863,6 +1865,8 @@ input[type='range']:focus { outline: none; }
 .vn-vital-band.sev-low { color: var(--gold); }
 .vn-vital-band.sev-critical { color: var(--cinnabar-bright); animation: lowPulse 1.2s ease-in-out infinite; }
 .vn-vital-val { position: relative; color: var(--muted); font-size: 0.74rem; font-variant-numeric: tabular-nums; }
+/* 属性封顶标记：暗金小字「满」，鼠标悬停解释需晋阶突破 */
+.vn-vital-cap { margin-left: 3px; color: var(--gold); opacity: 0.72; font-size: 0.64rem; cursor: help; }
 
 /* ── 命途长卷进度（贴近卷文上沿） ── */
 .vn-path {
