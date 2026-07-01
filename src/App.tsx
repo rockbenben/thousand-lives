@@ -98,8 +98,8 @@ export default function App() {
   }
 
   // 重玩同一剧本：清掉当前存档，回到该剧本的设置页。
-  // 用剧本的「原始定义」重开：上一局选的人生长度会把 maxTurns 放大写进 session.scenario，
-  // 若拿它当基准，Setup 的长度档会累乘漂移（「标准」变成上一局的长度）。按 id 取回原始基准。
+  // 按 id 取回剧本的「原始定义」重开，而非沿用 session.scenario（后者可能带旧存档遗留的非基准 maxTurns），
+  // 保证每次重玩都从该剧本的基准设定起步。
   const replay = (sc: Scenario) => {
     clearSave()
     setSession(null)
