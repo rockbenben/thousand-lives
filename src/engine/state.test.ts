@@ -321,11 +321,20 @@ describe('applyMemory', () => {
 describe('nextProgress', () => {
   it('有效值 clamp 0~100 并取整，否则沿用旧值', () => {
     expect(nextProgress(undefined, undefined)).toBeUndefined()
+    expect(nextProgress(undefined, 42)).toBe(42) // 首个有效值直接取
     expect(nextProgress(30, undefined)).toBe(30) // 本回合没给则保留
     expect(nextProgress(30, 55.6)).toBe(56)
     expect(nextProgress(30, 140)).toBe(100)
-    expect(nextProgress(30, -5)).toBe(0)
     expect(nextProgress(30, NaN)).toBe(30)
+  })
+  it('棘轮平滑：上升自由，回落每回合最多一小步（不闪退）', () => {
+    expect(nextProgress(30, 80)).toBe(80) // 上升直接到位
+    expect(nextProgress(30, 5)).toBe(24) // 骤降只回落 6（30→24）
+    expect(nextProgress(30, 28)).toBe(28) // 小幅回落在步长内，如实反映
+    // 持续受挫多回合仍会渐降到位
+    let p: number | undefined = 30
+    for (let i = 0; i < 10 && (p ?? 0) > 0; i++) p = nextProgress(p, 0)
+    expect(p).toBe(0)
   })
   it('applyChoice 写入 goalProgress', () => {
     const res: TurnResult = { ...turn({ gold: 5 }), goalProgress: 42 }

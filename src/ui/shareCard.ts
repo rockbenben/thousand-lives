@@ -4,6 +4,7 @@ import { gradeRun } from '../engine/grade'
 import { bandOf } from '../engine/bands'
 import qrcode from 'qrcode-generator'
 import { hookQuestion } from './hookQuestion'
+import { goalStage } from './goalStage'
 import { buildShareUrl, openingIndexOf } from './challengeLink'
 
 export interface CardAchievement {
@@ -153,8 +154,9 @@ export async function drawShareCard(
     ctx.font = `400 17px ${serif}`
     ctx.fillText(truncate(ctx, st.ambition!, W - pad * 2), pad, y)
     y += 26
-    const p = Math.min(100, Math.max(0, st.goalProgress ?? 0))
-    const barW = W - pad * 2 - 64
+    // 与对局内一致：不显示乱跳的百分比，改粗粒度定性阶段
+    const { label: stage, step } = goalStage(Math.min(100, Math.max(0, st.goalProgress ?? 0)))
+    const barW = W - pad * 2 - 96 // 右侧留 96 放 4 字阶段名
     const barY = y - 9
     ctx.fillStyle = 'rgba(201, 160, 92, 0.18)'
     ctx.fillRect(pad, barY, barW, 8)
@@ -162,10 +164,10 @@ export async function drawShareCard(
     grad.addColorStop(0, '#c9a05c')
     grad.addColorStop(1, '#e0704e')
     ctx.fillStyle = grad
-    ctx.fillRect(pad, barY, (barW * p) / 100, 8)
+    ctx.fillRect(pad, barY, (barW * step) / 4, 8)
     ctx.fillStyle = '#c9a05c'
-    ctx.font = `400 16px ${serif}`
-    ctx.fillText(`${p}%`, pad + barW + 12, y)
+    ctx.font = `400 15px ${serif}`
+    ctx.fillText(stage, pad + barW + 12, y)
     y += 30
   }
 

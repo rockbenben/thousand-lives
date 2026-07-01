@@ -14,6 +14,7 @@ import { FontScaleControl } from './FontScaleControl'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
 import { Typewriter } from './Typewriter'
+import { goalStage } from './goalStage'
 
 // 自定义行动字数上限：防止超长输入撑爆 AI 上下文 / 浪费 token
 const CUSTOM_ACTION_MAX = 200
@@ -392,17 +393,19 @@ export function Play({
           <div className="ambition-bar vn-ambition">
             <span className="ambition-label">目标</span>
             <span className="ambition-text">{state.ambition}</span>
-            {typeof state.goalProgress === 'number' && (
-              <span className="goal-progress" title={`目标完成度 ${state.goalProgress}%`}>
-                <span className="goal-progress-track">
-                  <span
-                    className="goal-progress-fill"
-                    style={{ width: `${Math.min(100, Math.max(0, state.goalProgress))}%` }}
-                  />
-                </span>
-                <span className="goal-progress-pct">{state.goalProgress}%</span>
-              </span>
-            )}
+            {typeof state.goalProgress === 'number' &&
+              (() => {
+                // 去掉乱跳的百分比，改粗粒度定性阶段（配合 nextProgress 棘轮平滑，稳步不闪退）
+                const { label, step } = goalStage(state.goalProgress)
+                return (
+                  <span className="goal-progress" title={`目标进度 · ${label}`}>
+                    <span className="goal-progress-track">
+                      <span className="goal-progress-fill" style={{ width: `${(step / 4) * 100}%` }} />
+                    </span>
+                    <span className="goal-progress-stage">{label}</span>
+                  </span>
+                )
+              })()}
           </div>
         )}
 

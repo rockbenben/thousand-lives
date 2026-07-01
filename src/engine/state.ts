@@ -50,10 +50,16 @@ export function applyMemory(memory: string[] | undefined, add: string[] | undefi
   return kept.length > MAX_MEMORY ? kept.slice(kept.length - MAX_MEMORY) : kept
 }
 
-// 目标进度：本回合给了有效值就取（clamp 0~100、取整），否则沿用上一回合
+// 目标进度：本回合给了有效值就取（clamp 0~100、取整），否则沿用上一回合。
+// 做「棘轮」平滑——上升随剧情自由，回落每回合最多 GOAL_MAX_DROP 一小步：
+// AI 每回合主观重估 goalProgress 常大幅乱跳/倒退，直接展示会让进度条闪回；
+// 缓降后，据此派生的定性阶段稳步前进、不闪退，仍能反映持续受挫（多回合渐降）。
+const GOAL_MAX_DROP = 6
 export function nextProgress(prev: number | undefined, next: number | undefined): number | undefined {
   if (typeof next !== 'number' || !Number.isFinite(next)) return prev
-  return Math.min(100, Math.max(0, Math.round(next)))
+  const target = Math.min(100, Math.max(0, Math.round(next)))
+  if (prev === undefined) return target
+  return target >= prev ? target : Math.max(target, prev - GOAL_MAX_DROP)
 }
 
 // 应用本回合的物品增减：先移除失去的，再追加获得的（去重），上限截断保留最新

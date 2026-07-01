@@ -1150,7 +1150,7 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   background: linear-gradient(90deg, var(--gold), var(--cinnabar-bright));
   transition: width 0.6s ease;
 }
-.goal-progress-pct { font-size: 0.76rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.goal-progress-stage { font-size: 0.76rem; color: var(--gold); letter-spacing: 0.03em; }
 
 /* 行囊 */
 .inventory {
