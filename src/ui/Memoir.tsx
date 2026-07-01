@@ -1,6 +1,6 @@
 import type { Scenario } from '../scenarios/schema'
 import type { GameState } from '../engine/types'
-import { keyMomentIndex } from '../engine/keymoment'
+import { isKeyMoment } from '../engine/keymoment'
 import { nodeImage } from './nodeArt'
 import { useModalA11y } from './useModalA11y'
 import { msg } from './messages'
@@ -17,9 +17,13 @@ export function Memoir({
   onClose: () => void
   onViewArt?: (src: string) => void
 }) {
-  const cards = state.history
-    .map((t, i) => ({ t, turnNo: i + 1, ki: keyMomentIndex(i + 1, scenario.maxTurns) }))
-    .filter((x) => x.ki >= 0)
+  // 回顾这一生走过的每一步：全程回合皆成卡（场景配图 + 正文 + 你的抉择 + 他人回响），关键节点高亮。
+  // VN 去掉了竖向历史，这里是唯一能通览全程的地方，故收录全部回合而非仅关键节点。
+  const cards = state.history.map((t, i) => ({
+    t,
+    turnNo: i + 1,
+    key: isKeyMoment(i + 1, scenario.maxTurns),
+  }))
 
   const ref = useModalA11y(onClose)
 
@@ -42,13 +46,13 @@ export function Memoir({
           </button>
         </div>
         {cards.length === 0 ? (
-          <p className="memoir-empty">尚未行至命运抉择，留影待续……</p>
+          <p className="memoir-empty">这一生尚未落笔，留影待续……</p>
         ) : (
           <div className="memoir-grid">
-            {cards.map(({ t, turnNo }) => {
+            {cards.map(({ t, turnNo, key }) => {
               const cardArt = nodeImage(scenario.id, t.summary)
               return (
-              <div className="memoir-card" key={turnNo}>
+              <div className={`memoir-card ${key ? 'key' : ''}`} key={turnNo}>
                 {cardArt && (
                   <div
                     className="memoir-card-art"
@@ -58,12 +62,14 @@ export function Memoir({
                   />
                 )}
                 <div className="memoir-card-body">
+                  {key && <span className="memoir-card-key">✦ 命运抉择</span>}
                   <span className="memoir-card-no">
-                    ☰ 第 {turnNo} {scenario.turnUnit}{t.summary ? ` · ${t.summary}` : ''}
+                    第 {turnNo} {scenario.turnUnit}{t.summary ? ` · ${t.summary}` : ''}
                   </span>
                   <p className="memoir-card-narr">{t.narrative}</p>
                   <p className="memoir-card-pick">▸ {t.choiceText}</p>
                   {t.reaction && <p className="memoir-card-react">{t.reaction}</p>}
+                  {t.twist && <p className="memoir-card-twist">{t.twist}</p>}
                 </div>
               </div>
               )

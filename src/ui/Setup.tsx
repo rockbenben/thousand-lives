@@ -7,7 +7,6 @@ import { hasLocalMode } from '../engine/local'
 import { loadConfig, saveConfig } from '../storage'
 import { SearchSelect } from './SearchSelect'
 import { msg } from './messages'
-import { FontScaleControl } from './FontScaleControl'
 import { covers } from './covers'
 
 const providerOptions = PRESETS.map((p) => ({
@@ -108,15 +107,21 @@ export function Setup({
 
   return (
     <div className="setup">
-      <button className="ghost" onClick={onBack}>← 返回</button>
-      {covers[scenario.id] && (
-        <div
-          className="setup-cover"
-          style={{ backgroundImage: `url(${covers[scenario.id]})` }}
-          aria-hidden="true"
-        />
-      )}
-      <h2>{scenario.emoji} {scenario.title}</h2>
+      <button className="ghost setup-back" onClick={onBack}>← 返回</button>
+      <div className={`setup-hero ${covers[scenario.id] ? 'has-art' : ''}`}>
+        {covers[scenario.id] && (
+          <div
+            className="setup-hero-art"
+            style={{ backgroundImage: `url(${covers[scenario.id]})` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="setup-hero-veil" aria-hidden="true" />
+        <div className="setup-hero-cap">
+          {scenario.genre && <span className="setup-genre">{scenario.genre}</span>}
+          <h2 className="setup-name">{scenario.title}</h2>
+        </div>
+      </div>
       <p className="setup-intro">{scenario.intro}</p>
 
       {localAvailable && (
@@ -288,11 +293,6 @@ export function Setup({
         />
       </section>
       )}
-
-      <section className="panel">
-        <h3>显示</h3>
-        <FontScaleControl />
-      </section>
 
       <button
         className="primary start-btn"

@@ -7,13 +7,12 @@ import { localSource, aiSource } from '../ai/turnSource'
 import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../storage'
 import { downloadText, safeFilename } from './download'
 import { msg } from './messages'
-import { nodeImage, hasNodeArt } from './nodeArt'
+import { nodeImage } from './nodeArt'
 import { covers } from './covers'
 import { ShareCardModal } from './ShareCardModal'
 import { FontScaleControl } from './FontScaleControl'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
-import { StoryCard } from './StoryCard'
 import { Typewriter } from './Typewriter'
 
 // 自定义行动字数上限：防止超长输入撑爆 AI 上下文 / 浪费 token
@@ -207,20 +206,12 @@ export function Play({
 
   const turnNo = state.history.length + 1
   const keyMoment = isKeyMoment(turnNo, scenario.maxTurns)
-  const curArt = hasNodeArt(scenario.id, pendingTurn?.summary)
-    ? nodeImage(scenario.id, pendingTurn?.summary)
-    : undefined
-  const keyArt = keyMoment ? curArt : undefined
   // 命途长卷 VN：整屏场景画始终解析出一张图（专属→主题→封面），随当前节点流转作世界背景
   const sceneArt = nodeImage(scenario.id, pendingTurn?.summary)
   // 上一回合：把你刚才的抉择与他人即时反馈作为新场景的承接引子（VN 里不再有竖向历史可回看）
   const lastTurn = state.history[state.history.length - 1]
   // 氛围底图：该剧本封面，压暗+模糊作远景视差层（自定义剧本无封面则不铺）
   const ambientBg = covers[scenario.id]
-  const [cardSeen, setCardSeen] = useState(0) // 已看过弹卡的最高关键回合号
-  // 命运抉择独立大卡:本回合是关键节点、剧情已就绪、非托管/结算/加载时弹出一次
-  const showStoryCard =
-    keyMoment && !!pendingTurn && !loading && !pendingAction && !auto && cardSeen < turnNo
   const [saved, setSaved] = useState(false)
 
   const saveSlot = () => {
@@ -263,7 +254,7 @@ export function Play({
 
       <header className="vn-hud">
         <div className="vn-hud-row">
-          <span className="vn-title">{scenario.emoji} {scenario.title}</span>
+          <span className="vn-title">{scenario.title}</span>
           {auto && <span className="play-auto-flag" title="托管中：AI 正替你的角色演进">托管中</span>}
           <button
             className="vn-eye"
@@ -279,10 +270,10 @@ export function Play({
             onClick={() => setMenuOpen((v) => !v)}
             aria-haspopup="true"
             aria-expanded={menuOpen}
-            aria-label="卷宗 · 更多"
-            title="卷宗"
+            aria-label="菜单"
+            title="菜单"
           >
-            卷
+            ☰
           </button>
           {menuOpen && (
             <>
@@ -320,11 +311,11 @@ export function Play({
                   className="play-menu-item danger"
                   role="menuitem"
                   onClick={() => {
-                    if (window.confirm('搁笔离场会舍弃这段未写完的人生（已存档的不受影响），确定？')) onQuit()
+                    if (window.confirm('退出本局会舍弃这段未存档的进度（已存档的不受影响），确定？')) onQuit()
                   }}
-                  title="回到卷首，未存档的进度将舍弃"
+                  title="退出当前这局，回到卷首（未存档的进度将舍弃）"
                 >
-                  <span>搁笔离场</span><span className="play-menu-glyph">↩</span>
+                  <span>退出本局</span><span className="play-menu-glyph">↩</span>
                 </button>
               </div>
             </>
@@ -368,9 +359,12 @@ export function Play({
           </div>
         ) : null}
         <div className="vn-panel-head">
-          <span className="vn-scene-label">
-            {keyMoment ? '☰ ' : ''}第 {turnNo} {scenario.turnUnit}
-            {pendingTurn?.summary ? ` · ${pendingTurn.summary}` : ''}
+          <span className="vn-label-col">
+            {keyMoment && <span className="vn-keymark">✦ 命运抉择</span>}
+            <span className="vn-scene-label">
+              第 {turnNo} {scenario.turnUnit}
+              {pendingTurn?.summary ? ` · ${pendingTurn.summary}` : ''}
+            </span>
           </span>
           {sceneArt && (
             <button
@@ -534,14 +528,6 @@ export function Play({
         )}
       </section>
 
-      {showStoryCard && (
-        <StoryCard
-          art={keyArt}
-          label={`☰ 第 ${turnNo} ${scenario.turnUnit}${pendingTurn?.summary ? ` · ${pendingTurn.summary}` : ''}`}
-          onViewArt={() => keyArt && setLightbox(keyArt)}
-          onContinue={() => setCardSeen(turnNo)}
-        />
-      )}
       {showMemoir && (
         <Memoir
           scenario={scenario}
