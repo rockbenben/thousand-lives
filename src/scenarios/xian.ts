@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const xian: Scenario = {
   id: 'xian',
   title: '缥缈仙途',
-  emoji: '⛰️',
+  genre: '仙侠',
   intro:
     '你本是凡尘一介微末，却在机缘下踏入修真之门。从炼气吐纳到金丹元婴，从宗门倾轧到雷劫加身——长生路上，万族争渡，心魔环伺。一步踏错，轻则修为尽废，重则身死道消。在这缥缈仙途上，求道，并求一个不悔。',
   attributes: [

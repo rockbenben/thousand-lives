@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const officialdom: Scenario = {
   id: 'officialdom',
   title: '宦海浮沉',
-  emoji: '🏯',
+  genre: '官场',
   intro:
     '金榜题名，你以新科进士之身踏入这煌煌天朝的官场。从七品知县到内阁辅臣，前路是党争、考成、灾荒、皇权与人心交织的惊涛。一着不慎，轻则罢官，重则抄家问斩。在这宦海里，活下去，并活成你想成为的人。',
   attributes: [

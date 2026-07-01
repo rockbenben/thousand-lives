@@ -9,7 +9,7 @@ import coverVoyage from '../assets/cover-voyage.webp'
 import coverSanguo from '../assets/cover-sanguo.webp'
 import coverLiyuan from '../assets/cover-liyuan.webp'
 
-// 内置剧本的封面图，按剧本 id 索引；自定义剧本无图时回退到 emoji 占位
+// 内置剧本的封面图，按剧本 id 索引；自定义剧本无内置封面，卡片按「无封面」样式呈现
 export const covers: Record<string, string> = {
   wasteland: coverWasteland,
   book: coverBook,

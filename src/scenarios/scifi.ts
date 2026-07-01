@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const scifi: Scenario = {
   id: 'scifi',
   title: '群星彼端',
-  emoji: '🚀',
+  genre: '科幻',
   intro:
     '地球只剩最后的余烬。你随着世代殖民舰「火种号」驶向三十光年外的未知星系，舱内是数万沉睡的人类，舱外是亘古的黑暗与未知。补给、故障、人心、异象——每一年都在考验：人类的火种，能否在群星彼端重新燃起。',
   attributes: [

@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const sanguo: Scenario = {
   id: 'sanguo',
   title: '乱世谋臣',
-  emoji: '🐉',
+  genre: '三国',
   intro:
     '汉室倾颓，黄巾未平而群雄又起。挟天子者号令诸侯，据州郡者各怀异志，中原大地烽烟不绝。你是一介谋士，胸中藏着定鼎天下的方略，手中却只有一支笔、一张嘴。择主、献策、征伐、权衡——三十年风云，看你如何在刀光剑影间替人，也替自己，谋一条出路。',
   attributes: [

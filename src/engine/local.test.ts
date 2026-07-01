@@ -4,7 +4,7 @@ import { scenarioSchema, type Scenario } from '../scenarios/schema'
 import { initState } from './state'
 
 const sc: Scenario = scenarioSchema.parse({
-  id: 'lt', title: '测试', emoji: '🎲', intro: '开局',
+  id: 'lt', title: '测试', intro: '开局',
   attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 }],
   maxTurns: 10, systemPrompt: 'GM',
   endings: [{ condition: 'maxTurns', tone: '终' }],
@@ -107,7 +107,7 @@ describe('local engine', () => {
 
 describe('localTurn 透传新字段', () => {
   const sc = scenarioSchema.parse({
-    id: 'p', title: 'P', emoji: '🎴', intro: '开局',
+    id: 'p', title: 'P', intro: '开局',
     attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
     maxTurns: 30, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
     localEvents: [{
@@ -128,7 +128,7 @@ describe('localTurn 透传新字段', () => {
 
 describe('pickLocalEvent 印记门控', () => {
   const sc = scenarioSchema.parse({
-    id: 'g', title: 'G', emoji: '🎴', intro: '开局',
+    id: 'g', title: 'G', intro: '开局',
     attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
     maxTurns: 30, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
     localEvents: [

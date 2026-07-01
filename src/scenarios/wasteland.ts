@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const wasteland: Scenario = {
   id: 'wasteland',
   title: '末世求生',
-  emoji: '☢️',
+  genre: '末世',
   intro:
     '不明病毒爆发的那年，城市在尖叫中陷落。许诺的军方救援始终没有到来，官方安全区一个接一个失守、沦为新的坟场。废墟成了世界的全部，感染者昼伏夜出，幸存者之间既有相濡以沫，也有彼此吞噬。三年，你要在这片崩坏的土地上活下去——并从瓦砾里，亲手重建一处属于活人的据点与秩序。',
   attributes: [

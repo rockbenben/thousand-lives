@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const liyuan: Scenario = {
   id: 'liyuan',
   title: '梨园浮梦',
-  emoji: '🎭',
+  genre: '民国',
   intro:
     '锣鼓一响，半场灯昏。民国年间，十里洋场夜夜笙歌，你是戏园里苦苦熬出头的伶人。台上水袖翻飞、唱念做打，台下捧角的、看戏的、惦记你的，三教九流。军阀的堂会、报馆的笔墨、戏班的恩义，皆在这乱世里浮沉。三十年粉墨春秋，全看你这一嗓子往哪里使。',
   attributes: [

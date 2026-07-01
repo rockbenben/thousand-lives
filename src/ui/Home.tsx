@@ -150,7 +150,7 @@ export function Home({
               )}
               <span className="card-rune" aria-hidden="true">{TRIGRAMS[i % TRIGRAMS.length]}</span>
               {hasLocalMode(sc) && <span className="free-badge">免 Key 可玩</span>}
-              <span className="scenario-emoji">{sc.emoji}</span>
+              {sc.genre && <span className="scenario-genre">{sc.genre}</span>}
               <span className="scenario-title">{sc.title}</span>
               <span className="scenario-intro">{sc.intro}</span>
               {seen > 0 && <span className="card-seen">已历 {seen}/{total} 结局</span>}

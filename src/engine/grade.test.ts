@@ -4,7 +4,7 @@ import { scenarioSchema, type Scenario } from '../scenarios/schema'
 import { initState } from './state'
 
 const sc: Scenario = scenarioSchema.parse({
-  id: 'g', title: '测试', emoji: '🎲', intro: 'x',
+  id: 'g', title: '测试', intro: 'x',
   attributes: [
     { key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0,
       bands: [

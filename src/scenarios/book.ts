@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const bookTransmigration: Scenario = {
   id: 'book',
   title: '穿书逆袭',
-  emoji: '📖',
+  genre: '穿越',
   intro:
     '熬夜看完狗血虐文《凤凰劫》的你一觉醒来，发现自己穿成了书中第三章就领盒饭的炮灰配角。剧情还有三十章就会走向你熟知的结局——除非你亲手改写它。',
   attributes: [

@@ -21,7 +21,7 @@ const esc = (s) =>
 
 function page(sc, openingIdx) {
   const opening = openingIdx != null ? sc.openings?.[openingIdx]?.name : undefined
-  const title = `千世书 · ${sc.emoji} ${sc.title}${opening ? ` — ${opening}` : ''}`
+  const title = `千世书 · ${sc.genre ? `${sc.genre} · ` : ''}${sc.title}${opening ? ` — ${opening}` : ''}`
   const intro = (sc.intro || '').slice(0, 70)
   const desc = `${opening ? `以「${opening}」之身，` : ''}${intro}…… 同样的开局，换你能走出什么结局？`
   const img = `${CANON}/og/${sc.id}.jpg`

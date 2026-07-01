@@ -8,7 +8,6 @@ const cfg: AIConfig = { provider: 'openai', apiKey: 'k', model: 'm' }
 
 const SKELETON = JSON.stringify({
   title: '测试人生',
-  emoji: '🎲',
   intro: '一段用于测试的人生。',
   attributes: [
     {

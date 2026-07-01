@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const spy: Scenario = {
   id: 'spy',
   title: '孤岛谍影',
-  emoji: '🕵️',
+  genre: '谍战',
   intro:
     '一九四〇年，上海。租界如孤岛，四面是沦陷区的汪洋。你顶着一重假身份潜伏其中，在日伪、租界与重庆三方的夹缝里传递情报、周旋生死。一句话说错、一个眼神露怯，便是阴沟里横尸。在这座不夜城里，活下去，并完成你的使命。',
   attributes: [

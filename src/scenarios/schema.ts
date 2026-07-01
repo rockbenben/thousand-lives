@@ -111,7 +111,8 @@ export const scenarioSchema = z
   .object({
     id: z.string().min(1),
     title: z.string().min(1),
-    emoji: z.string().min(1),
+    // 题材标签（仙侠/穿越/武侠…）：选关卡的眉标，形成「题材 / 题名 / 钩子」三级层级；可缺省
+    genre: z.string().optional(),
     intro: z.string().min(1),
     attributes: z.array(attributeSchema).min(1),
     openings: z.array(openingSchema).optional(),

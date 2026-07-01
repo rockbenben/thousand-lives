@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const voyage: Scenario = {
   id: 'voyage',
   title: '怒海争锋',
-  emoji: '🏴‍☠️',
+  genre: '航海',
   intro:
     '咸涩的海风扑面而来，你站在自己第一艘船的甲板上，脚下是望不到边的湛蓝。这是风帆鼓荡的大航海时代：远洋深处有未标在海图上的航路，有金银堆山的宝藏，也有吞噬整支船队的风暴与海战。三十年怒海生涯，你这一帆，是要驶向王座，还是葬身鱼腹。',
   attributes: [

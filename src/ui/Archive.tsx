@@ -29,7 +29,6 @@ import { useModalA11y } from './useModalA11y'
 interface EndingDetail {
   scId: string
   title: string
-  emoji: string
   tone: string
   turnUnit: string
   epilogue?: string
@@ -176,7 +175,7 @@ export function Archive({
                   <button className="slot-load" onClick={() => onLoadGame(slot.game)}>
                     <span className="slot-name">{slot.name}</span>
                     <span className="slot-meta">
-                      {slot.game.scenario.emoji} {slot.game.scenario.title} · 第{' '}
+                      {slot.game.scenario.title} · 第{' '}
                       {slot.game.state.history.length + (slot.game.state.ended ? 0 : 1)}{' '}
                       {slot.game.scenario.turnUnit}
                       {slot.game.state.ended ? '（已结束）' : ''} ·{' '}
@@ -242,7 +241,6 @@ export function Archive({
               <div key={sc.id} className={`gal-scene${complete ? ' complete' : ''}`}>
                 <div className="gal-scene-head">
                   <span className="gal-scene-name">
-                    <b className="gal-scene-emoji">{sc.emoji}</b>
                     {sc.title}
                   </span>
                   <span className="gal-bar" aria-hidden="true">
@@ -273,7 +271,6 @@ export function Archive({
                           setDetail({
                             scId: sc.id,
                             title: sc.title,
-                            emoji: sc.emoji,
                             tone: t,
                             turnUnit: sc.turnUnit,
                             epilogue: sc.endings.find((e) => e.tone === t)?.epilogue,
@@ -356,7 +353,7 @@ function EndingDetailModal({
           </button>
         ) : null}
         <div className="ed-body">
-          <span className="ed-scene">{detail.emoji} {detail.title}</span>
+          <span className="ed-scene">{detail.title}</span>
           <h3 className="ed-tone">{detail.tone}</h3>
           {detail.epilogue ? (
             <p className="ed-epilogue">{detail.epilogue}</p>

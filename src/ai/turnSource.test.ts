@@ -9,7 +9,7 @@ vi.mock('./client', () => ({ requestTurn: vi.fn() }))
 import { requestTurn } from './client'
 
 const sc: Scenario = scenarioSchema.parse({
-  id: 'ts', title: '测试', emoji: '🎲', intro: '开局',
+  id: 'ts', title: '测试', intro: '开局',
   attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 }],
   maxTurns: 10, systemPrompt: 'GM',
   endings: [{ condition: 'maxTurns', tone: '终' }],

@@ -7,7 +7,6 @@ import type { TurnResult } from './types'
 const sc: Scenario = scenarioSchema.parse({
   id: 'test',
   title: '测试',
-  emoji: '🎲',
   intro: '开局',
   attributes: [
     { key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 },
@@ -213,7 +212,6 @@ describe('decayPerTurn（每回合自动衰减）', () => {
   const decaySc: Scenario = scenarioSchema.parse({
     id: 'decay',
     title: '衰减',
-    emoji: '⌛',
     intro: '开局',
     attributes: [
       { key: 'life', name: '寿元', initial: 60, max: 100, deathBelow: 0, decayPerTurn: 2 },
@@ -288,7 +286,7 @@ describe('initState', () => {
   })
   it('按 opening.flag 写入身份印记，无 flag 则为空', () => {
     const withFlag = scenarioSchema.parse({
-      id: 'f', title: 'F', emoji: '🚩', intro: '开局',
+      id: 'f', title: 'F', intro: '开局',
       attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 }],
       openings: [{ name: '魔道', prompt: '魔功传人', flag: '魔道' }],
       maxTurns: 5, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
@@ -353,7 +351,6 @@ describe('checkEnding', () => {
     const withCustomDeath: Scenario = scenarioSchema.parse({
       id: 'island',
       title: '荒岛',
-      emoji: '🏝️',
       intro: 'x',
       attributes: [{ key: 'hp', name: '体力', initial: 80, max: 100, deathBelow: 0 }],
       maxTurns: 20,
@@ -371,7 +368,6 @@ describe('checkEnding', () => {
     const withInjury: Scenario = scenarioSchema.parse({
       id: 'inj',
       title: '荒岛',
-      emoji: '🏝️',
       intro: 'x',
       attributes: [{ key: 'hp', name: '体力', initial: 80, max: 100, deathBelow: 0 }],
       maxTurns: 20,
@@ -395,7 +391,6 @@ describe('checkEnding', () => {
     const multi: Scenario = scenarioSchema.parse({
       id: 'multi',
       title: 'x',
-      emoji: '🎲',
       intro: 'x',
       attributes: [
         { key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 },
@@ -421,7 +416,6 @@ describe('checkEnding', () => {
     const noEnd: Scenario = scenarioSchema.parse({
       id: 'noend',
       title: '无终局',
-      emoji: '🎲',
       intro: '开局',
       attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100 }],
       maxTurns: 3,
@@ -501,7 +495,7 @@ describe('resolveCustomAction', () => {
 
 describe('机缘封顶 ceiling/ceilingUnlocks', () => {
   const capSc: Scenario = scenarioSchema.parse({
-    id: 'cap', title: 'C', emoji: '⛰️', intro: '开局',
+    id: 'cap', title: 'C', intro: '开局',
     attributes: [{
       key: 'cultivation', name: '修为', initial: 10, max: 100,
       ceiling: 45, ceilingUnlocks: [{ flag: '金丹', max: 70 }],
@@ -545,7 +539,7 @@ describe('applyFlags 印记增减', () => {
 
 describe('同回合突破封顶用选择后印记', () => {
   const sc2 = scenarioSchema.parse({
-    id: 'brk', title: 'B', emoji: '⛰️', intro: 'x',
+    id: 'brk', title: 'B', intro: 'x',
     attributes: [{ key: 'p', name: '修为', initial: 10, max: 100, ceiling: 20, ceilingUnlocks: [{ flag: '甲', max: 60 }] }],
     maxTurns: 5, systemPrompt: 'g', endings: [{ condition: 'maxTurns', tone: '终' }],
   })
@@ -560,7 +554,7 @@ describe('同回合突破封顶用选择后印记', () => {
 
 describe('applyChoice 整合 outcomes/flags', () => {
   const sc2: Scenario = scenarioSchema.parse({
-    id: 'i', title: 'I', emoji: '🎯', intro: '开局',
+    id: 'i', title: 'I', intro: '开局',
     attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
     maxTurns: 5, systemPrompt: 'GM', endings: [{ condition: 'maxTurns', tone: '终' }],
   })
@@ -586,7 +580,7 @@ describe('applyChoice 整合 outcomes/flags', () => {
 
 describe('forceEnding 强制结局（天堂地狱）', () => {
   const sc3: Scenario = scenarioSchema.parse({
-    id: 'h', title: 'H', emoji: '🎲', intro: '开局',
+    id: 'h', title: 'H', intro: '开局',
     attributes: [{ key: 'hp', name: '生命', initial: 90, max: 100, deathBelow: 0 }],
     maxTurns: 30, systemPrompt: 'GM',
     endings: [{ condition: 'maxTurns', tone: '终' }, { condition: 'hp<=0', tone: '死' }],
@@ -608,7 +602,7 @@ describe('forceEnding 强制结局（天堂地狱）', () => {
 
 describe('maxTurns 可选 + 涌现终止', () => {
   const emergent: Scenario = scenarioSchema.parse({
-    id: 'e', title: 'E', emoji: '♾️', intro: '开局',
+    id: 'e', title: 'E', intro: '开局',
     attributes: [{ key: 'life', name: '寿元', initial: 60, max: 100, deathBelow: 0 }],
     systemPrompt: 'GM', // 注意：无 maxTurns
     endings: [{ condition: 'life<=0', tone: '油尽' }],
@@ -624,7 +618,7 @@ describe('maxTurns 可选 + 涌现终止', () => {
   })
   it('结局条件能读 flags', () => {
     const sc = scenarioSchema.parse({
-      id: 's', title: 'S', emoji: '🚩', intro: '开局',
+      id: 's', title: 'S', intro: '开局',
       attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
       maxTurns: 30, systemPrompt: 'GM',
       endings: [{ condition: 'maxTurns & has(金丹)', tone: '功成' }, { condition: 'maxTurns', tone: '蹉跎' }],

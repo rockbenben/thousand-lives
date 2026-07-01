@@ -4,7 +4,6 @@ import { scenarioSchema, importScenarioSchema } from './schema'
 const valid = {
   id: 'test',
   title: '测试剧本',
-  emoji: '🎲',
   intro: '这是开局描述',
   attributes: [{ key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 }],
   maxTurns: 10,

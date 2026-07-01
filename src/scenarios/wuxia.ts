@@ -3,7 +3,7 @@ import type { Scenario } from './schema'
 export const wuxia: Scenario = {
   id: 'wuxia',
   title: '快意江湖',
-  emoji: '⚔️',
+  genre: '武侠',
   intro:
     '风雪夜，你提着一柄缺口的旧刀踏入江湖。这里有快意恩仇，也有人心鬼蜮；有绝世武功，也有累累白骨。从无名小卒到一代大侠，三十年江湖路，全看你这一刀往哪里劈。',
   attributes: [

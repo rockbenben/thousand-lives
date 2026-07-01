@@ -9,7 +9,7 @@ import type { GameState, TurnRecord } from './types'
 const xian = builtinScenarios.find((s) => s.id === 'xian')!
 
 const sc: Scenario = scenarioSchema.parse({
-  id: 'test', title: '测试', emoji: '🎲', intro: '末日开局',
+  id: 'test', title: '测试', intro: '末日开局',
   attributes: [
     { key: 'hp', name: '生命', initial: 80, max: 100, deathBelow: 0 },
     { key: 'gold', name: '金币', initial: 50, max: 100 },
@@ -60,7 +60,7 @@ describe('buildTurnMessages', () => {
 
   it('落入带 directive 的低位状态时注入硬指令', () => {
     const banded: Scenario = scenarioSchema.parse({
-      id: 'b', title: 't', emoji: '🎲', intro: 'i',
+      id: 'b', title: 't', intro: 'i',
       attributes: [
         {
           key: 'sanity', name: '理智', initial: 80, max: 100, deathBelow: 0,
@@ -157,7 +157,6 @@ describe('印记/境界注入（门控）', () => {
   const noFlag = {
     id: 'noflag-sample',
     title: '无机缘样本',
-    emoji: '🧪',
     intro: '一个不带任何印记/晋阶机制的最小剧本，仅用于校验无 flag 分支。',
     attributes: [{ key: 'hp', name: '生命', initial: 50, max: 100, deathBelow: 0 }],
     turnUnit: '回合',
