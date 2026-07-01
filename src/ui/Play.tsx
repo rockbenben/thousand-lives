@@ -461,10 +461,17 @@ export function Play({
                 const raw = c.effects[a.key] ?? 0
                 if (raw === 0) return null
                 const cur = state.attributes[a.key]
-                const eff = Math.min(effectiveCeiling(a, flags), Math.max(0, cur + raw)) - cur
-                return { name: a.name, v: eff, capped: raw > 0 && eff <= 0 }
+                const cap = effectiveCeiling(a, flags)
+                const eff = Math.min(cap, Math.max(0, cur + raw)) - cur
+                const capped = raw > 0 && eff <= 0
+                // 「满」是因晋阶封顶（cap<max，可突破解锁）还是绝对满值——决定提示文案，
+                // 避免对无晋阶机制的属性（cap===max，如道心/寿元/生命）误报「需晋阶突破」
+                return { name: a.name, v: eff, capped, gated: capped && cap < a.max }
               })
-              .filter((f): f is { name: string; v: number; capped: boolean } => f !== null && (f.v !== 0 || f.capped))
+              .filter(
+                (f): f is { name: string; v: number; capped: boolean; gated: boolean } =>
+                  f !== null && (f.v !== 0 || f.capped),
+              )
             const isRec = auto && pendingTurn.recommend === i
             return (
               <button key={i} className={`choice ${isRec ? 'recommended' : ''}`} onClick={() => pick(i)}>
@@ -476,7 +483,7 @@ export function Play({
                         <span
                           key={f.name}
                           className="fx capped"
-                          title="已达上限，需晋阶突破方可提升"
+                          title={f.gated ? '已达上限，需晋阶突破方可提升' : '已达上限'}
                           aria-label={`${f.name}已达上限，此增益不生效`}
                         >
                           {f.name} 满
