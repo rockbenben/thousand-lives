@@ -2027,6 +2027,14 @@ input[type='range']:focus { outline: none; }
   .attr-delta {
     animation: deltaFade 2s ease-out both !important;
   }
+  /* 罗盘缓旋豁免：60~90s 一圈近乎静止，非致不适的剧烈运动，且为首页身份所系。
+     注意 RDP/远程桌面会话会让系统报告 reduce——若一刀切，远程用户首页即成死图。
+     时长与上方罗盘一节保持一致，改动时两处同步 */
+  .home-banner .ticks { animation: spin 60s linear infinite !important; }
+  .home-banner .ticks.fine { animation: spinRev 90s linear infinite !important; }
+  .home-banner .inner { animation: spin 75s linear infinite !important; }
+  .home-banner .orbit { animation: spin 60s linear infinite !important; }
+  .home-banner .orbit .g { animation: spinRev 60s linear infinite !important; }
 }
 /* 纯淡入淡出版增减提示（无位移），供 reduced-motion 使用 */
 @keyframes deltaFade {
