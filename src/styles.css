@@ -903,7 +903,17 @@ html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
   width: 1.7em; height: 1.7em; display: grid; place-items: center;
   border: 1px solid rgba(201, 80, 58, 0.32); border-radius: 4px;
   text-shadow: 0 0 12px rgba(201, 80, 58, 0.3);
+  transition: color 0.2s, text-shadow 0.2s, border-color 0.2s;
 }
+/* 点到未解锁项：封印泛朱砂微光作答——「仍封印着」，而非毫无反应 */
+.gal-tile.locked:active { border-color: rgba(201, 80, 58, 0.5); }
+.gal-tile.locked:active .gal-tile-seal-mark {
+  color: rgba(224, 112, 78, 0.9);
+  border-color: rgba(201, 80, 58, 0.6);
+  text-shadow: 0 0 20px rgba(201, 80, 58, 0.75);
+}
+.ach.locked { transition: border-color 0.2s, box-shadow 0.2s; }
+.ach.locked:active { border-color: rgba(201, 80, 58, 0.45); box-shadow: 0 0 14px rgba(201, 80, 58, 0.15); }
 /* 已历：配图绘卷，鎏金边 + 底部基调题签 */
 .gal-tile.seen { cursor: pointer; transition: transform 0.16s, box-shadow 0.22s, border-color 0.22s; }
 .gal-tile.seen { border-color: var(--line-strong); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4); }
@@ -1567,6 +1577,22 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   background: var(--ink-8);
   border: 1px solid var(--gold); border-radius: 8px; overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 50px rgba(203, 168, 90, 0.18);
+  /* 开卷一瞬鎏金绽放再敛息，与成就徽章的旋入辉光同一档仪式感 */
+  animation: edReveal 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+@keyframes edReveal {
+  from {
+    opacity: 0; transform: translateY(12px) scale(0.97);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 90px rgba(203, 168, 90, 0.55);
+  }
+  55% {
+    opacity: 1;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 74px rgba(203, 168, 90, 0.42);
+  }
+  to {
+    opacity: 1; transform: none;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 0 50px rgba(203, 168, 90, 0.18);
+  }
 }
 .ed-close {
   position: absolute; top: 8px; right: 8px; z-index: 3;
@@ -2094,6 +2120,25 @@ input[type='range']:focus { outline: none; }
   .home-banner .inner { animation: spin 75s linear infinite !important; }
   .home-banner .orbit { animation: spin 60s linear infinite !important; }
   .home-banner .orbit .g { animation: spinRev 60s linear infinite !important; }
+
+  /* 闪亮不是运动：辉光/星闪等纯明暗动画不含位移，reduce 下保留（规范针对的是移动、
+     旋转、缩放这类前庭刺激）；旋转揭晓类降级为「淡入 + 辉光」，时刻仍在、眩转不再 */
+  body::before { animation: twinkle 7s ease-in-out infinite alternate !important; }
+  .logo { animation: fadeIn 0.01ms both, logoGlow 4.5s ease-in-out infinite alternate !important; }
+  .grade-badge.grade-S { animation: gradeShine 2.6s ease-in-out infinite alternate !important; }
+  .fate-card-inner {
+    animation: fadeIn 0.5s ease-out both, fateGlow 3.4s ease-in-out 0.5s infinite alternate !important;
+  }
+  .badge-show-img {
+    animation: fadeIn 0.45s ease-out both, badgeGlow 3.5s ease-in-out 0.45s infinite alternate !important;
+  }
+  .ach-unlock-chip { animation: fadeIn 0.4s ease-out backwards !important; }
+  .seal-mark { animation: fadeIn 0.4s 0.45s ease-out backwards !important; }
+  .ending-detail { animation: fadeIn 0.4s ease-out both !important; }
+}
+/* badgeFloat 的去位移版：只呼吸辉光，不上下浮（reduce 模式徽章弹层用） */
+@keyframes badgeGlow {
+  to { filter: drop-shadow(0 0 60px rgba(236, 210, 143, 0.75)); }
 }
 /* 纯淡入淡出版增减提示（无位移），供 reduced-motion 使用 */
 @keyframes deltaFade {
