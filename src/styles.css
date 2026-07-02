@@ -1644,7 +1644,8 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
 .ending-art {
   width: 100%;
   max-width: 520px;
-  height: 240px;
+  /* 与图源同比例（结局图统一 1264×848 = 3:2）：定高横条会被 cover 裁掉约 1/3 画面 */
+  aspect-ratio: 3 / 2;
   margin: 0 auto 14px;
   background-size: cover;
   background-position: center;
