@@ -1716,14 +1716,28 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   animation: fadeIn 0.4s 0.9s ease-out backwards;
 }
 .ach-unlock-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 14px; border-radius: 16px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 15px 4px 6px; border-radius: 22px;
   font-size: 0.86rem; color: var(--gold-bright);
   background: linear-gradient(158deg, rgba(203, 168, 90, 0.16), rgba(201, 80, 58, 0.06));
   border: 1px solid rgba(203, 168, 90, 0.5);
   box-shadow: 0 0 16px rgba(203, 168, 90, 0.18);
   animation: achChipIn 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) backwards;
+  cursor: zoom-in;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+.ach-unlock-chip:hover {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 22px rgba(203, 168, 90, 0.35);
+}
+/* 徽章本尊（webp 圆章）；无图剧本回退 emoji 时 chip 恢复对称内距 */
+.ach-unlock-img {
+  flex: none; width: 32px; height: 32px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 0 10px rgba(203, 168, 90, 0.35);
+}
+span.ach-unlock-chip { padding: 4px 15px; cursor: default; }
 @keyframes achChipIn {
   from { opacity: 0; transform: scale(1.6); }
   to { opacity: 1; transform: scale(1); }
