@@ -278,7 +278,8 @@ html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
   margin-left: calc(min(520px, 94vw) / -2);
   pointer-events: none;
   z-index: 0;
-  animation: bannerIn 1.8s ease-out both;
+  /* 1s 而非 1.8s：入场再拖首屏就暗过头了，题铭 0.7s 进场后罗盘紧随其后即可 */
+  animation: bannerIn 1s ease-out both;
 }
 .home-banner .ring,
 .home-banner .ticks,
@@ -702,7 +703,31 @@ html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
 .saves-head { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .saves-title { color: var(--gold); letter-spacing: 0.2em; font-size: 0.95rem; }
 .saves-title::before { content: '✦ '; color: var(--gold); opacity: 0.65; }
-.saves-empty { color: var(--muted); font-size: 0.85rem; }
+/* 存档空状态 = 行动邀请：虚线封卡 + 朱砂「启」印 + 去开一段人生，而非一行灰字 */
+.saves-invite {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  margin-top: 14px; padding: 34px 20px 30px;
+  text-align: center;
+  border: 1px dashed rgba(203, 168, 90, 0.32); border-radius: 8px;
+  background:
+    radial-gradient(70% 80% at 50% 0%, rgba(203, 168, 90, 0.05), transparent 70%),
+    rgba(14, 20, 48, 0.4);
+}
+.saves-invite-seal {
+  display: grid; place-items: center;
+  width: 2em; height: 2em;
+  font-family: var(--font-script); font-size: 1.3rem;
+  color: rgba(201, 80, 58, 0.8);
+  border: 1px solid rgba(201, 80, 58, 0.4); border-radius: 4px;
+  transform: rotate(-4deg);
+  text-shadow: 0 0 12px rgba(201, 80, 58, 0.35);
+}
+.saves-invite-text { margin: 0; color: var(--paper-dim); font-size: 0.9rem; line-height: 1.9; max-width: 30em; }
+.saves-invite-go {
+  padding: 9px 22px; letter-spacing: 0.12em;
+  color: var(--gold-bright); background: rgba(203, 168, 90, 0.08);
+}
+.saves-invite-go:hover { border-color: var(--gold); background: rgba(203, 168, 90, 0.14); }
 .slot-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .slot { display: flex; align-items: stretch; gap: 8px; }
 .slot-load {
@@ -1654,6 +1679,29 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
 .grade-badge.grade-C { background: #5b62a0; border-color: #5b62a0; color: #0c1230; }
 .grade-badge.grade-D { background: var(--muted); border-color: var(--muted); color: #11142e; }
 .grade-title { color: var(--paper-dim); letter-spacing: 0.1em; }
+/* 本局新解锁成就：鎏金印章 chips，钤印落定后逐枚砸入（delay 由 TSX 按序号错开） */
+.ach-unlock-row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 8px; margin: 10px 0 2px;
+}
+.ach-unlock-label {
+  font-size: 0.74rem; letter-spacing: 0.3em; text-indent: 0.3em;
+  color: var(--gold); opacity: 0.85;
+  animation: fadeIn 0.4s 0.9s ease-out backwards;
+}
+.ach-unlock-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 14px; border-radius: 16px;
+  font-size: 0.86rem; color: var(--gold-bright);
+  background: linear-gradient(158deg, rgba(203, 168, 90, 0.16), rgba(201, 80, 58, 0.06));
+  border: 1px solid rgba(203, 168, 90, 0.5);
+  box-shadow: 0 0 16px rgba(203, 168, 90, 0.18);
+  animation: achChipIn 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) backwards;
+}
+@keyframes achChipIn {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
 .ending-meta { color: var(--muted); letter-spacing: 0.2em; }
 /* 结局缘由:点明「为何落幕」(身死/大限),让结束清晰可感 */
 .ending-cause { color: var(--cinnabar-bright); letter-spacing: 0.12em; font-size: 0.9rem; margin: 2px 0 0; opacity: 0.9; }
@@ -1981,6 +2029,17 @@ input[type='range']:focus { outline: none; }
   .vn-vitals { gap: 6px 8px; }
   .vn-vital { padding: 2px 9px; font-size: 0.74rem; }
   .vn-title { font-size: 0.98rem; }
+}
+
+/* 横屏矮视口（手机横持）：上述窄屏规则不命中（宽>560），走的是桌面 86vh——
+   在 380px 高的屏上卷文会盖掉几乎整幅画。收紧 HUD 与卷文各处纵向内距，限高让画面露出 */
+@media (orientation: landscape) and (max-height: 520px) {
+  .vn-hud { padding-top: 8px; gap: 5px; }
+  .vn-panel { max-height: 76vh; padding-top: 24px; padding-bottom: 10px; }
+  .vn-panel-head { margin-bottom: 6px; }
+  .vn-path { padding-bottom: 5px; }
+  .vn .choices { padding-top: 8px; gap: 6px; }
+  .vn .choice { padding: 9px 14px 9px 18px; }
 }
 
 @media (max-width: 600px) {

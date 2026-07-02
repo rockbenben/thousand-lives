@@ -167,7 +167,15 @@ export function Archive({
           </div>
           {saveError && <p className="error">{saveError}</p>}
           {slots.length === 0 ? (
-            <p className="saves-empty">还没有任何存档。游戏中点「存档」可保存进度，或导入存档文件。</p>
+            <div className="saves-invite">
+              <span className="saves-invite-seal" aria-hidden="true">启</span>
+              <p className="saves-invite-text">
+                命途尚未落笔。游戏中点「存档」可随时封存进度，稍后从这里继续；也可导入存档文件。
+              </p>
+              <button className="saves-invite-go" onClick={onBack}>
+                去开一段人生 →
+              </button>
+            </div>
           ) : (
             <ul className="slot-list">
               {slots.map((slot) => (

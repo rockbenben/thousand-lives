@@ -7,7 +7,7 @@ import { localSource, aiSource } from '../ai/turnSource'
 import { loadConfig, saveToSlot, exportSaveString, type SaveGame } from '../storage'
 import { downloadText, safeFilename } from './download'
 import { msg } from './messages'
-import { nodeImage } from './nodeArt'
+import { nodeImage, themeImageUrls } from './nodeArt'
 import { covers } from './covers'
 import { ShareCardModal } from './ShareCardModal'
 import { FontScaleControl } from './FontScaleControl'
@@ -148,6 +148,18 @@ export function Play({
     if (pendingAction || (!pendingTurn && !state.ended)) void runTurn()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingTurn, pendingAction, state.history.length])
+
+  // 首幕呈现后预热本剧本整套主题图（延迟避开首屏带宽争抢）：
+  // 本地引擎下一节点为运行时随机、无法按选项预测，但换幕大概率落在主题图，预热即命中缓存
+  useEffect(() => {
+    const t = setTimeout(() => {
+      for (const u of themeImageUrls(scenario.id)) {
+        const im = new Image()
+        im.src = u
+      }
+    }, 2500)
+    return () => clearTimeout(t)
+  }, [scenario.id])
 
   // 滚动日志到底部；打字机/流式逐字增高时持续跟随
   const scrollLogBottom = useCallback((smooth = false) => {

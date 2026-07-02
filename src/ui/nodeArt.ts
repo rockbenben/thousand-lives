@@ -74,3 +74,9 @@ export function hasNodeArt(scenarioId: string, summary?: string): boolean {
   if (`../assets/nodes/${nodeImageName(scenarioId, summary)}.webp` in art) return true
   return !!themeImage(scenarioId, themeOf(summary))
 }
+
+// 该剧本全套主题图 URL：VN 换幕大概率落在主题图（专属图仅里程碑事件有），
+// 对局开始后空闲预热这十余张，换幕即命中缓存、场景画不再迟到
+export function themeImageUrls(scenarioId: string): string[] {
+  return NODE_THEMES.map((t) => themeImage(scenarioId, t)).filter((u): u is string => !!u)
+}

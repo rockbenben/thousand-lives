@@ -48,6 +48,7 @@ export function EndingScreen({
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [revealed, setRevealed] = useState(false)
+  const [newAch, setNewAch] = useState<{ icon: string; name: string }[]>([])
   const [showMemoir, setShowMemoir] = useState(false)
   const [lightbox, setLightbox] = useState<string | null>(null)
   const busyRef = useRef(false)
@@ -71,6 +72,8 @@ export function EndingScreen({
       const isDeath = scenario.attributes.some(
         (a) => a.deathBelow !== undefined && state.attributes[a.key] <= a.deathBelow,
       )
+      // 记录前后各取一次已解锁成就，差集即本局新达成——揭晓页上钤印告知
+      const before = unlockedAchievements()
       recordEnding(scenario.id, state.ended.tone, {
         rating: grade.rating,
         local: state.mode === 'local',
@@ -79,6 +82,9 @@ export function EndingScreen({
         goal: state.goalProgress,
         custom: !builtinScenarios.some((b) => b.id === scenario.id),
       })
+      const fresh = unlockedAchievements().filter((a) => !before.some((b) => b.id === a.id))
+      // 仅非空才写入：StrictMode 下 effect 双跑，第二轮差集为空，不得抹掉首轮结果
+      if (fresh.length) setNewAch(fresh.map((a) => ({ icon: a.icon, name: a.name })))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario.id, state.ended])
@@ -188,6 +194,20 @@ export function EndingScreen({
       <p className="ending-grade">
         <span className={`grade-badge grade-${grade.rating}`}>{grade.rating} 级</span>
       </p>
+      {newAch.length > 0 && (
+        <p className="ach-unlock-row" role="status">
+          <span className="ach-unlock-label">成就解锁</span>
+          {newAch.map((a, i) => (
+            <span
+              key={a.name}
+              className="ach-unlock-chip"
+              style={{ animationDelay: `${1 + i * 0.18}s` }}
+            >
+              {a.icon} {a.name}
+            </span>
+          ))}
+        </p>
+      )}
       <p className="ending-meta">
         历经 {state.history.length} {scenario.turnUnit} · {scenario.title}
       </p>
