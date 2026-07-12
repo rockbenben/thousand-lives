@@ -55,7 +55,7 @@ export const PRESETS: ProviderPreset[] = [
       { label: '国际', url: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1' },
       { label: '美国', url: 'https://dashscope-us.aliyuncs.com/compatible-mode/v1' },
     ],
-    models: ['qwen3.6-plus', 'qwen3.7-max', 'qwen3.6-flash'],
+    models: ['qwen3.7-plus', 'qwen3.7-max', 'qwen3.6-flash'],
   },
   {
     id: 'zhipu',
@@ -68,7 +68,7 @@ export const PRESETS: ProviderPreset[] = [
       { label: '中国大陆', url: 'https://open.bigmodel.cn/api/paas/v4' },
       { label: '国际（Z.ai）', url: 'https://api.z.ai/api/paas/v4' },
     ],
-    models: ['glm-5.1', 'glm-5', 'glm-4.7', 'glm-4.7-flashx', 'glm-4.7-flash', 'glm-4.6'],
+    models: ['glm-5.2', 'glm-5.1', 'glm-5', 'glm-5-turbo', 'glm-4.7', 'glm-4.7-flashx', 'glm-4.6'],
   },
   {
     id: 'doubao',
@@ -82,9 +82,10 @@ export const PRESETS: ProviderPreset[] = [
       { label: 'Coding Plan', url: 'https://ark.cn-beijing.volces.com/api/coding/v3' },
     ],
     models: [
+      'doubao-seed-2-1-pro-260628',
+      'doubao-seed-2-1-turbo-260628',
       'doubao-seed-2-0-pro-260215',
       'doubao-seed-2-0-lite-260428',
-      'doubao-seed-2-0-mini-260428',
     ],
   },
   {
@@ -98,7 +99,7 @@ export const PRESETS: ProviderPreset[] = [
       { label: '中国大陆', url: 'https://api.minimaxi.com/v1' },
       { label: '国际', url: 'https://api.minimax.io/v1' },
     ],
-    models: ['MiniMax-M2.7', 'MiniMax-M2.7-highspeed', 'MiniMax-M2.5'],
+    models: ['MiniMax-M3', 'MiniMax-M2.7', 'MiniMax-M2.7-highspeed', 'MiniMax-M2.5'],
   },
   {
     id: 'mimo',
@@ -123,13 +124,9 @@ export const PRESETS: ProviderPreset[] = [
     label: '腾讯混元',
     provider: 'openai',
     baseURL: 'https://api.hunyuan.cloud.tencent.com/v1',
-    models: [
-      'hunyuan-turbos-latest',
-      'hunyuan-2.0-thinking-20251109',
-      'hunyuan-2.0-instruct-20251111',
-      'hunyuan-t1-latest',
-      'hunyuan-lite',
-    ],
+    // 旧版文生文模型（turbos/t1/2.0-thinking/2.0-instruct/lite）已于 2026-06-22
+    // 整体下线，legacy 端点通用对话模型仅剩 a13b 在售
+    models: ['hunyuan-a13b'],
   },
   {
     id: 'ernie',
@@ -142,7 +139,8 @@ export const PRESETS: ProviderPreset[] = [
       'ernie-5.1',
       'ernie-5.0',
       'ernie-5.0-thinking-latest',
-      'ernie-4.5-turbo-128k-preview',
+      'ernie-x1.1',
+      'ernie-4.5-turbo-128k',
     ],
   },
   // ── 聚合 / 网关 ──
@@ -154,7 +152,8 @@ export const PRESETS: ProviderPreset[] = [
     provider: 'openai',
     baseURL: 'https://openrouter.ai/api/v1',
     models: [
-      'anthropic/claude-sonnet-4.6',
+      'anthropic/claude-sonnet-5',
+      'anthropic/claude-opus-4.8',
       'google/gemini-3.5-flash',
       'deepseek/deepseek-v4-flash',
       'moonshotai/kimi-k2.6',
@@ -174,8 +173,9 @@ export const PRESETS: ProviderPreset[] = [
       'deepseek-ai/DeepSeek-V4-Flash',
       'deepseek-ai/DeepSeek-V4-Pro',
       'moonshotai/Kimi-K2.6',
-      'zai-org/GLM-5.1',
-      'minimax/MiniMax-M2.5',
+      'zai-org/GLM-5.2',
+      // org 前缀是 MiniMaxAI（非 minimax），小写前缀会 404
+      'MiniMaxAI/MiniMax-M2.5',
     ],
   },
   {
@@ -203,7 +203,7 @@ export const PRESETS: ProviderPreset[] = [
     models: [
       'deepseek-ai/deepseek-v4-flash',
       'deepseek-ai/deepseek-v4-pro',
-      'z-ai/glm-5.1',
+      'z-ai/glm-5.2',
       'nvidia/nemotron-3-super-120b-a12b',
       'meta/llama-3.1-70b-instruct',
     ],
@@ -237,7 +237,7 @@ export const PRESETS: ProviderPreset[] = [
     label: 'OpenAI',
     provider: 'openai',
     baseURL: 'https://api.openai.com/v1',
-    models: ['gpt-5.4-mini', 'gpt-5.5', 'gpt-5.4'],
+    models: ['gpt-5.6', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4-mini'],
   },
   {
     id: 'anthropic',
@@ -246,7 +246,7 @@ export const PRESETS: ProviderPreset[] = [
     label: 'Anthropic Claude',
     provider: 'anthropic',
     baseURL: 'https://api.anthropic.com',
-    models: ['claude-sonnet-4-6', 'claude-opus-4-8', 'claude-haiku-4-5-20251001'],
+    models: ['claude-sonnet-5', 'claude-opus-4-8', 'claude-haiku-4-5-20251001', 'claude-fable-5'],
   },
   {
     id: 'gemini',
@@ -264,7 +264,7 @@ export const PRESETS: ProviderPreset[] = [
     label: 'xAI Grok',
     provider: 'openai',
     baseURL: 'https://api.x.ai/v1',
-    models: ['grok-4.3', 'grok-4.20-0309-reasoning', 'grok-4.20-0309-non-reasoning'],
+    models: ['grok-4.5', 'grok-4.3', 'grok-4.20-0309-reasoning', 'grok-4.20-0309-non-reasoning'],
   },
   {
     id: 'mistral',
@@ -273,7 +273,7 @@ export const PRESETS: ProviderPreset[] = [
     label: 'Mistral',
     provider: 'openai',
     baseURL: 'https://api.mistral.ai/v1',
-    models: ['mistral-medium-3-5', 'mistral-small-4', 'mistral-large-3', 'ministral-3-14b'],
+    models: ['mistral-medium-3-5', 'mistral-small-latest', 'mistral-large-latest', 'ministral-14b-latest'],
   },
   {
     id: 'groq',

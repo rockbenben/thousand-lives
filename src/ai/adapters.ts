@@ -68,7 +68,9 @@ export async function chatOpenAI(
   await postStream(
     `${base}/chat/completions`,
     { authorization: `Bearer ${cfg.apiKey}` },
-    { model: cfg.model, messages, temperature: 0.9, stream: true },
+    // 不发送 temperature：前端无温度设置项，且部分新推理模型（GPT-5.x 等）
+    // 只接受默认采样值，显式发送会 400；交由各家服务端默认
+    { model: cfg.model, messages, stream: true },
     (data) => {
       const obj = parseData(data) as {
         choices?: { delta?: { content?: string } }[]
@@ -143,7 +145,7 @@ export async function chatGemini(
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }],
       })),
-      generationConfig: { temperature: 0.9 },
+      // 不发送 generationConfig：前端无温度设置项，交由 Gemini 服务端默认
     },
     (data) => {
       const obj = parseData(data) as {

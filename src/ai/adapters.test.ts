@@ -52,6 +52,8 @@ describe('chatOpenAI', () => {
     expect(body.model).toBe('gpt-4o-mini')
     expect(body.stream).toBe(true)
     expect(body.messages).toHaveLength(2)
+    // 前端无温度设置项；部分新推理模型（GPT-5.x 等）拒绝非默认采样值，不发送
+    expect(body.temperature).toBeUndefined()
   })
 
   it('自定义 baseURL 去除尾部斜杠', async () => {
@@ -133,6 +135,8 @@ describe('chatGemini', () => {
       { role: 'user', parts: [{ text: 'HI' }] },
       { role: 'model', parts: [{ text: 'PREV' }] },
     ])
+    // 前端无温度设置项，不发送 generationConfig，交由服务端默认
+    expect(body.generationConfig).toBeUndefined()
   })
 
   it('无 system 消息时省略 systemInstruction（Gemini 对空 text 报 400）', async () => {
