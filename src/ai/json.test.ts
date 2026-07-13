@@ -32,4 +32,13 @@ describe('extractJson', () => {
   it('JSON 不完整时抛错', () => {
     expect(() => extractJson('{"a":1')).toThrow()
   })
+  it('大量未闭合花括号（模型复读/截断）快速抛错而非 O(n²) 卡死', () => {
+    // 无扫描预算时 20 万个 '{' 会冻结数十秒；有预算则毫秒级抛错。测试能在超时内完成即证明未退化
+    const t0 = performance.now()
+    expect(() => extractJson('{'.repeat(200000))).toThrow()
+    expect(performance.now() - t0).toBeLessThan(1000)
+  })
+  it('大量前置废话后的合法 JSON 仍能解析（预算不误伤正常输入）', () => {
+    expect(extractJson('废话'.repeat(20000) + '{"a":1}')).toEqual({ a: 1 })
+  })
 })

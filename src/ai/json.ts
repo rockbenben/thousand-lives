@@ -4,9 +4,15 @@ export function extractJson(text: string): unknown {
 
 // 返回 JSON 值及其在原文中的起始下标，便于把 JSON 之前的部分当正文使用
 export function extractJsonWithStart(text: string): { value: unknown; start: number } {
+  // 扫描预算：合法输出总在早期某个 '{' 一次命中，远不触及此值；但模型偶发的复读/截断
+  // 会产出成千上万个未闭合 '{'，逐个起点重扫是 O(n²)——无 max_tokens 上限时足以把主线程卡死
+  // （实测 12 万个 '{' 冻结约 18s）。超预算即视为无完整 JSON，交由上层纠正重试。
+  const SCAN_BUDGET = 5_000_000
+  let scanned = 0
   let start = text.indexOf('{')
   while (start >= 0) {
     const end = scanBalanced(text, start)
+    scanned += (end >= 0 ? end - start + 1 : text.length - start)
     if (end >= 0) {
       try {
         return { value: JSON.parse(text.slice(start, end + 1)), start }
@@ -14,6 +20,7 @@ export function extractJsonWithStart(text: string): { value: unknown; start: num
         // 该起点的平衡片段不是合法 JSON（如起点位于 prose 中），尝试下一个 '{'
       }
     }
+    if (scanned > SCAN_BUDGET) break
     start = text.indexOf('{', start + 1)
   }
   throw new Error('输出中没有完整的 JSON 对象')
