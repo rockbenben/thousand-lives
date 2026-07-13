@@ -167,9 +167,11 @@ export function Play({
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })
   }, [])
 
+  // 仅在正文增长（新回合 / 流式逐字 / 加载态切换）时跟随到底部；
+  // 不加依赖会在开菜单、看全图、存档提示等无关重渲染时把已上滚回看的读者硬拽回底部
   useEffect(() => {
     scrollLogBottom(true)
-  })
+  }, [streamText, pendingTurn, state.history.length, loading, error, proseDone, scrollLogBottom])
 
   // 新回合开始即收起选项；正文（流式/打字机）落定后再让它们淡入，营造「写完→你接话」的呼吸
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Scenario, Opening } from '../scenarios/schema'
 import { chat, friendlyError } from '../ai/client'
 import { PRESETS } from '../ai/presets'
@@ -44,6 +44,16 @@ export function Setup({
   const [customIdText, setCustomIdText] = useState('')
   const [ambition, setAmbition] = useState('')
   const [testing, setTesting] = useState(false)
+  // 卸载（如测试中点「返回」）或发起新测试时中断在途请求，停止消耗额度、不在卸载后 setState
+  const aliveRef = useRef(true)
+  const testAbort = useRef<AbortController | null>(null)
+  useEffect(() => {
+    aliveRef.current = true
+    return () => {
+      aliveRef.current = false
+      testAbort.current?.abort()
+    }
+  }, [])
 
   // 模式：本地（无需 Key）/ AI 驱动。剧本无本地事件时只能 AI；默认无 Key 选本地、有 Key 选 AI
   const localAvailable = hasLocalMode(scenario)
@@ -67,15 +77,20 @@ export function Setup({
 
   const testConnection = async () => {
     const seq = ++testSeq.current
+    testAbort.current?.abort() // 中断上一次仍在途的测试，避免叠加请求
+    const ac = new AbortController()
+    testAbort.current = ac
     setTesting(true)
     setTestResult('')
     try {
-      await chat(cfg.config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }])
-      if (testSeq.current === seq) setTestResult('✅ 连接成功')
+      await chat(cfg.config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }], undefined, ac.signal)
+      if (aliveRef.current && testSeq.current === seq) setTestResult('✅ 连接成功')
     } catch (e) {
-      if (testSeq.current === seq) setTestResult(`❌ ${friendlyError(e)}`)
+      if (aliveRef.current && testSeq.current === seq) setTestResult(`❌ ${friendlyError(e)}`)
     } finally {
-      setTesting(false)
+      // 复位加载态由「仍是当前在途请求」把关（testAbort），而非 seq——否则改配置只 bump seq
+      // 不发新请求时，本次请求结束也不复位，按钮会永久卡在「测试中…」
+      if (aliveRef.current && testAbort.current === ac) setTesting(false)
     }
   }
 
