@@ -1,15 +1,13 @@
 # 千世书 · thousand-lives
 
-> 繁體中文 → [README.zh-TW.md](README.zh-TW.md)
+> AI 驱动的文字人生模拟器 — 一卷千世，活过千种人生
+
+**简体中文** · [繁體中文](README.zh-Hant.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-brightgreen)](https://nodejs.org/)
+[![365 开源计划 #015](https://img.shields.io/badge/365%20%E5%BC%80%E6%BA%90%E8%AE%A1%E5%88%92-%23015-1f6feb)](https://github.com/rockbenben/365opensource)
 
-> 365 开源计划 #015 · AI 驱动的文字人生模拟器 — 一卷千世，活过千种人生
-
-**10 个剧本 · 28 家 AI 服务商预设 · 61 枚成就 · 纯前端 · 无需 Key 即玩**
-
-🎮 **[在线体验](https://lives.newzone.top)**
+🎮 **[在线体验](https://lives.newzone.top)** —— 10 个剧本 · 28 家 AI 服务商预设 · 61 枚成就 · 纯前端 · 无需 Key 即玩
 
 ![千世书](public/og.jpg)
 
@@ -42,6 +40,19 @@
 
 ---
 
+## 核心亮点
+
+- **数字即故事**：属性按数值落入命名状态（如理智「清醒 / 动摇 / 濒临崩溃」）并作为硬指令注入 AI——理智崩溃必现幻觉，数字改变你看到的故事
+- **明牌 + 部分执行**：每个选项直接展示属性影响，且当前状态决定它能达成到什么程度；选项之外还能「自己写一个行动」交由 AI 裁定
+- **视觉小说式呈现**：整屏场景插画为幕、卷文浮层承载剧情，一键「看全图」纯赏画面；一局走过的每一回合汇成可通览全程的命运长卷
+- **无需 Key 即玩**：内置剧本自带事件池，即点即玩、每局不同；填入 Key 则切换为大模型实时驱动
+- **结局卡 / 命运卡 + 社交分享**：S～D 评级与专属称号、命运高光配图 + 挑战链接，一键分享到微博 / QQ 空间 / X / Telegram
+- **61 枚成就 + 结局图鉴**：累计记录见过的结局，激励重开探索不同命运
+
+完整玩法与技术亮点（流式叙事、上下文压缩、社交 OG 预览、无障碍等）见 [玩法机制](docs/gameplay.md)。
+
+---
+
 ## 快速开始
 
 **环境要求：** Node.js ≥ 20
@@ -62,19 +73,6 @@ npm run build
 
 ---
 
-## 核心亮点
-
-- **数字即故事**：属性按数值落入命名状态（如理智「清醒 / 动摇 / 濒临崩溃」）并作为硬指令注入 AI——理智崩溃必现幻觉，数字改变你看到的故事
-- **明牌 + 部分执行**：每个选项直接展示属性影响，且当前状态决定它能达成到什么程度；选项之外还能「自己写一个行动」交由 AI 裁定
-- **视觉小说式呈现**：整屏场景插画为幕、卷文浮层承载剧情，一键「看全图」纯赏画面；一局走过的每一回合汇成可通览全程的命运长卷
-- **无需 Key 即玩**：内置剧本自带事件池，即点即玩、每局不同；填入 Key 则切换为大模型实时驱动
-- **结局卡 / 命运卡 + 社交分享**：S～D 评级与专属称号、命运高光配图 + 挑战链接，一键分享到微博 / QQ 空间 / X / Telegram
-- **61 枚成就 + 结局图鉴**：累计记录见过的结局，激励重开探索不同命运
-
-完整玩法与技术亮点（流式叙事、上下文压缩、社交 OG 预览、无障碍等）见 [玩法机制](docs/gameplay.md)。
-
----
-
 ## 文档
 
 - [剧本格式规范](docs/scenario-format.md) — AI 生成、JSON 示例、字段说明、条件语法、进阶字段
@@ -84,6 +82,6 @@ npm run build
 
 ---
 
-## License
+## 关于 365 开源计划
 
-[MIT](LICENSE) © [rockbenben](https://github.com/rockbenben)
+[365 开源计划](https://github.com/rockbenben/365opensource) 的第 **#015** 个项目——一个人 + AI，一年 300+ 个开源项目。[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)
