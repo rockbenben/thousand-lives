@@ -92,10 +92,12 @@ export function GenerateModal({
 
         <label>
           剧本主题
+          {/* placeholder 原本列了三个例子，窄屏会被截断，且下面的备选标签已经在示范了——
+              输入框只管邀请你写，示例交给标签 */}
           <input
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            placeholder="例：大航海海盗 / 赛博朋克侦探 / 武侠江湖"
+            placeholder="想活一段什么样的人生？"
             disabled={busy}
             autoFocus
           />

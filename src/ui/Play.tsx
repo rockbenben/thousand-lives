@@ -86,6 +86,11 @@ export function Play({
     attrTrack.current = { attrs: state.attributes, deltas }
   }
   const deltas = attrTrack.current.deltas
+  // 数值只在落子之后揭晓：选项不明牌 effect（掷骰 / 命运无常 / 极端命运本就会改写它，
+  // 明牌等于虚标），改由承接段落报出这一步真正引起的增减
+  const deltaList = scenario.attributes
+    .filter((a) => deltas[a.key])
+    .map((a) => ({ key: a.key, name: a.name, v: deltas[a.key] }))
   const flags = state.flags ?? []
 
   // 生成下一回合；resolving=自定义行动结算（此时 pendingTurn 仍是行动发生的场景）。
@@ -267,7 +272,11 @@ export function Play({
         />
       )}
       <div className="vn-scrim" aria-hidden="true" />
+      </div>
 
+      {/* HUD 必须是 vn-stage 的兄弟而非子节点：stage 带 z-index 自成层叠上下文，
+          HUD 放在里面时，展开的菜单再高的 z-index 也压不过卷文层（vn-panel），
+          会被正文盖住半截。移出来后 HUD(20) > 卷文(6)，菜单才真正浮在最上面 */}
       <header className="vn-hud">
         <div className="vn-hud-row">
           <span className="vn-title">{scenario.title}</span>
@@ -355,21 +364,17 @@ export function Play({
               >
                 <span className="vn-vital-name">{a.name}</span>
                 <span className={`vn-vital-band sev-${band.severity}`}>{band.label}</span>
-                <span className="vn-vital-val">
+                {/* 增减不再在此浮标：属性行会换行，绝对定位的浮标会压到上一行的命数上；
+                    数值变化改由卷文承接段的 recap-fx 一处呈现（就在玩家正在读的地方） */}
+                <span className={`vn-vital-val ${delta !== 0 ? (delta > 0 ? 'bump-up' : 'bump-down') : ''}`}>
                   {value}
                   {atCap && <span className="vn-vital-cap" title={capHint}>满</span>}
-                  {delta !== 0 && (
-                    <span key={state.history.length} className={`attr-delta ${delta > 0 ? 'up' : 'down'}`}>
-                      {delta > 0 ? `+${delta}` : delta}
-                    </span>
-                  )}
                 </span>
               </span>
             )
           })}
         </div>
       </header>
-      </div>
 
       <section className="vn-panel">
         {scenario.maxTurns ? (
@@ -424,9 +429,22 @@ export function Play({
         )}
 
         <div className="vn-body" ref={logRef}>
-          {lastTurn && (lastTurn.reaction || lastTurn.twist) && (
+          {lastTurn && (lastTurn.reaction || lastTurn.twist || deltaList.length > 0) && (
             <div className="vn-recap">
               {lastTurn.choiceText && <p className="picked">{lastTurn.choiceText}</p>}
+              {deltaList.length > 0 && (
+                <p className="recap-fx">
+                  {deltaList.map((f) => (
+                    <span
+                      key={f.key}
+                      className={`fx ${f.v > 0 ? 'up' : 'down'}`}
+                      aria-label={`${f.name}${f.v > 0 ? '提升' : '降低'}${Math.abs(f.v)}`}
+                    >
+                      {f.name} {f.v > 0 ? `+${f.v}` : f.v}
+                    </span>
+                  ))}
+                </p>
+              )}
               {lastTurn.reaction && <p className="reaction">{lastTurn.reaction}</p>}
               {lastTurn.twist && <p className="twist">{lastTurn.twist}</p>}
             </div>
@@ -471,52 +489,10 @@ export function Play({
         <div className={`choices ${keyMoment ? 'key-moment' : ''}`}>
           {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或「托管 ⏸」可随时接管</p>}
           {pendingTurn.choices.map((c, i) => {
-            // 明牌显示「实际生效值」：把选项 effect 按当前值 + 有效上限/下限 0 夹一遍，
-            // 与 clampEffects 同口径。正向增益被上限吞掉时标记为「满」，不再虚标一个加不上去的 +N。
-            const fx = scenario.attributes
-              .map((a) => {
-                const raw = c.effects[a.key] ?? 0
-                if (raw === 0) return null
-                const cur = state.attributes[a.key]
-                const cap = effectiveCeiling(a, flags)
-                const eff = Math.min(cap, Math.max(0, cur + raw)) - cur
-                const capped = raw > 0 && eff <= 0
-                // 「满」是因晋阶封顶（cap<max，可突破解锁）还是绝对满值——决定提示文案，
-                // 避免对无晋阶机制的属性（cap===max，如道心/寿元/生命）误报「需晋阶突破」
-                return { name: a.name, v: eff, capped, gated: capped && cap < a.max }
-              })
-              .filter(
-                (f): f is { name: string; v: number; capped: boolean; gated: boolean } =>
-                  f !== null && (f.v !== 0 || f.capped),
-              )
             const isRec = auto && pendingTurn.recommend === i
             return (
               <button key={i} className={`choice ${isRec ? 'recommended' : ''}`} onClick={() => pick(i)}>
                 <span className="choice-text">{isRec ? '➤ ' : ''}{c.text}</span>
-                {fx.length > 0 && (
-                  <span className="choice-fx">
-                    {fx.map((f) =>
-                      f.capped ? (
-                        <span
-                          key={f.name}
-                          className="fx capped"
-                          title={f.gated ? '已达上限，需晋阶突破方可提升' : '已达上限'}
-                          aria-label={`${f.name}已达上限，此增益不生效`}
-                        >
-                          {f.name} 满
-                        </span>
-                      ) : (
-                        <span
-                          key={f.name}
-                          className={`fx ${f.v > 0 ? 'up' : 'down'}`}
-                          aria-label={`${f.name}${f.v > 0 ? '提升' : '降低'}${Math.abs(f.v)}`}
-                        >
-                          {f.name} {f.v > 0 ? `+${f.v}` : f.v}
-                        </span>
-                      ),
-                    )}
-                  </span>
-                )}
               </button>
             )
           })}

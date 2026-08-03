@@ -241,7 +241,7 @@ export function Setup({
               className="custom-input"
               value={customIdText}
               onChange={(e) => setCustomIdText(e.target.value)}
-              placeholder="例：原著里早夭的废太子，重生后藏着前世记忆与一身暗伤"
+              placeholder="写下你的出身、性格与那点藏着的秘密"
               rows={2}
               autoFocus
             />
@@ -249,7 +249,7 @@ export function Setup({
         </div>
         {mode === 'local' && (
           <p className="hint">
-            本地试玩按固定剧情池演进，所选身份仅作代入参考；切到「AI 驱动」可自定义身份，且 AI 会让剧情贴合你的设定。
+            本地试玩从内置事件池取材，开局身份决定你会遇上哪些事件——三种身份走的是三条不同的线。切到「AI 驱动」还能自己写身份，由 AI 现编贴合你设定的剧情。
           </p>
         )}
       </section>
@@ -273,11 +273,13 @@ export function Setup({
             ))}
           </div>
         )}
+        {/* placeholder 原本写死三个例子（扳倒太后/集齐物资/改写原著），在仙侠、武侠这些剧本里全是串台的；
+            上面的备选标签本就来自当前剧本，示例交给它们，这里只邀请你自己写 */}
         <textarea
           className="custom-input"
           value={ambition}
           onChange={(e) => setAmbition(e.target.value)}
-          placeholder="例：扳倒太后，登上后位 / 集齐物资建立据点 / 改写原著结局"
+          placeholder="或者，自己写一个"
           rows={2}
         />
       </section>

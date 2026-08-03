@@ -32,10 +32,16 @@ export function Typewriter({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [len, text])
 
+  // 写完之后这段就是普通正文：撤掉「点击跳过」的提示与手型，否则悬停总在承诺一个已经无事可做的点击
+  const typing = len < text.length
   return (
-    <p className="narrative typewriter" onClick={() => setLen(text.length)} title="点击跳过">
+    <p
+      className={`narrative ${typing ? 'typewriter' : ''}`}
+      onClick={typing ? () => setLen(text.length) : undefined}
+      title={typing ? '点击跳过' : undefined}
+    >
       {text.slice(0, len)}
-      {len < text.length && <span className="caret">▌</span>}
+      {typing && <span className="caret">▌</span>}
     </p>
   )
 }
