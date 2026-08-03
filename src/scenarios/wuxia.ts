@@ -881,9 +881,10 @@ export const wuxia: Scenario = {
         { text: '蛰伏布局，谋而后动', effects: { gongfu: 4, fame: 2 }, reaction: '你不动声色地退了一步，那仇人毫无察觉，依旧高坐云端；知情的挚友握着你的手低声道「君子报仇十年不晚，沉住气」，眼中满是信重。' },
         { text: '放下血仇，了结这段因果', effects: { fame: 6, life: 4, gongfu: -2 }, reaction: '你长叹一声放下了刀，多年的戾气仿佛随风散去；有人不解你竟肯罢手，也有得道的前辈颔首叹服，说你能放下血海深仇，已是另一重境界。' },
       ],
+      // 「血洗你满门的真凶」——只有灭门遗孤有这笔血债
       summary: '仇人现身', art: '1ave8ox', gen: 'gemini',
       keyMoment: true,
-      requires: 'gongfu>=55',
+      requires: 'gongfu>=55 & has(灭门遗孤)',
       minTurn: 18,
       weight: 1.2,
     },
@@ -977,8 +978,9 @@ export const wuxia: Scenario = {
         { text: '铁证当众揭发，肃清败类', effects: { fame: 10, gongfu: 2, life: -6 }, reaction: '你将铁证一一抛在案上，那道貌岸然的前辈面如死灰、再难狡辩；大堂里死寂良久，一名白须老掌门猛地将茶盏掼碎在地，颤声道「老夫错信此獠三十年」，旋即满座哗然，几个受其蒙蔽多年的后生更是当场红了眼眶。' },
         { text: '私下了断，不动声色', effects: { gongfu: 4, fame: -2, life: -4 }, reaction: '那伪君子悄无声息地暴毙府中，世人只当他急病而亡，仍尊他为君子；唯有几个心思缜密的同道隐隐生疑，背后议论这死得太过蹊跷。' },
       ],
+      // 「当年构陷师门的黑手」——承「师门蒙冤」，无师门者不该有这条线
       summary: '揭发黑手', art: '1e4adnj', gen: 'gemini',
-      requires: 'gongfu>=60',
+      requires: 'gongfu>=60 & has(名门弟子)',
       minTurn: 21,
       weight: 1.1,
     },

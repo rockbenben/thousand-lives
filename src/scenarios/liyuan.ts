@@ -954,9 +954,9 @@ export const liyuan: Scenario = {
     // ── 升艺闸门：搭班→挑梁→名伶→泰斗 ──
     {
       narrative:
-        '坐科满师的日子到了。班主把你叫到跟前，上下打量这些年挨打挨骂熬出来的功底，终于松口：你可以正式搭班入园、登台唱戏了。从此不再是后台打杂、跑龙套的学徒，而是有名有姓、能领包银的正式伶人。出科那日，师兄弟们既羡且妒，你攥着第一份戏份，知道这粉墨生涯算是真正起了头。',
+        '正式搭班的日子到了。班主把你叫到跟前，上下打量这些年吊嗓练功熬出来的底子，终于松口：你可以搭班入园、正经登台唱戏了。从此不再是后台打杂、跑龙套的角色，而是有名有姓、能领包银的正式伶人。这一日，同行既羡且妒，你攥着第一份戏份，知道这粉墨生涯算是真正起了头。',
       choices: [
-        { text: '正式搭班，登台亮相', effects: { art: 28, fame: 4, safety: -2 }, flagsSet: ['搭班'], reaction: '你一招一式有板有眼，台下竟有了零星彩声；班主暗暗点头，同行也收起了轻视，知道这后生是真坐科熬出来的。' },
+        { text: '正式搭班，登台亮相', effects: { art: 28, fame: 4, safety: -2 }, flagsSet: ['搭班'], reaction: '你一招一式有板有眼，台下竟有了零星彩声；班主暗暗点头，同行也收起了轻视，知道这后生是真下过苦功的。' },
         { text: '再磨一年，不急登台', effects: { art: 6, safety: 2 }, reaction: '你自觉火候未到，宁可再吊一年功；师傅赞你沉得住气，只是这搭班登台的时机，到底慢了旁人一步。' },
       ],
       summary: '出科搭班', art: '1bjzll6', gen: 'gemini',
@@ -1085,6 +1085,7 @@ export const liyuan: Scenario = {
       ],
       summary: '旧谱忆苦', art: '1eo5qzt', gen: 'gemini',
       once: true,
+      requires: 'has(戏班学徒)',
       minTurn: 11,
     },
     {
@@ -1542,6 +1543,7 @@ export const liyuan: Scenario = {
         { text: '留三分力，护着身子慢慢来', effects: { art: 4, safety: 2 }, reaction: '你护着筋骨、留了三分力，把式虽对了路数却终究欠了几分火候；师父瞧出你惜身、不咸不淡道这般练法，台上的真彩怕是难得了。' },
       ],
       summary: '把子功', art: '3nyj1a', gen: 'gemini',
+      requires: 'has(戏班学徒)',
       minTurn: 2,
       maxTurn: 12,
       weight: 1.1,

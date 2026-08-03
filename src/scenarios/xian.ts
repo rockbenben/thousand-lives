@@ -369,7 +369,9 @@ export const xian: Scenario = {
         { text: '只求指点一二，不愿受缚', effects: { cultivation: 4, daoHeart: 2 }, reaction: '老修士摇头失笑，眼底却有几分赞许：「滑头。也罢，肯学不肯跪，倒也是条有骨气的路。」' },
         { text: '婉拒，宁可独行求道', effects: { daoHeart: 6, cultivation: -2 }, reaction: '老修士愣了愣，竟抚掌叹道：「三百载的阶梯送到面前都敢推开——这份孤勇，老夫倒要记你一笔了。」' },
       ],
+      // 云游修士只会看上无门无派的散修：仙门弟子早有师承，魔道传人正道不收
       summary: '云游拜师', art: '1azdic2', gen: 'gemini',
+      requires: 'has(散修)',
       minTurn: 2,
     },
     {
@@ -429,7 +431,7 @@ export const xian: Scenario = {
         { text: '称病弃赛，避其锋芒', effects: { daoHeart: -4, cultivation: -2 }, reaction: '台下弟子见你临阵称病，登时嘘声四起，那师兄更是当众讥笑：「我道是谁，原是个未战先怯的草包。」' },
       ],
       summary: '宗门大比', art: '1d5901r', gen: 'gemini',
-      requires: 'cultivation>=25',
+      requires: 'cultivation>=25 & has(仙门)',
       minTurn: 7,
     },
     {
@@ -504,6 +506,7 @@ export const xian: Scenario = {
         { text: '专注修行，不分心旁骛', effects: { cultivation: 6, daoHeart: -2 }, reaction: '丹堂长老见你婉拒，脸色微沉，拂袖道：「这般好机缘也不要，年轻人，莫要心比天高，回头悔之晚矣。」' },
       ],
       summary: '丹堂之邀', art: '1atpk97', gen: 'gemini',
+      requires: 'has(仙门)',
       minTurn: 6,
     },
     {
@@ -561,6 +564,7 @@ export const xian: Scenario = {
         { text: '只顾采药，独善其身', effects: { cultivation: 6, daoHeart: -10 }, reaction: '谷底的呼救声渐渐弱了下去，终至无声。回宗后此事传开，同门看你的眼神都变了：「采药要紧，同门的命就不要紧？」' },
       ],
       summary: '历练同门', art: '1bt7fpe', gen: 'gemini',
+      requires: 'has(仙门)',
       minTurn: 5,
     },
     {
@@ -648,7 +652,7 @@ export const xian: Scenario = {
         { text: '推说修为不足，避此凶事', effects: { cultivation: 2, daoHeart: -8 }, reaction: '掌门闻言眼中的期许一寸寸冷下去，殿中同门更是窃窃私语、目光鄙夷：「平日称兄道弟，临到用人，就这般推三阻四？」' },
       ],
       summary: '叛徒追缉', art: '1bq59a0', gen: 'gemini',
-      requires: 'cultivation>=40',
+      requires: 'cultivation>=40 & has(仙门)',
       minTurn: 10,
     },
     {
@@ -659,7 +663,7 @@ export const xian: Scenario = {
         { text: '暗中渔利，两边挑拨', effects: { cultivation: 6, daoHeart: -10 }, reaction: '两派因你暗中挑拨杀红了眼、死伤惨重，事后东窗事发，两边都对你恨之入骨：「好个唯恐天下不乱的阴险小人！」' },
       ],
       summary: '灵脉之争', art: '1g80v2v', gen: 'gemini',
-      requires: 'cultivation>=35',
+      requires: 'cultivation>=35 & has(仙门)',
       minTurn: 9,
     },
     {
@@ -730,6 +734,7 @@ export const xian: Scenario = {
         { text: '设法寻其把柄，反将一军', effects: { cultivation: 4, daoHeart: -8 }, reaction: '那长老被你抓住把柄反将一军，气得脸色青白、咬牙切齿：「好，好你个心机深沉的小辈！这梁子，算是结下了。」' },
       ],
       summary: '长老刁难', art: '1lurbno', gen: 'gemini',
+      requires: 'has(仙门)',
       minTurn: 7,
     },
     {
@@ -762,6 +767,7 @@ export const xian: Scenario = {
         { text: '只在边缘窥探，浅尝辄止', effects: { cultivation: 4, daoHeart: -2 }, reaction: '一缕逸出的不祥气息擦着你身侧掠过，禁地深处仿佛有什么东西被惊动了，发出一声微不可闻的低哑冷笑，听得人脊背发凉。' },
       ],
       summary: '禁地松动', art: '1herb0c', gen: 'gemini',
+      requires: 'has(仙门)',
       minTurn: 11,
       weight: 1.1,
     },
@@ -784,7 +790,7 @@ export const xian: Scenario = {
         { text: '势不可为，劝众弃宗保命', effects: { cultivation: 2, daoHeart: -10 }, reaction: '掌门闻言眼眦欲裂，手中阵眼几乎握不住：「弃宗？！传承数代的根基，你竟劝我等弃了它逃命？！」满门弟子看你的眼神尽是寒意。' },
       ],
       summary: '护宗大阵', art: '1dy7324', gen: 'gemini',
-      requires: 'cultivation>=50 & daoHeart>=40',
+      requires: 'cultivation>=50 & daoHeart>=40 & has(仙门)',
       minTurn: 16,
       weight: 1.3,
     },
@@ -829,7 +835,7 @@ export const xian: Scenario = {
       ],
       summary: '仗剑救师', art: '1aw95ae', gen: 'gemini',
       requiresItem: '本命飞剑',
-      requires: 'cultivation>=50',
+      requires: 'cultivation>=50 & has(仙门)',
       minTurn: 15,
       weight: 1.2,
     },
@@ -850,7 +856,9 @@ export const xian: Scenario = {
         { text: '先探戒中虚实再作打算', effects: { cultivation: 6, daoHeart: -2 }, reaction: '你神识探入戒中的刹那，那前辈刚断气的尸身似有若无地一颤——你心头莫名一凛，只盼这窥探，莫要窥出什么不该招惹的东西来。' },
         { text: '吞没遗物，据为己有', effects: { cultivation: 8, daoHeart: -12 }, reaction: '你掰开那只死死攥着你的手，将戒指据为己有。那前辈圆睁的双目至死未阖，死死盯着你，那目光里的托付，已尽数化作无声的控诉。' },
       ],
+      // 正道前辈临死不会把遗物托给一身魔气的人
       summary: '前辈遗戒', art: '1bpl6kj', gen: 'gemini',
+      requires: '!has(魔道)',
       minTurn: 10,
       weight: 1.1,
     },
@@ -874,7 +882,7 @@ export const xian: Scenario = {
         { text: '自谦推让，让予他人', effects: { cultivation: -2, daoHeart: 2 }, reaction: '同门见你将这扬名立万的天大机缘拱手让人，有人不解、有人惋惜：「这等出风头的好事都肯让？要么是真豁达，要么是怯了场。」' },
       ],
       summary: '万派论道', art: '1awh1yv', gen: 'gemini',
-      requires: 'cultivation>=55',
+      requires: 'cultivation>=55 & has(仙门)',
       minTurn: 14,
     },
     {
@@ -883,8 +891,9 @@ export const xian: Scenario = {
         { text: '敞开识海，引功德金气洗心', effects: { daoHeart: 14, cultivation: 4 }, reaction: '那霸道纯净的功德金光毫无滞碍地涌入你识海、洗炼道心——冥冥之中仿佛有什么在为你印证：能受得起这满身金光的，必是问心无愧之人。' },
         { text: '只取一缕温养，徐徐图之', effects: { daoHeart: 8 }, reaction: '你只引一缕金气温养，不贪不躁。这般克制反倒叫那先天金气与你愈发相得——倒像是天地都在嘉许这份难得的稳重。' },
       ],
+      // 文中把主角写成「斩妖除魔、护佑生灵」多年——魔道传人不该领这份功德
       summary: '功德金气', art: '1bjey4g', gen: 'gemini',
-      requires: 'daoHeart>=60',
+      requires: 'daoHeart>=60 & !has(魔道)',
       once: true,
       minTurn: 15,
     },
@@ -952,7 +961,7 @@ export const xian: Scenario = {
         { text: '放他一条生路，担下罪责', effects: { daoHeart: 6, cultivation: -4 }, reaction: '你收剑放他离去，他踉跄回望，眼里的旧日清明一闪而逝：「你为我担下这天大的罪责……来世，我必还你。」师门追责的目光，却已落在你身上。' },
       ],
       summary: '故人入魔', art: '1eaf871', gen: 'gemini',
-      requires: 'cultivation>=55',
+      requires: 'cultivation>=55 & has(仙门)',
       minTurn: 17,
       weight: 1.2,
     },
@@ -1019,7 +1028,7 @@ export const xian: Scenario = {
     {
       narrative: '历经无数生死浮沉，你独行的道途上渐渐生出一个念头：立宗开派、自成一脉，将这一身所学传诸后世。这念头一起，便如野火般再难按下。你心知开宗的好处——可聚拢志同道合的同道、可使你一身道统薪火相传、可庇护一方水土的安宁；可代价同样沉重：从此你便要从那个来去无踪、潇洒自在的逍遥散人，被推上风口浪尖，担起一宗上下的兴衰荣辱，再也难以抽身退步。',
       choices: [
-        { text: '择地立宗，开宗收徒', effects: { daoHeart: 8, cultivation: 2, lifespan: -4 }, reaction: '你立宗开派的消息传开，四方慕名而来的修士络绎不绝，门下弟子叩首高呼「掌门」，声震山谷——这一声声呼唤里，是一脉香火的开端。' },
+        { text: '择地立宗，开宗收徒', effects: { daoHeart: 8, cultivation: 2, lifespan: -4 }, flagsSet: ['开宗'], reaction: '你立宗开派的消息传开，四方慕名而来的修士络绎不绝，门下弟子叩首高呼「掌门」，声震山谷——这一声声呼唤里，是一脉香火的开端。' },
         { text: '只收三两亲传，不立大宗', effects: { daoHeart: 6, cultivation: 2 }, reaction: '你只择三两可造之材亲传，不慕那门庭若市的虚名。相熟的老友点头赞道：「不被开宗的诱惑冲昏头脑，只求传承不绝——你这分寸，拿捏得好。」' },
         { text: '仍做闲云野鹤，不沾俗务', effects: { cultivation: 4, daoHeart: 4 }, reaction: '一位同道闻你舍了那开宗立派的滔天名望、甘做闲云野鹤，又是不解又是叹服：「换了旁人，早被这念头烧得坐不住了——你倒守得住这份清静。」' },
       ],
@@ -1034,8 +1043,9 @@ export const xian: Scenario = {
         { text: '由他去，是非自有公论', effects: { daoHeart: 6, cultivation: -2 }, reaction: '你不予追究，任他散布谣言。日久天长，他那一身反咬恩师的恶名反倒人尽皆知，而你的清白自在人心——门人私下叹服：「师尊这份气度，才真叫人佩服。」' },
         { text: '收回所授功法烙印，留他性命', effects: { cultivation: 2, daoHeart: 2 }, reaction: '你只悄然抹去他身上的功法烙印，留他一条性命。那叛徒惊觉一身所窃尽数化为乌有，又惧又恨，却也无可奈何——既全了师徒一场，也断了他作恶的本钱。' },
       ],
+      // 「你倾注心血栽培的得意弟子」——须先真的收过徒
       summary: '弟子叛出', art: '1deu3ex', gen: 'gemini',
-      requires: 'cultivation>=55',
+      requires: 'cultivation>=55 & has(开宗)',
       minTurn: 16,
     },
     {
@@ -1069,8 +1079,9 @@ export const xian: Scenario = {
         { text: '暗查幕后黑手，以彼之道还施', effects: { cultivation: 6, daoHeart: -6 }, reaction: '你顺藤摸瓜揪出幕后黑手，以彼之道还施彼身。那构陷你的人作茧自缚、身败名裂，咬牙切齿：「好狠的手段……偷鸡不成，反倒栽在他手里！」' },
         { text: '索性远遁避世，任人非议', effects: { daoHeart: -4, cultivation: 4 }, reaction: '你一走了之，那未及澄清的流言便愈传愈烈。昔日敬重你的同道纷纷摇头叹息：「一走了之……这不是不打自招么？可惜了一世清名。」' },
       ],
+      // 罪名是「勾结魔道、出卖正道机密」——魔道本人谈不上蒙冤
       summary: '蒙冤构陷', art: '1j2m271', gen: 'gemini',
-      requires: 'cultivation>=60',
+      requires: 'cultivation>=60 & !has(魔道)',
       minTurn: 17,
       weight: 1.1,
     },
@@ -1126,8 +1137,9 @@ export const xian: Scenario = {
         { text: '约其当家，以正道公断了结', effects: { daoHeart: 8, cultivation: 2 }, reaction: '你强压悲愤、约对方当家以正道公断了结血仇。诸派见你大仇当前仍守正道规矩、不私自妄动刀兵，无不动容：「丧了这许多弟子还能忍住不滥杀……这份隐忍持正，叫人敬服。」' },
         { text: '隐忍蓄力，徐徐图之', effects: { daoHeart: -2, cultivation: 6 }, reaction: '你按下滔天怒火、隐忍不发。那暗害你宗门的大派见你竟不动声色，反倒愈发心惊：「血洗了他一处分舵，他却半点动静都没有……这般沉得住气的对手，才最叫人睡不安稳。」' },
       ],
+      // 「你一手创立的宗门」——须先真的立过宗（立宗开派 / 择徒立派授「开宗」印记）
       summary: '宗门血仇', art: '1d5hdbf', gen: 'gemini',
-      requires: 'cultivation>=70',
+      requires: 'cultivation>=70 & has(开宗)',
       minTurn: 20,
       weight: 1.1,
     },
@@ -1322,7 +1334,7 @@ export const xian: Scenario = {
         { text: '婉拒众妖，飘然远遁', effects: { daoHeart: 4, cultivation: -2 }, reaction: '你婉拒了众妖的拥戴，飘然远遁。黑压压的百兽久久伏地不起、目送你的身影消失于天际，那一声声不舍的低鸣里，既是失落，亦是无尽的敬慕。' },
       ],
       summary: '万妖朝拜', art: '1at0q1n', gen: 'gemini',
-      requires: 'cultivation>=80',
+      requires: 'cultivation>=80 & !has(魔道)',
       minTurn: 24,
     },
     {
@@ -1343,7 +1355,7 @@ export const xian: Scenario = {
         { text: '只留传承玉简与护山大阵', effects: { daoHeart: 6, cultivation: 2 }, reaction: '你留下传承玉简与护山大阵，全了师徒之情，也保住了飞升的根本。门下弟子虽不舍你的离去，却也敬服你的周全：「掌门已为我等思虑得这般妥帖，我等岂能不自立自强。」' },
       ],
       summary: '留身镇山', art: '1h1fm0x', gen: 'gemini',
-      requires: 'cultivation>=82',
+      requires: 'cultivation>=82 & has(开宗)',
       minTurn: 26,
     },
     {
@@ -1476,7 +1488,7 @@ export const xian: Scenario = {
         { text: '将功德回向众生，不为己用', effects: { daoHeart: 10, cultivation: 2 }, reaction: '你竟连这疗愈己身的功德清光都肯尽数回向众生、不为己用。那一池清光散入天地的刹那，无数受惠的生灵冥冥中为你颂祷——这般无私，本身便是最圆满的了悟。' },
       ],
       summary: '功德照心', art: '1bj90ed', gen: 'gemini',
-      requires: 'daoHeart>=70',
+      requires: 'daoHeart>=70 & !has(魔道)',
       minTurn: 26,
     },
     {
@@ -1563,7 +1575,7 @@ export const xian: Scenario = {
         { text: '强行参破禁制，挣脱束缚', effects: { cultivation: 8, daoHeart: -10, lifespan: -4 }, reaction: '你竟强行参破师尊那道护你的禁制、挣脱束缚。师尊闻讯怆然长叹、痛心疾首：「为师拼着折损道行也要拦你一程……你却连这点约束都容不得。这道，你终究是要越走越偏了……」' },
       ],
       summary: '紧箍禁制', art: '1i4v9io', gen: 'gemini',
-      requires: 'daoHeart<=40',
+      requires: 'daoHeart<=40 & has(仙门)',
       minTurn: 12,
       weight: 1.1,
     },
@@ -1670,8 +1682,9 @@ export const xian: Scenario = {
         { text: '结伴同访，护道求经', effects: { daoHeart: 12, cultivation: 6, lifespan: -8 }, reaction: '那云游真人见你竟肯暂搁修行、随他远访海外仙山求经，稽首一礼、神色愈发清和：「善哉。肯为这济世活人的上古道经搭上一程修行的，赤子之心也，贫道得遇道友同行，此行无憾矣。」' },
         { text: '只助一程，不远涉沧溟', effects: { daoHeart: 4, cultivation: 2 }, reaction: '那云游真人见你只肯助一程、不愿远涉沧溟，并无怪罪，只温言一礼：「各有各的缘法，强求不得。道友肯送贫道这一程，已是结下一段善缘了。」' },
       ],
+      // 仙气盎然的云游真人邀你同去求济世道经，不会挑一个魔功传人同行
       summary: '云游访仙', art: '1azktuu', gen: 'gemini',
-      requires: 'cultivation>=55',
+      requires: 'cultivation>=55 & !has(魔道)',
       minTurn: 18,
     },
     {
@@ -2051,6 +2064,205 @@ export const xian: Scenario = {
       once: true,
       weight: 200,
     },
+    // ── 魔道中后期弧 ──
+    // 原先魔道只有开局那几个事件，十回合之后便只剩通用池，一路净是护苍生、积功德的正派戏码。
+    // 这一段补上中后期该有的魔道戏：入魔宗、血炼、夺舍、被围剿、称雄——让这条线一路都是魔道的活法。
+    {
+      narrative:
+        '一位面色青白的魔宗长老循着你身上的魔气找上门来。他不寒暄，开门见山地摊开条件：入宗，则血食、魔功、庇护一应俱全，再不必像野狗一样东躲西藏；代价是从此听令于宗主，宗门要你杀谁便杀谁，要你献什么便献什么。他枯瘦的手指敲着桌面，笑意里没有半分温度：「散修魔修活不过三十年，这是老规矩。你自己掂量。」',
+      choices: [
+        {
+          text: '投入魔宗，借势速进',
+          effects: { cultivation: 10, daoHeart: -6, lifespan: -2 },
+          flagsSet: ['魔宗'],
+          reaction: '你在血池边立下了宗誓。魔宗的血食与功法源源不断地递到你手里，修为一日千里；只是从此每一道命令下来，你都得掂量掂量——那已经不全是你自己的道了。',
+        },
+        {
+          text: '只与之结盟，不入其门',
+          effects: { cultivation: 4, daoHeart: 2 },
+          reaction: '那长老盯了你许久，终究笑了一声，扔下一枚可换血食的令牌：「不肯跪的骨头，我倒见过几根，最后都成了别人的丹。」话虽刻薄，那令牌到底是留下了。',
+        },
+        {
+          text: '断然回绝，宁做孤魔',
+          effects: { daoHeart: 6, cultivation: -2 },
+          reaction: '你把话说死，那长老拂袖而去，临走撂下一句：「往后正道追你，魔宗也不会捞你。」你站在门前，忽然觉得这条路两头都空——可两头空，也就两头不欠。',
+        },
+      ],
+      summary: '魔宗招揽', art: '1n4kq2w', gen: 'gemini',
+      requires: 'has(魔道) & cultivation>=35',
+      once: true,
+      minTurn: 12,
+      weight: 1.2,
+    },
+    {
+      narrative:
+        '魔宗里从没有「同门」这两个字。一名与你同辈的师兄近来屡屡在宗主面前压你一头，昨夜更遣人搜了你的洞府——他要的不是你的宝，是你的位子，甚至是你这具养得不错的皮囊。宗规写得明白：宗内相残不问缘由，只论生死。也就是说，你若先动手，没人会替他喊冤；你若慢了半步，也没人会替你收尸。',
+      choices: [
+        {
+          text: '先下手为强，夺其修为与位子',
+          effects: { cultivation: 12, daoHeart: -10, lifespan: -4 },
+          reaction: '你在他闭关的第三日破门而入。事后宗主只淡淡看了你一眼，把他那份血食划到了你名下——魔宗认的从来不是道理，是活下来的那个。',
+        },
+        {
+          text: '设局借宗主之手除他',
+          effects: { cultivation: 6, daoHeart: -4 },
+          reaction: '你把他私吞血食的账目不动声色地递到了该看见的人眼前。三日后那位师兄被拖进血池时还在喊冤——从头到尾，你的手上一滴血也没沾。',
+        },
+        {
+          text: '避其锋芒，退出这场倾轧',
+          effects: { daoHeart: 4, cultivation: -4 },
+          reaction: '你主动让出了那个位子，退居宗门边缘。有人笑你懦弱，可你心里清楚：在这地方，活得久本身就是一种赢法。',
+        },
+      ],
+      summary: '魔宗内斗', art: '1n7v3ba', gen: 'gemini',
+      requires: 'has(魔宗)',
+      minTurn: 18,
+      weight: 1.1,
+    },
+    {
+      narrative:
+        '你翻出那本魔功残卷里最凶的一篇——「血炼」。它要的不是灵材，是活人的生魂：以七道未散的神魂为引，可将一件寻常法器炼成认主的本命魔器，从此器随心动、噬敌精血反哺其主。炉火已经烧起来了，坩埚旁的笼子里蜷着从荒村掳来的人，正一声声地哭。差的只是你伸不伸这只手。',
+      choices: [
+        {
+          text: '投魂入炉，炼成本命魔器',
+          effects: {},
+          // 道具只能在事件级或 outcomes 分支级发放，故用单分支 outcome 承载
+          outcomes: [
+            {
+              weight: 1,
+              effects: { cultivation: 14, daoHeart: -14, lifespan: -4 },
+              itemsGained: ['血炼魔器'],
+              reaction: '七道惨叫先后熄灭，炉中腾起一团幽红。魔器落到掌心时是温热的，还在轻轻跳动，像一颗不属于你的心脏——它认了你，从此你走到哪里，它便饿到哪里。',
+            },
+          ],
+        },
+        {
+          text: '改用凶兽精魂顶替，少造几分杀孽',
+          effects: { cultivation: 6, daoHeart: -2, lifespan: -2 },
+          reaction: '你连夜猎了七头凶兽填炉。炼出的器差着一截火候，威能远不如血炼；可推开笼门放人走时，你说不清心里那点松快是从哪儿来的。',
+        },
+        {
+          text: '熄了炉火，此法不用',
+          effects: { daoHeart: 8, cultivation: -4 },
+          reaction: '你踢翻了坩埚，任那炉幽火在地上一点点熄了。魔功残卷在袖中隐隐发烫，像在嘲笑你——修魔的人讲慈悲，是要吃亏的。',
+        },
+      ],
+      summary: '血炼魔器', art: '1n9wq5c', gen: 'gemini',
+      requires: 'has(魔道) & cultivation>=45',
+      once: true,
+      minTurn: 14,
+      weight: 1.2,
+    },
+    {
+      narrative:
+        '那件血炼魔器近来越发不安分。它开始在夜里自行嗡鸣，牵着你的神识往有活人气息的方向去；几次交手，它更是不待你号令便主动噬人精血，收都收不住。你这才想明白炼器时那句语焉不详的批注——「器成之日，主奴未定」。它在试你：是你驭它，还是它借你这具身子接着吃下去。',
+      choices: [
+        {
+          text: '以神魂强压，重定主奴',
+          effects: { cultivation: 8, daoHeart: -6, lifespan: -6 },
+          reaction: '你与那团幽红在识海里搏了三天三夜，最后一寸寸把它按了回去。醒来时鬓角白了一片，可它再嗡鸣时，调子已经服帖了。',
+        },
+        {
+          text: '索性放开束缚，与它同流',
+          effects: { cultivation: 16, daoHeart: -16 },
+          reaction: '你松了那道禁制，任它牵着你的手去饮血。修为涨得前所未有地快，只是有几个夜里醒来，你想不起前一晚自己去过哪儿、做过什么。',
+        },
+        {
+          text: '封器入匣，宁可不用',
+          effects: {},
+          outcomes: [
+            {
+              weight: 1,
+              effects: { daoHeart: 10, cultivation: -6 },
+              itemsLost: ['血炼魔器'],
+              reaction: '你以三重禁制把它封进石匣，沉入了寒潭。那嗡鸣声渐渐远了，识海也清静了下来——代价是从此你少了一张最锋利的底牌。',
+            },
+          ],
+        },
+      ],
+      summary: '魔器噬主', art: '1nb2xj8', gen: 'gemini',
+      requiresItem: '血炼魔器',
+      minTurn: 20,
+      weight: 1.1,
+    },
+    {
+      narrative:
+        '寿元的沙漏漏到了见底处，而你这身魔功偏偏最耗元寿。正道有丹药、有传承、有师门替你续命，魔道只有一条路——夺舍。你早已相好了那具躯壳：城南一个灵根上佳的年轻散修，根骨干净、寿元绵长，只是修为浅得不堪一击。夺了他的身子，你还能再走五十年；不夺，你这一身道行便要连着这副烂了的皮囊一起埋进土里。',
+      choices: [
+        {
+          text: '行夺舍之术，换一具新身',
+          effects: { lifespan: 30, daoHeart: -18, cultivation: -6 },
+          reaction: '你的神识挤进那具年轻的身体时，他还在识海里徒劳地挣扎、喊他娘。喊了半炷香，就没声了。镜中那张陌生的脸对你笑了笑——从此这世上再没有他，只有换了张皮的你。',
+        },
+        {
+          text: '只取将死者的残寿续命，不夺活人',
+          effects: { lifespan: 12, daoHeart: -4, cultivation: -2 },
+          reaction: '你守在义庄，从几个咽气边缘的老人身上引来那几缕将散的残寿。续得不多，勉强够你再撑些年月——这已是你能替自己找的最体面的活法。',
+        },
+        {
+          text: '不夺不取，认了这条寿数',
+          effects: { daoHeart: 12, lifespan: -2 },
+          reaction: '你放那年轻人走了，独自坐回洞府。魔道传人里，肯这么等死的没几个——你算一个。这念头竟让你在寿元将尽的当口，头一回觉出几分踏实。',
+        },
+      ],
+      summary: '夺舍续命', art: '1ndc7fm', gen: 'gemini',
+      requires: 'has(魔道) & lifespan<=40',
+      once: true,
+      minTurn: 18,
+      weight: 1.3,
+    },
+    {
+      narrative:
+        '你终究是修得太快、名头太响。三大正道宗门这一回不再各自为战，联名发了会剿的檄文，将你这些年做下的桩桩件件一一列在其上——采补、血炼、夺舍，字字都能钉死你。剑光已封了三面山口，为首的是一位元婴剑修，剑意压得连风都停了。他隔着山谷朗声道：「自废修为，留你全尸。」',
+      choices: [
+        {
+          text: '燃魔血硬撼，杀出一条血路',
+          effects: { cultivation: 8, lifespan: -14, daoHeart: -8 },
+          reaction: '你燃了半身魔血，硬生生从三面剑阵里撕开一道口子逃了出来。身后是十几具倒下的正道弟子，身前是望不到头的荒原——从此这方天地，再没有你能停脚的地方。',
+        },
+        {
+          text: '弃了道场，遁入深渊魔域',
+          effects: { daoHeart: 4, cultivation: -6, lifespan: -4 },
+          reaction: '你一把火烧了苦心经营多年的洞府，独自遁入连正道都不敢深入的魔域。那里没人追你，也没人认得你——干净得像另起了一世。',
+        },
+        {
+          text: '反手挟持凡民为质，逼其退兵',
+          effects: { cultivation: 4, daoHeart: -16 },
+          reaction: '你把整座山下的村子拢进了阵里。那元婴剑修握剑的手抖了半晌，终究是撤了。你赢了这一阵，也把「魔头」二字，实实在在地钉在了自己身上。',
+        },
+      ],
+      summary: '正道会剿', art: '1nf8k3q', gen: 'gemini',
+      requires: 'has(魔道) & cultivation>=60',
+      once: true,
+      minTurn: 20,
+      weight: 1.3,
+    },
+    {
+      narrative:
+        '这一界的魔修，从来是一盘散沙——各自躲在阴影里采补、火并、被正道一个个剿灭。而如今，你已是他们中最强的那一个。有几名魔宗余孽找上门来，跪请你出面立旗，把散落的魔修拢成一股，与正道分庭抗礼。旗一旦立起，你便再没有回头路：从此正道会把你当作头号大敌，而这一盘散沙，也终于有了骨头。',
+      choices: [
+        {
+          text: '立魔旗，聚群魔与正道分庭抗礼',
+          effects: { cultivation: 10, daoHeart: -10, lifespan: -4 },
+          reaction: '黑旗在断崖上展开的那日，八方魔修伏地称尊。你俯瞰着这片终于成了形的势力——正道从此不再喊你魔修，而是喊你魔尊。',
+        },
+        {
+          text: '只收几名可用之徒，不立山头',
+          effects: { cultivation: 6, daoHeart: -2 },
+          reaction: '你只挑了三两个心性还算干净的收在门下，余者尽数遣散。有人骂你不识抬举，可你心里明白：山头一立，你就再不是自己的主人了。',
+        },
+        {
+          text: '散尽魔功，试着走回头路',
+          effects: { daoHeart: 16, cultivation: -14, lifespan: -2 },
+          reaction: '你当着众魔的面自散了大半魔功，那些跪着的人愣了许久，才骂骂咧咧地散去。回头路走不走得通谁也不知道——你只知道，这一步是你自己迈的。',
+        },
+      ],
+      summary: '魔道称尊', art: '1nh1w6d', gen: 'gemini',
+      requires: 'has(魔道) & cultivation>=75',
+      once: true,
+      minTurn: 24,
+      weight: 1.2,
+    },
     // ── 仙门支线弧 ──
     {
       narrative: '掌事长老颁下宗门季度任务：深入南峰采集三株年满百载的「玄霜灵芝」，限期七日归来，不得延误。你心知这差事看似寻常，却要翻越两道险峻山岭、还要提防盘踞于崖壁的一窝雪隼妖鸟——宗门资历尚浅的弟子，多半要在此出乖露丑。可按时完成任务，功勋簿上便又添一笔，往后争修炼资源也多几分底气。',
@@ -2285,6 +2497,206 @@ export const xian: Scenario = {
       maxTurn: 1,
       once: true,
       weight: 200,
+    },
+    // ── 散修中后期弧 ──
+    // 与魔道同一个毛病：原先散修只有开局那几个事件，十回合后便只剩通用池，
+    // 而通用池默认按「有师门、有资粮」写。这一段补上散修该有的活法：卖命换资粮、
+    // 被宗门延揽、无人护法、抱团结盟、最后自立一处不受盘剥的散修坊市。
+    {
+      narrative:
+        '坊市的悬赏榜前照例挤满了人。散修没有宗门按月发的资粮，丹药、灵石、功法，样样都得自己拿命去换。榜上那一单赏格高得扎眼：坊市的坐地商家要人深入乱葬岗，取一头尸妖的内丹。你在榜下站了半晌——赏格越高，坑就越深，这是散修都懂的道理；可你囊中那点灵石，实在也撑不到下个月了。',
+      choices: [
+        {
+          text: '接下这单，深入乱葬岗搏一票',
+          effects: { cultivation: 8, lifespan: -6, daoHeart: -2 },
+          reaction: '你在尸气里泡了七天，带着半条命和那枚内丹回到坊市。掌柜验货时眼皮都没抬，只把灵石推过来：「下回还有。」你攥着那袋灵石，忽然明白散修的日子就是这么一单一单熬出来的。',
+        },
+        {
+          text: '挑几单赏格平平、风险也小的稳活',
+          effects: { cultivation: 3, daoHeart: 4 },
+          reaction: '你接了几单护送、采药的碎活，赚得不多，却一趟趟都全须全尾地回来了。同在榜下讨生活的老散修看你一眼，难得点了点头：「知道挑活的，能多活几年。」',
+        },
+        {
+          text: '不接活，宁可勒紧腰带枯修',
+          effects: { daoHeart: 6, cultivation: -4, lifespan: -2 },
+          reaction: '你退出了那片喧嚷，回洞府里以最薄的灵气硬磨。进境慢得让人心焦，可你没欠谁的人情、也没沾谁的血——这条路走得慢，至少每一步都算自己的。',
+        },
+      ],
+      summary: '悬赏榜下', art: '1p2m4rk', gen: 'gemini',
+      requires: 'has(散修) & cultivation>=30',
+      minTurn: 12,
+      weight: 1.2,
+    },
+    {
+      narrative:
+        '你在坊市里露的那几手，到底传进了某位执事耳中。一个中等宗门遣人来延揽——不是收你做弟子，是请你去做「客卿」：给一处独立洞府、按月供给灵石丹药，遇上宗门要用人时你须到场。那人说得客气：「以先生的资质，何必在外头风吹日晒。」你听得明白，这话里还有半句没说出口——客卿终究是外人，供得起你，也随时能弃了你。',
+      choices: [
+        {
+          text: '受了这份客卿，先把资粮拿到手',
+          effects: { cultivation: 10, daoHeart: -4, lifespan: -2 },
+          flagsSet: ['客卿'],
+          reaction: '洞府、月例、丹药，一样不缺地送到了你手里。修为几年间涨得比前十年还快，只是每回宗门传唤，你都得放下手头的功课就走——那点自在，是实实在在换出去了。',
+        },
+        {
+          text: '只接单次雇佣，不受长约束缚',
+          effects: { cultivation: 5, daoHeart: 2 },
+          reaction: '你只肯一单一结，那执事讨价还价半晌，终究还是应了。往后你每回出手都收足了报酬，来去自如——比不上客卿的月例丰厚，可谁也拿捏不住你。',
+        },
+        {
+          text: '婉拒，宁可清苦也不寄人篱下',
+          effects: { daoHeart: 8, cultivation: -3 },
+          reaction: '你把话说得客气，人送走了。回身望着自己那间四壁萧然的洞府，心里倒踏实：散修穷是穷些，可这方寸之地，主人只有一个。',
+        },
+      ],
+      summary: '宗门延揽', art: '1p5c8vd', gen: 'gemini',
+      requires: 'has(散修) & cultivation>=40',
+      once: true,
+      minTurn: 14,
+      weight: 1.2,
+    },
+    {
+      narrative:
+        '客卿这份差事，日子久了便显出真味来。宗门弟子闯的祸推给你去收拾，与邻派结的怨派你去顶，最要紧的资源分派却从来没有你的份——这一回更过分，长老一纸传唤，要你孤身去趟一处死过三名内门弟子的险地，理由轻描淡写：「先生道行高，正合适。」你捏着那道传令，忽然听懂了「客卿」二字：宗门舍不得的人，才叫弟子。',
+      choices: [
+        {
+          text: '照令去，把这份人情坐实',
+          effects: { cultivation: 8, lifespan: -8, daoHeart: -2 },
+          reaction: '你从那处险地爬出来时，衣袍已看不出原色。长老只淡淡赏了两瓶丹药，倒是几名内门弟子看你的眼神变了——他们知道，这趟本该是他们去死。',
+        },
+        {
+          text: '当面回绝，把话挑明',
+          effects: { daoHeart: 8, cultivation: -2 },
+          flagsClear: ['客卿'],
+          reaction: '你把传令拍在案上，只说了一句「客卿不是死士」，转身出了山门。月例断了，洞府收回了，可走出那道山门时，你的脊背比进来时直。',
+        },
+        {
+          text: '虚与委蛇，把差事推给别人',
+          effects: { cultivation: 2, daoHeart: -6 },
+          reaction: '你使了些手段，把这趟差事转到了另一名新来的客卿头上。那人没能回来。此后宗门待你依旧客气，只是你自己夜里打坐时，总要多花些工夫才能静得下来。',
+        },
+      ],
+      summary: '客卿之累', art: '1p7j3wq', gen: 'gemini',
+      requires: 'has(客卿)',
+      minTurn: 20,
+      weight: 1.1,
+    },
+    {
+      narrative:
+        '突破的关口就在眼前，可散修最怕的也正是这一刻——宗门弟子破境有长老护法、有阵法遮掩气机，你什么都没有。破境时气机冲霄，方圆百里的邪修、劫修都能闻着味找来，那时你神魂大开、毫无还手之力，等同一块摆在案板上的肥肉。护法要么花大价钱雇人，要么押上运气独自硬冲。',
+      choices: [
+        {
+          text: '重金雇几名散修同道护法',
+          effects: {},
+          // 雇来的护法本身就是一场赌：可能真护你一程，也可能是黑吃黑
+          outcomes: [
+            {
+              weight: 3,
+              effects: { cultivation: 12, daoHeart: 2, lifespan: -2 },
+              reaction: '那几人守了三天三夜，真替你挡下了两拨闻讯而来的劫修。你出关时他们已伤了两个，却只按约收了灵石便走——散修里，讲信义的到底还有。',
+            },
+            {
+              weight: 2,
+              effects: { cultivation: -6, lifespan: -10, daoHeart: -6 },
+              reaction: '破境最紧要的那一刻，护法的刀是从背后落下来的。你拼着经脉寸断才逃出洞府——雇来的人，护的从来是价高的那一方。',
+            },
+          ],
+        },
+        {
+          text: '寻一处绝地独自硬冲',
+          effects: { cultivation: 10, lifespan: -8, daoHeart: 6 },
+          reaction: '你钻进了连兽都不去的死绝之地，独自把那道关口撞了过去。出关时形销骨立，可这一身修为，从头到尾没欠任何人半分。',
+        },
+        {
+          text: '压下境界，再等一个稳妥时机',
+          effects: { daoHeart: 8, cultivation: -4 },
+          reaction: '你生生把冲到嗓子眼的那口气压了回去。散修没有试错的余地，慢，有时候就是活着的意思。',
+        },
+      ],
+      summary: '无人护法', art: '1p9k6nb', gen: 'gemini',
+      requires: 'has(散修) & cultivation>=45',
+      once: true,
+      minTurn: 16,
+      weight: 1.3,
+    },
+    {
+      narrative:
+        '几名与你相熟的散修凑到了一处。他们说的事你早就想过：散修一盘散沙，进坊市要被抽成、租洞府要被压价、遇上宗门弟子挑衅只能忍——若能结一个松散的道盟，互通消息、共摊风险、遇事一起上，日子总能好过些。只是这盟一结，你便再不只是一个人，别人的祸事也会顺着这条线找上门来。',
+      choices: [
+        {
+          text: '牵头结盟，做这个出面的人',
+          effects: { cultivation: 4, daoHeart: 6, lifespan: -2 },
+          flagsSet: ['道盟'],
+          reaction: '道盟立起来那日来了三十几号人，都是些在夹缝里讨生活的散修。他们推你出面，你才发现自己往后要操心的，不止是自己那条命了。',
+        },
+        {
+          text: '入盟，但不出头',
+          effects: { cultivation: 3, daoHeart: 3 },
+          flagsSet: ['道盟'],
+          reaction: '你在盟中挂了个名，出力不出头。消息能通、有事有人搭把手，麻烦也轮不到你先扛——这份分寸，散修拿捏得最熟。',
+        },
+        {
+          text: '谢过好意，仍旧独来独往',
+          effects: { daoHeart: 4, cultivation: -1 },
+          reaction: '你婉拒了。众人散去后，你独自走回洞府，路上想的是：结盟能挡一时的欺压，可盟散的时候，欠的人情要拿命还——这买卖，你不做。',
+        },
+      ],
+      summary: '散修结盟', art: '1pbf2xs', gen: 'gemini',
+      requires: 'has(散修) & cultivation>=35',
+      once: true,
+      minTurn: 15,
+      weight: 1.2,
+    },
+    {
+      narrative:
+        '道盟到底还是撞上了它挡不住的东西。一个大宗门要圈下盟中弟兄安身的那片山头开矿，来人连商量都懒得商量，只丢下一句「三日内搬走」。盟里吵成了一锅粥：有人要拼、有人要散、有人已经在收拾包袱。所有人都看着你——散修的盟，从来是靠出头的那个人撑着的，撑不住的那天，也就散了。',
+      choices: [
+        {
+          text: '聚众据守，硬顶这一回',
+          effects: { cultivation: 6, lifespan: -8, daoHeart: 8 },
+          reaction: '三十几名散修在山口结阵，硬是把宗门的人挡了两天。最后双方各让一步、划了界。消息传开，往后再没人敢把这群散修当软柿子捏。',
+        },
+        {
+          text: '出面周旋，替弟兄换一处安身地',
+          effects: { cultivation: 2, daoHeart: 6, lifespan: -2 },
+          reaction: '你跑了七八处坊市，赔了不少笑脸与灵石，总算替众人换来一片没人要的荒山。盟没散，只是搬了家——散修的胜利，往往就是这个样子。',
+        },
+        {
+          text: '劝众人各自散去，保命要紧',
+          effects: { daoHeart: -6, cultivation: 2 },
+          flagsClear: ['道盟'],
+          reaction: '你劝散了这个盟。众人默默收拾东西走了，没人骂你，可也没人再回头看你一眼。你站在空了的山场上，觉得自己好像做对了，又好像丢了什么。',
+        },
+      ],
+      summary: '道盟风雨', art: '1pd8h4m', gen: 'gemini',
+      requires: 'has(道盟)',
+      minTurn: 22,
+      weight: 1.1,
+    },
+    {
+      narrative:
+        '熬到这一步，你已是这一带散修里数得着的人物。有人找上门来提了个大胆的念头：合力开一处只属于散修的坊市——不抽成、不看宗门脸色、丹药功法自家人流转。这是替所有在夹缝里讨过生活的人开一条路，也是明明白白地从各大宗门嘴里夺食。坊市一立，你便再不是那个谁都懒得多看一眼的散修了。',
+      choices: [
+        {
+          text: '牵头开市，替散修挣一块地方',
+          effects: { cultivation: 6, daoHeart: 10, lifespan: -6 },
+          reaction: '坊市开张那日，来的散修从山口一直排到了谷底。有人红着眼睛跟你说，他修了一百年，头一回在坊市里被人称一声「道友」而不是「野修」。',
+        },
+        {
+          text: '只出资不出面，做个幕后东家',
+          effects: { cultivation: 8, daoHeart: 2, lifespan: -2 },
+          reaction: '你把灵石投了进去，名字却不见于任何一块牌匾。坊市红火起来了，进项源源不断地流进你的洞府——只是那声「道友」，喊的是别人。',
+        },
+        {
+          text: '不掺和，独守自己这条道',
+          effects: { daoHeart: 6, cultivation: 2 },
+          reaction: '你摇头谢绝，回了洞府。修行这条路，说到底是一个人走完的——你从头到尾都这么认为，也从头到尾都这么走了。',
+        },
+      ],
+      summary: '散修坊市', art: '1pg3q7v', gen: 'gemini',
+      requires: 'has(散修) & cultivation>=65',
+      once: true,
+      minTurn: 24,
+      weight: 1.2,
     },
 
     // ——— 因果种子弧：4 组埋种→延迟随机善恶报 ———
@@ -2745,7 +3157,7 @@ export const xian: Scenario = {
       narrative: '你已成金丹、寿数悠长，洞府之外却聚来一群根骨各异的求道少年——有灵根上佳却心术不正的，有资质平平却赤诚向道的。立派传道之念在你心头渐起：择徒授业，既是开一脉香火、积一份功德，也意味着从此要为这些弟子的善恶因果担上一份干系。收谁、弃谁、如何教，皆系你这一脉日后的清浊。',
       choices: [
         { text: '宁缺毋滥，只收心正之才', effects: { daoHeart: 8, cultivation: 2, lifespan: -2 }, reaction: '你不为那上佳灵根所动，只择心性纯正者倾囊相授。被你婉拒的天才悻悻而去，留下的弟子却个个赤诚向道。一位云游老修闻之颔首：「传道先传心——这一脉，根子正了。」' },
-        { text: '广纳门徒，以势壮大宗门', effects: { cultivation: 4, daoHeart: -4, lifespan: -2 }, reaction: '你来者不拒、广纳门徒，门下顷刻人丁兴旺、声势浩大。只是良莠不齐之下，已隐有恃强凌弱、败坏门风者——这壮大的声势底下，悄悄埋着日后的隐患。' },
+        { text: '广纳门徒，以势壮大宗门', effects: { cultivation: 4, daoHeart: -4, lifespan: -2 }, flagsSet: ['开宗'], reaction: '你来者不拒、广纳门徒，门下顷刻人丁兴旺、声势浩大。只是良莠不齐之下，已隐有恃强凌弱、败坏门风者——这壮大的声势底下，悄悄埋着日后的隐患。' },
         { text: '不愿担因果，谢客独修', effects: { cultivation: 3, daoHeart: -2 }, reaction: '你不愿背负这一群弟子的善恶因果，索性闭门谢客、独守清修。求道的少年们在山门外徘徊良久，终是失望散去——你的道清净了，却也少了那份薪火相传的暖意。' },
       ],
       summary: '择徒立派', art: '1e0hvt5', gen: 'gemini', requires: 'has(金丹)', minTurn: 31,

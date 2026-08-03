@@ -396,7 +396,9 @@ export const sanguo: Scenario = {
         { text: '谦言尚需历练，先求一幕僚之职', effects: { trust: 4, repute: 2 }, reaction: '诸侯颔首应了，赞你知进退、不浮夸，留你在帐下听用；几个世家子弟却撇嘴笑这寒门子终究没什么大志。' },
         { text: '故作高深，避而不答以待价而沽', effects: { repute: -4, wit: 2 }, reaction: '诸侯眉头一皱，淡淡道既无高见便退下吧，满堂宾客掩口窃笑，你这装腔作势的初见落了个灰头土脸。' },
       ],
+      // 「一身洗得发白的旧衫」挤在世家子弟堆里求见——这是寒门游学士子的入场方式
       summary: '初登诸侯门', art: '701gp8', gen: 'gemini',
+      requires: 'has(寒门游学士子)',
       minTurn: 1,
       maxTurn: 8,
       weight: 1.2,
@@ -446,7 +448,9 @@ export const sanguo: Scenario = {
         { text: '坦然请辞以明心迹，以退为进', effects: { trust: 6, repute: 2, wit: -2 }, reaction: '你叩首请辞、不辩一词，主公反被你这份磊落打动，温言挽留并斥退谗言者；这一手以退为进，叫旁观者暗暗叫绝。' },
         { text: '隐忍不发，暗记其名待日后', effects: { repute: -2, wit: 4 }, reaction: '你低头认下这口闷气，那谋士得意洋洋，几个同僚也看轻了你几分，只把你那默默攥紧的拳头看作了软弱。' },
       ],
+      // 谗言拿「寒门出身、来历不明」做文章，只对寒门士子成立
       summary: '同僚进谗', art: '1bor3jx', gen: 'gemini',
+      requires: 'has(寒门游学士子)',
       minTurn: 4,
     },
     {
@@ -1854,7 +1858,9 @@ export const sanguo: Scenario = {
         { text: '认下旧情，倾力庇护故主遗孤', effects: { repute: 8, trust: -2, wit: 2 }, reaction: '你不顾干系认下这桩旧账、暗中庇护那遗孤、为他谋一安身之所，故主在天有灵当能瞑目；这份不忘旧主的情义传开，士林无不动容，纵新朝有人侧目，也压不住一片敬重。' },
         { text: '暗中周济，却不敢公然相认', effects: { repute: 2, wit: 2, trust: 2 }, reaction: '你权衡新朝忌讳、不敢公然相认，只悄悄赠以钱粮、指一条远走的活路，那少年含泪叩首而去；保全了自身，可那未能尽的旧情，夜深时仍在你心头隐隐作痛。' },
       ],
+      // 「你当年辅过、后来兵败身死的旧主」——只有降将谋臣有这段前尘
       summary: '故主遗孤', art: '1eguzh3', gen: 'gemini',
+      requires: 'has(降将谋臣)',
       minTurn: 36,
       weight: 0.9,
     },

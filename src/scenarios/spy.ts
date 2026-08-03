@@ -373,8 +373,10 @@ export const spy: Scenario = {
         { text: '只默记几笔关键数目', effects: { intel: 6, cover: -2 }, reaction: '你低头照旧抄你的单据，几个要紧数目已牢牢记在脑中；大班回来时见你伏案如常，满意地哼了一声。' },
         { text: '风险太大，另寻他法', effects: { cover: 6, intel: -2 }, reaction: '你按下蠢动的心思，门帘再掀时大班已回了座；账册仍锁在柜里，可你这份谨慎，保住了那张文书的脸。' },
       ],
+      // 瑞昌洋行的文书是「潜伏特工」这一路的明面身份，双面间谍/伪职另有掩护
       summary: '洋行账册', art: '1fqug6m', gen: 'gemini',
       requiresItem: '微型相机',
+      requires: 'has(潜伏特工)',
       minTurn: 3,
     },
     {
@@ -449,6 +451,7 @@ export const spy: Scenario = {
         { text: '借机反向打探宪兵队动向', effects: { intel: 10, cover: -10 }, reaction: '你旁敲侧击套话时，渡边镜片后的眼睛眯了起来，似笑非笑地反问：「阁下，问这么多做什么？」' },
       ],
       summary: '宪兵登门', art: '1cug67b', gen: 'gemini',
+      requires: 'has(潜伏特工)',
       minTurn: 6,
       weight: 1.2,
     },
@@ -578,9 +581,9 @@ export const spy: Scenario = {
     {
       narrative: '为坐实那「安分守己的良民」人设，上线安排你与一位女同志假扮夫妻，对外成了家。租来的石库门里挂起了她的旗袍，灶上炖着汤，邻里见了都道是恩爱的小两口。朝夕相处，假戏渐渐入了真——她替你掖好领口时的指尖，深夜对坐时映在她眼里的灯火，都让你心头某处一点点软下来。可你比谁都清楚，这份动了真的情分，正是潜伏者最致命的软肋。夜深了，她已睡熟，你望着那张安静的睡脸，反复掂量：是公私分明、只演不动心，还是索性以家为掩护把据点扎得更深，又或者既已动情，便暗暗替她留一条后路？',
       choices: [
-        { text: '公私分明，只演不动心', effects: { cover: 8, trust: 2 }, reaction: '她替你掖好领口的手顿了顿，似有所觉，终究垂下眼帘什么也没说；这道分寸，把那个温暖的家牢牢守成了一面盾。' },
-        { text: '以家为掩护，把据点扎得更深', effects: { cover: 6, intel: 6, trust: -2 }, reaction: '邻里愈发认定你们是恩爱小两口，据点借着这层「家」越扎越稳；可她偶尔望你的眼神里，多了一丝看不真切的落寞。' },
-        { text: '动了真情，暗暗为她留后路', effects: { cover: -4, trust: 4 }, reaction: '她似乎察觉了你夜里偷偷替她备下的盘缠与路引，红着眼圈别过脸去，到底没揭破——这份心照不宣，叫你也跟着心软。' },
+        { text: '公私分明，只演不动心', effects: { cover: 8, trust: 2 }, flagsSet: ['假夫妻'], reaction: '她替你掖好领口的手顿了顿，似有所觉，终究垂下眼帘什么也没说；这道分寸，把那个温暖的家牢牢守成了一面盾。' },
+        { text: '以家为掩护，把据点扎得更深', effects: { cover: 6, intel: 6, trust: -2 }, flagsSet: ['假夫妻'], reaction: '邻里愈发认定你们是恩爱小两口，据点借着这层「家」越扎越稳；可她偶尔望你的眼神里，多了一丝看不真切的落寞。' },
+        { text: '动了真情，暗暗为她留后路', effects: { cover: -4, trust: 4 }, flagsSet: ['假夫妻'], reaction: '她似乎察觉了你夜里偷偷替她备下的盘缠与路引，红着眼圈别过脸去，到底没揭破——这份心照不宣，叫你也跟着心软。' },
       ],
       summary: '假凤虚凰', art: '1b47yze', gen: 'gemini',
       minTurn: 5,
@@ -834,6 +837,7 @@ export const spy: Scenario = {
         { text: '请共事多年的老洋员出面作保', effects: { cover: 6, intel: -2 }, reaction: '那位资历最老的洋员慢条斯理地说，这后生是他亲手荐进来的，人品差不了。黑岛碍着洋人的面子，把追到一半的话头咽了回去，皮笑肉不笑地拱手告退；临走那一眼，却把你记得更牢了。' },
       ],
       summary: '督察盘查', art: '1h40pk4', gen: 'gemini',
+      requires: 'has(潜伏特工)',
       minTurn: 7,
       weight: 1.1,
     },
@@ -915,8 +919,9 @@ export const spy: Scenario = {
         { text: '编个圆得过去的说辞稳住她', effects: { cover: 6, trust: -2 }, reaction: '阿秀将信将疑地收了泪，可你瞥见她攥着衣角的手仍在抖，眼神里那点疑窦并未真正散去——这层窗纸，迟早要破。' },
         { text: '冷脸警告，以利害镇住她', effects: { cover: 4, trust: -4 }, reaction: '阿秀被你陡然冷下的脸吓住，缩着肩不敢再问；可那双噙泪的眼里，温情一寸寸结成了冰与惧。' },
       ],
+      // 阿秀这条线承「假凤虚凰」：没假扮过夫妻，就不该有枕边人起疑
       summary: '枕边生疑', art: '1ey1uo3', gen: 'gemini',
-      requires: 'cover<=45',
+      requires: 'cover<=45 & has(假夫妻)',
       minTurn: 8,
       weight: 1.1,
     },
@@ -1064,7 +1069,7 @@ export const spy: Scenario = {
       ],
       summary: '内鬼现形', art: '1bn3uwo', gen: 'gemini',
       once: true,
-      requires: 'trust<=40',
+      requires: 'trust<=40 & has(假夫妻)',
       minTurn: 12,
       weight: 1.3,
       keyMoment: true,
@@ -1393,6 +1398,7 @@ export const spy: Scenario = {
         { text: '冷处理，从此与他保持距离', effects: { cover: 4, trust: -2 }, reaction: '你淡淡敷衍两句便走了，那旧同事讨了个没趣，撇撇嘴嘟囔「装什么清高」；这段瓜葛，你索性断了。' },
       ],
       summary: '同事戏言', art: '1bo500b', gen: 'gemini',
+      requires: 'has(潜伏特工)',
       weight: 1,
     },
     {

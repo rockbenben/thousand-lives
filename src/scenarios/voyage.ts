@@ -430,8 +430,10 @@ export const voyage: Scenario = {
         { text: '依现有航路反复试航', effects: { ship: 6, wealth: 3 }, reaction: '无人知你那几夜在星图与罗盘间反复推演，待你日后凭这航路避开暗礁，老水手们才惊觉你这后生家学竟如此渊源。' },
         { text: '遍访老航海家，求补残幅', effects: { wealth: -3, ship: 4, crew: 2 }, reaction: '你携残图登门求教，一位退隐的老船长见你诚心补全家学，捻须叹道这后生肯下笨工夫，倒是难能可贵。' },
       ],
+      // 「先辈留给你的祖传海图」是贵族航海家的开局家当，另两种出身没有这卷图
       summary: '残图现世', art: '1fabfjo', gen: 'gemini',
       once: true,
+      requires: 'has(贵族航海家)',
       minTurn: 1,
       maxTurn: 16,
       itemsGained: ['祖传海图'],
@@ -504,8 +506,10 @@ export const voyage: Scenario = {
         { text: '倾力打捞，重整这艘巨舰', effects: { ship: 10, wealth: -6, crew: 2 }, reaction: '巨舰修复下水那日炮声轰鸣，老炮手抚着那门刻着古徽的巨炮老泪纵横；连你自己抬头望着遮天的桅影，都恍惚不敢信这是天赐的造化。' },
         { text: '量力而行，只拆走巨炮火药', effects: { ship: 6, wealth: 2 }, reaction: '你审时度势只取了巨炮与火药，未敢妄动那庞大的船身，回望淤泥里的残骸，心底暗叹时机未到，他日财力足时再来。' },
       ],
+      // 循的是祖传海图上的标记——先得有那卷图
       summary: '礁洞古舰', art: '1hfkgm0', gen: 'gemini',
       requires: 'wealth>=30',
+      requiresItem: '祖传海图',
       once: true,
       minTurn: 7,
       itemsGained: ['古舰巨炮'],
