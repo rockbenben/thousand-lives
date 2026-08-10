@@ -1,27 +1,18 @@
 # 千世书 · thousand-lives
 
-> AI 驱动的文字人生模拟器 — 一卷千世，活过千种人生
+> AI 文字人生模拟器：一回合一次抉择，走到属于你的结局，免 Key 即玩
 
-**简体中文** · [繁體中文](README.zh-Hant.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![365 开源计划 #015](https://img.shields.io/badge/365%20%E5%BC%80%E6%BA%90%E8%AE%A1%E5%88%92-%23015-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![365 开源计划 #015](https://img.shields.io/badge/365%20%E5%BC%80%E6%BA%90%E8%AE%A1%E5%88%92-%23015-1f6feb)](https://github.com/rockbenben/365opensource)
+🎮 **[在线试玩](https://lives.newzone.top)** —— 10 个剧本 · 61 枚成就 · 纯前端、免注册 · [繁體中文](README.zh-Hant.md)
 
-🎮 **[在线体验](https://lives.newzone.top)** —— 10 个剧本 · 28 家 AI 服务商预设 · 61 枚成就 · 纯前端 · 无需 Key 即玩
+![孤岛谍影第 5 月：整屏场景插画上浮着一段剧情与三个抉择](docs/images/play.webp)
 
-![千世书](public/og.jpg)
+点开一个剧本，你就是那个人——宗门里没有靠山的散修、上海孤岛上的潜伏者、废土上刚捡回一条命的幸存者。每回合读一段剧情、落一次子，属性悄悄改写你能看到的下一段故事，直到某一回合书页停在只属于你的结局。
 
----
+## 十个剧本
 
-## 是什么
-
-**千世书**是一款完全运行在浏览器中的 AI 文字人生模拟器，无需后端、无需服务器。
-
-- **剧本（JSON）** 定义世界观、属性与结局规则
-- **AI** 负责每回合生成剧情叙事与 3～4 个带数值影响的选项
-- **引擎** 负责结算属性、判定结局、管理上下文压缩
-
-内置 **10 个剧本**，覆盖仙侠、穿越、武侠、三国、末世、官场、谍战、科幻等题材，每个均自带本地事件池，**无需 API Key 即可试玩**：
+每个剧本都自带手写事件池，**不填 API Key 也能整局玩完**：
 
 | 剧本 | 题材 | 简介 |
 |------|------|------|
@@ -36,52 +27,45 @@
 | 怒海争锋 | 航海 | 大航海时代，驾你的第一艘船在宝藏与风暴间搏一个王座 |
 | 梨园浮梦 | 民国 | 民国戏园里苦熬出头的伶人，在乱世粉墨春秋间浮沉 |
 
-除内置剧本外，还可**用一句主题让 AI 现场生成新剧本**，或导入社区自制的 JSON 剧本——详见 [剧本格式规范](docs/scenario-format.md)。
+十个之外，还可以**用一句主题让 AI 现场生成新剧本**，或导入别人写好的 JSON 剧本——字段与条件语法见 [剧本格式规范](docs/scenario-format.md)。
 
----
+## 玩法亮点
 
-## 核心亮点
+- **数字即故事**：属性按数值落入命名状态（理智「清醒 / 动摇 / 濒临崩溃」），作为硬指令注入 AI——理智崩溃必现幻觉，数字改写的是你看到的故事，不只是右上角的条
+- **落子之后才揭晓**：选项不预告加减，因为掷骰、命运无常、极端命运本就会改写它；下一段卷文里报出这一步真正引起的增减
+- **没有被灰掉的选项**：状态差不封锁行动，只让它「勉力一试」；选项之外还能自己写一个行动，交给 AI 裁定
+- **视觉小说式呈现**：整屏场景插画为幕，卷文浮层承载剧情；一键「看全图」纯赏画面，走过的回合汇成一卷命运长卷
+- **结局卡 / 命运卡**：S～D 评级与专属称号、命运高光配图 + 挑战链接，一键分享到微博 / QQ 空间 / X / Telegram
+- **61 枚成就 + 结局图鉴**：累计记录见过的结局，把「再开一局」变成收集
 
-- **数字即故事**：属性按数值落入命名状态（如理智「清醒 / 动摇 / 濒临崩溃」）并作为硬指令注入 AI——理智崩溃必现幻觉，数字改变你看到的故事
-- **明牌 + 部分执行**：每个选项直接展示属性影响，且当前状态决定它能达成到什么程度；选项之外还能「自己写一个行动」交由 AI 裁定
-- **视觉小说式呈现**：整屏场景插画为幕、卷文浮层承载剧情，一键「看全图」纯赏画面；一局走过的每一回合汇成可通览全程的命运长卷
-- **无需 Key 即玩**：内置剧本自带事件池，即点即玩、每局不同；填入 Key 则切换为大模型实时驱动
-- **结局卡 / 命运卡 + 社交分享**：S～D 评级与专属称号、命运高光配图 + 挑战链接，一键分享到微博 / QQ 空间 / X / Telegram
-- **61 枚成就 + 结局图鉴**：累计记录见过的结局，激励重开探索不同命运
+## 怎么玩
 
-完整玩法与技术亮点（流式叙事、上下文压缩、社交 OG 预览、无障碍等）见 [玩法机制](docs/gameplay.md)。
+1. 打开 **[lives.newzone.top](https://lives.newzone.top)**，挑一个剧本
+2. 选**本地试玩**（免 Key，剧情来自内置事件池）或 **AI 驱动**（填 Key，大模型现场编），再选一个开局身份——身份真的决定你会遇到哪条剧情线
+3. 每回合读剧情、点一个选项，或「自己写一个行动」；属性到某个组合、或回合耗尽即触发结局
 
----
+想换成自己的大模型：右上角 ☰ → 设置 → 选服务商（内置 28 家预设，自动填好 Base URL 与推荐模型）→ 填 Key。
 
-## 快速开始
+> [!TIP]
+> API Key 只写进这台浏览器的 `localStorage`，请求从你的浏览器直发服务商，不经任何中转。详见 [配置 AI](docs/ai-providers.md)。
 
-**环境要求：** Node.js ≥ 20
+## 已知限制
 
-```bash
-npm install
-npm run dev
-# 访问 http://localhost:5173
-```
-
-生产构建到 `dist/`（纯静态，可部署到任意静态托管）：
-
-```bash
-npm run build
-```
-
-更多命令、目录结构与部署说明见 [开发文档](docs/development.md)。
-
----
+- **本地试玩的剧情来自手写事件池**，同一剧本连玩几局会撞到重复片段；要每局都不一样得填 Key 走 AI 驱动
+- **AI 驱动按你自己的 Key 计费**，且要服务商支持浏览器直连（CORS）；不支持的可改走 OpenRouter 这类网关
+- **存档只在这台浏览器里**（localStorage），清缓存或换设备就会丢进度
+- **只有中文**（简体 / 繁体可切），界面与剧本文本都没做其他语言
 
 ## 文档
 
-- [剧本格式规范](docs/scenario-format.md) — AI 生成、JSON 示例、字段说明、条件语法、进阶字段
-- [配置 AI](docs/ai-providers.md) — 28 家服务商预设、三种协议、Key 安全说明
-- [玩法机制](docs/gameplay.md) — 叙事决策、系统深度、Meta 游戏、技术亮点
-- [开发](docs/development.md) — 命令、目录结构、社交分享入口页生成
+[剧本格式规范](docs/scenario-format.md)（AI 生成 · JSON 字段 · 条件语法）· [配置 AI](docs/ai-providers.md)（28 家预设 · 三种协议 · Key 安全）· [玩法机制](docs/gameplay.md)（系统深度与技术亮点）· [开发与部署](docs/development.md)（命令 · 目录结构 · 静态托管）
 
----
+## 许可
+
+代码 [MIT](LICENSE)。随仓库分发的三款字体沿用各自原授权（均为 SIL OFL 1.1）：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai) · [Ma Shan Zheng](https://fonts.google.com/specimen/Ma+Shan+Zheng) · [Cinzel](https://fonts.google.com/specimen/Cinzel)。
 
 ## 关于 365 开源计划
 
-[365 开源计划](https://github.com/rockbenben/365opensource) 的第 **#015** 个项目——一个人 + AI，一年 300+ 个开源项目。[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)
+[365 开源计划](https://github.com/rockbenben/365opensource) 的第 **#015** 个项目——一个人 + AI，一年 300+ 个开源项目。
+
+[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)

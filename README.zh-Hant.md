@@ -1,27 +1,18 @@
 # 千世書 · thousand-lives
 
-> AI 驅動的文字人生模擬器 — 一本書，活過千種人生
+> AI 文字人生模擬器：一回合一次抉擇，走到屬於你的結局，免 Key 即玩
 
-[简体中文](README.md) · **繁體中文**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![365 開源計畫 #015](https://img.shields.io/badge/365%20%E9%96%8B%E6%BA%90%E8%A8%88%E7%95%AB-%23015-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![365 開源計畫 #015](https://img.shields.io/badge/365%20%E9%96%8B%E6%BA%90%E8%A8%88%E7%95%AB-%23015-1f6feb)](https://github.com/rockbenben/365opensource)
+🎮 **[線上試玩](https://lives.newzone.top)** —— 10 個劇本 · 61 枚成就 · 純前端、免註冊 · [简体中文](README.md)
 
-🎮 **[線上體驗](https://lives.newzone.top)** —— 10 個劇本 · 28 家 AI 服務商預設 · 61 枚成就 · 純前端 · 無需 Key 即玩
+![孤島諜影第 5 月：整屏場景插畫上浮著一段劇情與三個抉擇](docs/images/play.webp)
 
-![千世書](public/og.jpg)
+點開一個劇本，你就是那個人——宗門裡沒有靠山的散修、上海孤島上的潛伏者、廢土上剛撿回一條命的倖存者。每回合讀一段劇情、落一次子，屬性悄悄改寫你能看到的下一段故事，直到某一回合書頁停在只屬於你的結局。
 
----
+## 十個劇本
 
-## 是什麼
-
-**千世書**是一款完全執行於瀏覽器中的 AI 文字人生模擬器，無需後端、無需伺服器。
-
-- **劇本（JSON）** 定義世界觀、屬性與結局規則
-- **AI** 負責每回合生成劇情敘事與 3～4 個帶數值影響的選項
-- **引擎** 負責結算屬性、判定結局、管理上下文壓縮
-
-內建 **10 個劇本**，涵蓋仙俠、穿越、武俠、三國、末世、官場、諜戰、科幻等題材，每個均自帶本地事件池，**無需 API Key 即可試玩**：
+每個劇本都自帶手寫事件池，**不填 API Key 也能整局玩完**：
 
 | 劇本 | 題材 | 簡介 |
 |------|------|------|
@@ -36,54 +27,45 @@
 | 怒海爭鋒 | 航海 | 大航海時代，駕你的第一艘船在寶藏與風暴間搏一個王座 |
 | 梨園浮夢 | 民國 | 民國戲園裡苦熬出頭的伶人，在亂世粉墨春秋間浮沉 |
 
-除內建劇本外，還可**用一句主題讓 AI 現場生成新劇本**，或匯入社群自製的 JSON 劇本——詳見 [劇本格式規範](docs/scenario-format.md)。
+十個之外，還可以**用一句主題讓 AI 現場生成新劇本**，或匯入別人寫好的 JSON 劇本——欄位與條件語法見 [劇本格式規範](docs/scenario-format.md)。
 
----
+## 玩法亮點
 
-## 核心亮點
+- **數字即故事**：屬性按數值落入命名狀態（理智「清醒 / 動搖 / 瀕臨崩潰」），作為硬指令注入 AI——理智崩潰必現幻覺，數字改寫的是你看到的故事，不只是右上角的條
+- **落子之後才揭曉**：選項不預告加減，因為擲骰、命運無常、極端命運本就會改寫它；下一段卷文裡報出這一步真正引起的增減
+- **沒有被灰掉的選項**：狀態差不封鎖行動，只讓它「勉力一試」；選項之外還能自己寫一個行動，交給 AI 裁定
+- **視覺小說式呈現**：整屏場景插畫為幕，卷文浮層承載劇情；一鍵「看全圖」純賞畫面，走過的回合匯成一卷命運長卷
+- **結局卡 / 命運卡**：S～D 評級與專屬稱號、命運高光配圖 + 挑戰連結，一鍵分享到微博 / QQ 空間 / X / Telegram
+- **61 枚成就 + 結局圖鑑**：累計記錄見過的結局，把「再開一局」變成收集
 
-- **數字即故事**：屬性按數值落入命名狀態（如理智「清醒 / 動搖 / 瀕臨崩潰」）並作為硬指令注入 AI——理智崩潰必現幻覺，數字改變你看到的故事
-- **明牌 + 部分執行**：每個選項直接展示屬性影響，且當前狀態決定它能達成到什麼程度；選項之外還能「自己寫一個行動」交由 AI 裁定
-- **視覺小說式呈現**：整屏場景插畫為幕、卷文浮層承載劇情，一鍵「看全圖」純賞畫面；一局走過的每一回合匯成可通覽全程的命運長卷
-- **無需 Key 即玩**：內建劇本自帶事件池，即點即玩、每局不同；填入 Key 則切換為大模型即時驅動
-- **結局卡 / 命運卡 + 社交分享**：S～D 評級與專屬稱號、命運高光配圖 + 挑戰連結，一鍵分享到微博 / QQ 空間 / X / Telegram
-- **61 枚成就 + 結局圖鑑**：累計記錄見過的結局，激勵重開探索不同命運
+## 怎麼玩
 
-完整玩法與技術亮點（串流敘事、上下文壓縮、社交 OG 預覽、無障礙等）見 [玩法機制](docs/gameplay.md)。
+1. 打開 **[lives.newzone.top](https://lives.newzone.top)**，挑一個劇本
+2. 選**本地試玩**（免 Key，劇情來自內建事件池）或 **AI 驅動**（填 Key，大模型現場編），再選一個開局身分——身分真的決定你會遇到哪條劇情線
+3. 每回合讀劇情、點一個選項，或「自己寫一個行動」；屬性到某個組合、或回合耗盡即觸發結局
 
----
+想換成自己的大模型：右上角 ☰ → 設定 → 選服務商（內建 28 家預設，自動填好 Base URL 與推薦模型）→ 填 Key。
 
-## 快速開始
+> [!TIP]
+> API Key 只寫進這台瀏覽器的 `localStorage`，請求從你的瀏覽器直發服務商，不經任何中轉。詳見 [設定 AI](docs/ai-providers.md)。
 
-**環境需求：** Node.js ≥ 20
+## 已知限制
 
-```bash
-npm install
-npm run dev
-# 訪問 http://localhost:5173
-```
-
-正式建置到 `dist/`（純靜態，可部署到任意靜態託管）：
-
-```bash
-npm run build
-```
-
-更多指令、目錄結構與部署說明見 [開發文件](docs/development.md)。
-
----
+- **本地試玩的劇情來自手寫事件池**，同一劇本連玩幾局會撞到重複片段；要每局都不一樣得填 Key 走 AI 驅動
+- **AI 驅動按你自己的 Key 計費**，且要服務商支援瀏覽器直連（CORS）；不支援的可改走 OpenRouter 這類閘道
+- **存檔只在這台瀏覽器裡**（localStorage），清快取或換裝置就會丟進度
+- **只有中文**（簡體 / 繁體可切），介面與劇本文本都沒做其他語言
 
 ## 文件
 
-> 詳細規範文件以簡體中文維護，內容通用。
+規範文件以簡體中文維護，內容通用：[劇本格式規範](docs/scenario-format.md)（AI 生成 · JSON 欄位 · 條件語法）· [設定 AI](docs/ai-providers.md)（28 家預設 · 三種協定 · Key 安全）· [玩法機制](docs/gameplay.md)（系統深度與技術亮點）· [開發與部署](docs/development.md)（指令 · 目錄結構 · 靜態託管）
 
-- [劇本格式規範](docs/scenario-format.md) — AI 生成、JSON 範例、欄位說明、條件語法、進階欄位
-- [設定 AI](docs/ai-providers.md) — 28 家服務商預設、三種協定、Key 安全說明
-- [玩法機制](docs/gameplay.md) — 敘事決策、系統深度、Meta 遊戲、技術亮點
-- [開發](docs/development.md) — 指令、目錄結構、社交分享入口頁生成
+## 授權
 
----
+程式碼 [MIT](LICENSE)。隨倉庫散布的三款字型沿用各自原授權（均為 SIL OFL 1.1）：[霞鶩文楷](https://github.com/lxgw/LxgwWenKai) · [Ma Shan Zheng](https://fonts.google.com/specimen/Ma+Shan+Zheng) · [Cinzel](https://fonts.google.com/specimen/Cinzel)。
 
 ## 關於 365 開源計畫
 
-[365 開源計畫](https://github.com/rockbenben/365opensource) 的第 **#015** 個專案——一個人 + AI，一年 300+ 個開源專案。[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)
+[365 開源計畫](https://github.com/rockbenben/365opensource) 的第 **#015** 個專案——一個人 + AI，一年 300+ 個開源專案。
+
+[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)
