@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#080b18" />
+  <!-- 加到主屏后脱去浏览器外壳（真全屏，且是 iPhone 上唯一的全屏路径）。manifest 里
+       已有 display: standalone，但老版本 iOS 只认这条 apple- 前缀的 meta；Chrome 认的是
+       去前缀的标准名，只写 apple- 那条会在控制台报废弃告警。两条都留，各覆各的。 -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>千世书 · AI 文字人生模拟器</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -20,11 +25,16 @@
   <meta name="twitter:title" content="千世书 · 一卷千世，活过千种人生" />
   <meta name="twitter:description" content="AI 文字人生模拟器 · 十大题材 · 免 Key 即玩 · 结局图鉴与命运分享卡" />
   <meta name="twitter:image" content="https://lives.newzone.top/og.jpg" />
-  <!-- 字体全部离线自托管（src/styles.css 内 @font-face → /fonts/*.woff2），不依赖任何 CDN，可离线运行 -->
-  <!-- 正文与标题字体 preload：font-display swap 下避免首屏先宋体后楷体的闪换（FOUT）；
-       字体 preload 必须带 crossorigin，同源也一样，否则浏览器会二次下载 -->
-  <link rel="preload" href="./fonts/lxgwwenkai-regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="./fonts/zcoolxiaowei-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- 字体全部离线自托管（src/fonts.css + src/styles.css → /fonts/**），不依赖任何 CDN，可离线运行 -->
+  <!-- 只 preload 正文字体的**第 0 片**（最常用 800 字，约 170 KB）：这一片几乎每页都要，
+       抢在 CSS 解析前拿到值得；其余 40 片按渲染到的字按需取，不该也不能预取。
+       字体 preload 必须带 crossorigin，同源也一样，否则浏览器会二次下载。
+
+       标题字体 ZCOOL 小薇不 preload：它只用于 --font-display（19 处标题），且
+       html[lang="zh-Hant"] 把 --font-display 换成了霞鹜文楷——繁体用户被 preload 强行
+       拉下却一个字形都渲染不到。按需下载后繁体下压根不下，简体下也不和正文抢首屏带宽。
+       代价是标题会有一次 FOUT（font-display: swap，先出回退字形再换上）。 -->
+  <link rel="preload" href="./fonts/slices/lxgwwenkai-regular-0.woff2" as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -46,8 +56,8 @@
     }
   }
   </script>
-  <script type="module" crossorigin src="./assets/index-KpEslXI5.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C9o0_CKh.css">
+  <script type="module" crossorigin src="./assets/index-DfGhequ6.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-qSRD_s30.css">
 <link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
 <body>
   <div id="root"></div>
