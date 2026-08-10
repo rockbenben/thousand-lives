@@ -19,6 +19,10 @@ import { goalStage } from './goalStage'
 // 自定义行动字数上限：防止超长输入撑爆 AI 上下文 / 浪费 token
 const CUSTOM_ACTION_MAX = 200
 
+// iPhone Safari 不实现元素全屏（只有 <video> 有 webkitEnterFullscreen），那里干脆不挂这个
+// 开关，免得点了没反应；iPhone 走「添加到主屏幕」即可（manifest 已是 display: standalone）
+const CAN_FULLSCREEN = typeof document !== 'undefined' && !!document.documentElement.requestFullscreen
+
 export function Play({
   session,
   onUpdate,
@@ -50,6 +54,15 @@ export function Play({
   const [auto, setAuto] = useState(false)
   const [showMemoir, setShowMemoir] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  // 沉浸：地址栏 + 底部导航栏在手机上吃掉近 1/5 的屏，而对局页是定高布局（不滚动），
+  // 那两条栏永远不会自动收起。做成显式开关而非自动进入——阅读类页面强行全屏会夺走
+  // 返回/地址栏，读者点选项点得又频繁，误触代价太大。
+  const [fullscreen, setFullscreen] = useState(false)
+  useEffect(() => {
+    const sync = () => setFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', sync)
+    return () => document.removeEventListener('fullscreenchange', sync)
+  }, [])
   // 看全图：轻触隐去卷文、看清整张场景画；再触恢复
   const [peek, setPeek] = useState(false)
   const [lightbox, setLightbox] = useState<string | null>(null)
@@ -331,6 +344,22 @@ export function Play({
                   <span className="play-menu-fontlabel">字号</span>
                   <FontScaleControl compact />
                 </div>
+                {CAN_FULLSCREEN && (
+                  <button
+                    className={`play-menu-item ${fullscreen ? 'on' : ''}`}
+                    role="menuitem"
+                    onClick={() => {
+                      // 必须在这一下点击的同步栈里发起，异步之后调会被浏览器拒
+                      if (document.fullscreenElement) void document.exitFullscreen().catch(() => {})
+                      else void document.documentElement.requestFullscreen().catch(() => {})
+                      setMenuOpen(false)
+                    }}
+                    title="隐去地址栏与导航栏，整屏读卷"
+                  >
+                    <span>{fullscreen ? '退出全屏' : '全屏读卷'}</span>
+                    <span className="play-menu-glyph">{fullscreen ? '⤡' : '⤢'}</span>
+                  </button>
+                )}
                 <div className="play-menu-sep" />
                 <button
                   className="play-menu-item danger"

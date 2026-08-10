@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#080b18" />
+  <!-- 加到主屏后脱去浏览器外壳（真全屏，且是 iPhone 上唯一的全屏路径）。manifest 里
+       已有 display: standalone，但老版本 iOS 只认这条 apple- 前缀的 meta；Chrome 认的是
+       去前缀的标准名，只写 apple- 那条会在控制台报废弃告警。两条都留，各覆各的。 -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>千世书 · AI 文字人生模拟器</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
