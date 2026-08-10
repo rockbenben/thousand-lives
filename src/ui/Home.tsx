@@ -141,10 +141,15 @@ export function Home({
               className={`scenario-card ${cover ? 'has-cover' : ''}`}
               onClick={() => onSelect(sc)}
             >
+              {/* 用 <img loading="lazy"> 而不是 CSS 背景图：背景图没有懒加载这回事，
+                  十张封面会在首屏一次性全下（实测 1.38 MB），而首屏只看得见三张 */}
               {cover && (
-                <span
+                <img
                   className="card-cover"
-                  style={{ backgroundImage: `url(${cover})` }}
+                  src={cover}
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
                   aria-hidden="true"
                 />
               )}

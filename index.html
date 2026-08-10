@@ -20,11 +20,16 @@
   <meta name="twitter:title" content="千世书 · 一卷千世，活过千种人生" />
   <meta name="twitter:description" content="AI 文字人生模拟器 · 十大题材 · 免 Key 即玩 · 结局图鉴与命运分享卡" />
   <meta name="twitter:image" content="https://lives.newzone.top/og.jpg" />
-  <!-- 字体全部离线自托管（src/styles.css 内 @font-face → /fonts/*.woff2），不依赖任何 CDN，可离线运行 -->
-  <!-- 正文与标题字体 preload：font-display swap 下避免首屏先宋体后楷体的闪换（FOUT）；
-       字体 preload 必须带 crossorigin，同源也一样，否则浏览器会二次下载 -->
-  <link rel="preload" href="/fonts/lxgwwenkai-regular.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/zcoolxiaowei-regular.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- 字体全部离线自托管（src/fonts.css + src/styles.css → /fonts/**），不依赖任何 CDN，可离线运行 -->
+  <!-- 只 preload 正文字体的**第 0 片**（最常用 800 字，约 170 KB）：这一片几乎每页都要，
+       抢在 CSS 解析前拿到值得；其余 40 片按渲染到的字按需取，不该也不能预取。
+       字体 preload 必须带 crossorigin，同源也一样，否则浏览器会二次下载。
+
+       标题字体 ZCOOL 小薇不 preload：它只用于 --font-display（19 处标题），且
+       html[lang="zh-Hant"] 把 --font-display 换成了霞鹜文楷——繁体用户被 preload 强行
+       拉下却一个字形都渲染不到。按需下载后繁体下压根不下，简体下也不和正文抢首屏带宽。
+       代价是标题会有一次 FOUT（font-display: swap，先出回退字形再换上）。 -->
+  <link rel="preload" href="/fonts/slices/lxgwwenkai-regular-0.woff2" as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
