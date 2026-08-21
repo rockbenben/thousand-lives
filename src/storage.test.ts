@@ -34,6 +34,26 @@ describe('config', () => {
     store.set('tl.config', JSON.stringify({ provider: 'openai' }))
     expect(loadConfig()).toBeNull()
   })
+  // 「地址即凭据」的那几家（本地推理 / 自建网关）没有 key 这个概念。曾经落盘条件
+  // 硬性要求 apiKey，于是界面允许不填 key 开局、配置却一次都存不下来：saveConfig
+  // 走 else 分支把它删掉，刷新后归零，而全程没有任何报错。
+  it('本地服务无 key 也要能存下来 —— 它的地址才是凭据', () => {
+    const ollama: AIConfig = { provider: 'openai', apiKey: '', model: 'qwen3', presetId: 'llm', baseURL: 'http://127.0.0.1:11434/v1' }
+    saveConfig(ollama)
+    expect(loadConfig(), '无 key 的本地配置被静默丢弃了').toEqual(ollama)
+    expect(loadPresetConfig('llm')).toEqual(ollama)
+  })
+
+  it('但地址也没有就仍然不算配好 —— 那才是真的什么都没填', () => {
+    saveConfig({ provider: 'openai', apiKey: '', model: 'qwen3', presetId: 'llm' })
+    expect(loadConfig()).toBeNull()
+  })
+
+  it('要 key 的厂商不受影响：没 key 照旧不落盘', () => {
+    saveConfig({ provider: 'openai', apiKey: '', model: 'gpt-4o', presetId: 'openai', baseURL: 'https://api.openai.com/v1' })
+    expect(loadConfig()).toBeNull()
+  })
+
   it('按服务商分别存储：切换活跃预设不串用/不丢别家 key', () => {
     const a: AIConfig = { provider: 'openai', apiKey: 'sk-a', model: 'm-a', presetId: 'deepseek' }
     const b: AIConfig = { provider: 'openai', apiKey: 'sk-b', model: 'm-b', presetId: 'mimo' }

@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { z, ZodError } from 'zod'
-import { requestTurn, friendlyError, type ChatFn } from './client'
+import { requestTurn, friendlyError, chat, type ChatFn } from './client'
+import * as adapters from './adapters'
 import { AIError, type AIConfig } from './types'
 import type { ChatMessage } from '../engine/types'
 
@@ -58,5 +59,65 @@ describe('friendlyError', () => {
     const msg = friendlyError(err)
     expect(msg).not.toContain('[') // 不把 issues 数组的原始 JSON 直接塞给用户
     expect(msg).toContain('name') // 指明出问题的字段
+  })
+})
+
+describe('chat 的自动重试', () => {
+  const cfg = { provider: 'openai', apiKey: 'k', model: 'm' } as const
+
+  // 重试之间真的会 sleep（限流 2s、其余 0.8s）。用假定时器跑完，否则这一组
+  // 测试要空等 4 秒多 —— 每次跑套件都付一遍。
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  /** 起跑 → 推完所有定时器 → 拿结果。 */
+  const run = async (p: Promise<unknown>) => {
+    const settled = p.catch((e) => ({ __err: e }))
+    await vi.runAllTimersAsync()
+    return settled
+  }
+  const okOnSecond = (err: unknown) => {
+    let n = 0
+    return vi.fn(async () => {
+      if (++n === 1) throw err
+      return '好'
+    })
+  }
+
+  it('限流 / 服务端错误 / 网络失败：重试一次并成功', async () => {
+    for (const err of [new AIError(429, 'rate'), new AIError(503, 'oops'), new AIError(408, 'slow'), new TypeError('Failed to fetch')]) {
+      const fn = okOnSecond(err)
+      vi.spyOn(adapters, 'chatOpenAI').mockImplementation(fn as never)
+      expect(await run(chat(cfg, [])), String(err)).toBe('好')
+      expect(fn, String(err)).toHaveBeenCalledTimes(2)
+    }
+  })
+
+  it('key 不对 / 请求本身有问题：不重试 —— 再试一次还是同样的错，只是让用户多等', async () => {
+    for (const err of [new AIError(401, 'bad key'), new AIError(403, 'forbidden'), new AIError(400, 'bad model')]) {
+      const fn = okOnSecond(err)
+      vi.spyOn(adapters, 'chatOpenAI').mockImplementation(fn as never)
+      expect(await run(chat(cfg, [])), String(err)).toHaveProperty('__err')
+      expect(fn, String(err)).toHaveBeenCalledTimes(1)
+    }
+  })
+
+  it('已经吐出过内容就不重试 —— 否则界面会把写了一半的段落倒回去重写', async () => {
+    const fn = vi.fn(async (_c: unknown, _m: unknown, onDelta?: (t: string) => void) => {
+      onDelta?.('写了一半')
+      throw new AIError(503, 'mid-stream')
+    })
+    vi.spyOn(adapters, 'chatOpenAI').mockImplementation(fn as never)
+    expect(await run(chat(cfg, [], () => {}))).toHaveProperty('__err')
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('用户取消时不重试', async () => {
+    const fn = vi.fn(async () => {
+      throw new DOMException('Aborted', 'AbortError')
+    })
+    vi.spyOn(adapters, 'chatOpenAI').mockImplementation(fn as never)
+    expect(await run(chat(cfg, []))).toHaveProperty('__err')
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 })

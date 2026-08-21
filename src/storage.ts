@@ -1,4 +1,5 @@
 import type { AIConfig } from './ai/types'
+import { keyOptional } from './ai/presets'
 import type { GameState, TurnResult } from './engine/types'
 import { turnResultSchema } from './ai/turn'
 import { scenarioSchema, type Scenario } from './scenarios/schema'
@@ -98,11 +99,26 @@ function readAIConfigStore(): AIConfigStore {
   }
 }
 
-// 当前活跃服务商的完整配置；缺 provider/apiKey/model 之一即视为未配置，返回 null。
+/**
+ * 一份配置算不算「配好了」——落盘与读取共用同一条判据，两处分开写必然漂。
+ *
+ * ⚠ key 不是人人都要：自建网关与局域网里的本地推理（LM Studio / Ollama /
+ * llama.cpp / LiteLLM）没有 key 这个概念，它们的【地址】才是凭据。判据取自目录
+ * 的 keyOptional，不在这里按 id 列名单。
+ *
+ * 漏掉这条的后果是静默的：界面允许不填 key 就开局，配置却一次都存不下来 ——
+ * saveConfig 走 else 分支把它删掉，刷新后归零，而全程没有任何报错。
+ */
+export function isComplete(c: AIConfig | undefined): c is AIConfig {
+  if (!c || !c.provider || !c.model) return false
+  return Boolean(c.apiKey) || (keyOptional(c.presetId) && Boolean(c.baseURL))
+}
+
+// 当前活跃服务商的完整配置；未配置完整返回 null。
 export function loadConfig(): AIConfig | null {
   const store = readAIConfigStore()
   const c = store.activePresetId ? store.presets[store.activePresetId] : undefined
-  return c && c.provider && c.apiKey && c.model ? c : null
+  return isComplete(c) ? c : null
 }
 
 // 取某服务商预设已存的配置（切换服务商时恢复其专属 key/baseURL/model）；未配置过返回 undefined。
@@ -111,12 +127,12 @@ export function loadPresetConfig(presetId: string): AIConfig | undefined {
 }
 
 // 保存某服务商配置并置为当前活跃（配置一经修改即调用，不必等到开局）。按 presetId（无则 provider）归档。
-// 仅落盘「完整可用」（含 provider+apiKey+model）的配置：空 / 仅默认（无 key）不存，
-// 并清掉该服务商可能残留的空条目、不改动当前活跃项——避免只是切过去看一眼就留下噪声条目。
+// 仅落盘「完整可用」的配置（判据见 isComplete）：空 / 仅默认的不存，并清掉该服务商
+// 可能残留的空条目、不改动当前活跃项——避免只是切过去看一眼就留下噪声条目。
 export function saveConfig(c: AIConfig): void {
   const store = readAIConfigStore()
   const id = c.presetId || c.provider
-  if (c.provider && c.apiKey && c.model) {
+  if (isComplete(c)) {
     store.presets[id] = c
     store.activePresetId = id
   } else {
