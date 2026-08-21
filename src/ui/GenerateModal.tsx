@@ -1,18 +1,10 @@
 import { useRef, useState } from 'react'
 import type { Scenario } from '../scenarios/schema'
-import { PRESETS } from '../ai/presets'
 import { generateScenario, type GenProgress } from '../ai/generateScenario'
 import { friendlyError, isAbortError } from '../ai/client'
-import { SearchSelect } from './SearchSelect'
+import { AIConfigFields } from './AIConfigFields'
 import { useAIConfig } from './useAIConfig'
-import { msg } from './messages'
 import { useModalA11y } from './useModalA11y'
-
-const providerOptions = PRESETS.map((p) => ({
-  value: p.id,
-  label: p.label,
-  hint: p.baseURL ? new URL(p.baseURL).host : msg.noBaseUrl,
-}))
 
 const SUGGESTIONS = ['大航海海盗', '赛博朋克侦探', '武侠江湖', '三国谋士', '校园青春', '星际殖民', '民国名伶']
 
@@ -35,7 +27,9 @@ export function GenerateModal({
   const [error, setError] = useState('')
   const abortRef = useRef<AbortController | null>(null)
 
-  const ready = theme.trim() !== '' && cfg.apiKey.trim() !== '' && cfg.model.trim() !== '' && !busy
+  // 与开局页同一条判据（cfg.complete）：「地址即凭据」的本地服务没有 key，拿 key
+  // 拦它们就是让按钮永远灰着，还不给任何解释。
+  const ready = theme.trim() !== '' && cfg.complete && !busy
 
   const run = async () => {
     // 配置已在编辑时即时落盘（useAIConfig）；此处直接用当前配置生成
@@ -126,40 +120,7 @@ export function GenerateModal({
 
         <details className="gen-config" open={!cfg.apiKey}>
           <summary>AI 服务配置（与游戏共用，仅保存在本浏览器）</summary>
-          <label>
-            服务商
-            <SearchSelect
-              options={providerOptions}
-              value={cfg.presetId}
-              onChange={cfg.changePreset}
-              placeholder="搜索服务商…"
-            />
-          </label>
-          <label>
-            Base URL
-            <input value={cfg.baseURL} onChange={(e) => cfg.changeBaseURL(e.target.value)} placeholder={cfg.preset.baseURL} />
-          </label>
-          <label>
-            <span className="label-row">
-              API Key
-              {cfg.preset.apiKeyUrl && (
-                <a className="ext" href={cfg.preset.apiKeyUrl} target="_blank" rel="noreferrer">
-                  获取 Key ↗
-                </a>
-              )}
-            </span>
-            <input type="password" autoComplete="off" value={cfg.apiKey} onChange={(e) => cfg.changeApiKey(e.target.value)} placeholder="sk-..." />
-          </label>
-          <label>
-            模型
-            <SearchSelect
-              allowCustom
-              options={cfg.preset.models.map((m) => ({ value: m }))}
-              value={cfg.model}
-              onChange={cfg.changeModel}
-              placeholder={cfg.preset.models[0] ?? '模型名'}
-            />
-          </label>
+          <AIConfigFields cfg={cfg} />
         </details>
 
         {busy && progress && (

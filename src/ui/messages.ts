@@ -13,9 +13,6 @@ export const msg = {
   /** Clipboard copy failed */
   copyFailed: '复制失败：浏览器拒绝了剪贴板访问，请手动选择文本复制',
 
-  /** Provider hint when baseURL is empty */
-  noBaseUrl: '自填地址',
-
   /** Lightbox / art thumbnail tooltip */
   clickToEnlarge: '点击看全图',
 

@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Scenario, Opening } from '../scenarios/schema'
-import { chat, friendlyError } from '../ai/client'
-import { PRESETS } from '../ai/presets'
+import { chatOnce, friendlyError } from '../ai/client'
 import { hasLocalMode } from '../engine/local'
 import { loadConfig } from '../storage'
-import { SearchSelect } from './SearchSelect'
+import { AIConfigFields } from './AIConfigFields'
 import { useAIConfig } from './useAIConfig'
-import { msg } from './messages'
 import { covers } from './covers'
-
-const providerOptions = PRESETS.map((p) => ({
-  value: p.id,
-  label: p.label,
-  hint: p.baseURL ? new URL(p.baseURL).host : msg.noBaseUrl,
-}))
 
 export function Setup({
   scenario,
@@ -69,10 +61,12 @@ export function Setup({
         : undefined
       : opening
 
-  // 本地模式无需配置；AI 模式需要 key + model。另：选了「自定义身份」却没写，则不放行——
-  // 否则会以「无身份」静默开局，玩家明明选了自设身份却丢失（finalOpening 此时返回 undefined）。
+  // 本地模式无需配置；AI 模式要「配好了」——判据只有 cfg.complete 这一条（= storage
+  // 肯存的那份），别在这里再手写一份：「地址即凭据」的那几家没有 key，两份判据一漂
+  // 就会放行一个存不下来的配置。另：选了「自定义身份」却没写，则不放行——否则会以
+  // 「无身份」静默开局，玩家明明选了自设身份却丢失（finalOpening 此时返回 undefined）。
   const ready =
-    (mode === 'local' || (cfg.apiKey.trim() !== '' && cfg.model.trim() !== '')) &&
+    (mode === 'local' || cfg.complete) &&
     !(customId && customIdText.trim() === '')
 
   const testConnection = async () => {
@@ -83,7 +77,7 @@ export function Setup({
     setTesting(true)
     setTestResult('')
     try {
-      await chat(cfg.config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }], undefined, ac.signal)
+      await chatOnce(cfg.config(), [{ role: 'user', content: '请只回复 OK 两个字母。' }], undefined, ac.signal)
       if (aliveRef.current && testSeq.current === seq) setTestResult('✅ 连接成功')
     } catch (e) {
       if (aliveRef.current && testSeq.current === seq) setTestResult(`❌ ${friendlyError(e)}`)
@@ -141,66 +135,8 @@ export function Setup({
       {mode === 'ai' && (
       <section className="panel">
         <h3>AI 服务配置（仅保存在本浏览器）</h3>
-        <label>
-          <span className="label-row">
-            服务商（可搜索）
-            {cfg.preset.docs && (
-              <a className="ext" href={cfg.preset.docs} target="_blank" rel="noreferrer">
-                API 文档 ↗
-              </a>
-            )}
-          </span>
-          <SearchSelect
-            options={providerOptions}
-            value={cfg.presetId}
-            onChange={cfg.changePreset}
-            placeholder="搜索服务商…"
-          />
-        </label>
-        <label>
-          Base URL（可改为代理或区域地址）
-          <input
-            list="endpoint-options"
-            value={cfg.baseURL}
-            onChange={(e) => cfg.changeBaseURL(e.target.value)}
-            placeholder={cfg.preset.baseURL || 'https://api.openai.com/v1'}
-          />
-          <datalist id="endpoint-options">
-            {(cfg.preset.endpoints ?? []).map((ep) => (
-              <option key={ep.url} value={ep.url}>{ep.label}</option>
-            ))}
-          </datalist>
-        </label>
-        <label>
-          <span className="label-row">
-            API Key
-            {cfg.preset.apiKeyUrl && (
-              <a className="ext" href={cfg.preset.apiKeyUrl} target="_blank" rel="noreferrer">
-                获取 Key ↗
-              </a>
-            )}
-          </span>
-          <input
-            type="password"
-            autoComplete="off"
-            value={cfg.apiKey}
-            onChange={(e) => cfg.changeApiKey(e.target.value)}
-            placeholder="sk-..."
-          />
-        </label>
-        <label>
-          模型（可搜索，也可直接输入任意模型名）
-          <SearchSelect
-            allowCustom
-            options={cfg.preset.models.map((m) => ({ value: m }))}
-            value={cfg.model}
-            onChange={cfg.changeModel}
-            placeholder={cfg.preset.models[0] ?? '模型名'}
-          />
-        </label>
-        <p className="hint">
-          请求直接从浏览器发出；若服务商不支持跨域（CORS），可改用 OpenRouter 等支持浏览器直连的服务。
-        </p>
+        <AIConfigFields cfg={cfg} />
+
         <div className="row">
           <button onClick={testConnection} disabled={!ready || testing}>
             {testing ? '测试中…' : '测试连接'}

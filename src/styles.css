@@ -1111,9 +1111,38 @@ html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
 .mode-card.selected { border-color: var(--cinnabar); background: rgba(201, 80, 58, 0.08); }
 .mode-card.selected strong { color: var(--cinnabar-bright); }
 
-.ambition-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.ambition-chip { padding: 6px 14px; font-size: 0.9rem; border-radius: 16px; }
-.ambition-chip.selected { border-color: var(--gold); color: var(--gold); background: rgba(201, 160, 92, 0.1); }
+.ambition-list, .chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.ambition-chip, .chip { padding: 6px 14px; font-size: 0.9rem; border-radius: 16px; }
+.ambition-chip.selected, .chip.selected { border-color: var(--gold); color: var(--gold); background: rgba(201, 160, 92, 0.1); }
+
+/* 中转：开关 + 地址（地址只在开着时出现），与另外两个项目同一形态 */
+.proxy-block { margin-top: 14px; }
+.proxy-block .hint { margin-bottom: 8px; }
+/* 开关：与另外两个项目同一控件语义（它们用组件库的 Switch，这里没有组件库，
+   用一个原生 checkbox 画出来）。裸 checkbox 在这套鎏金界面里是唯一一个方框，
+   突兀且不像"开关"——而这一栏决定的是 key 要不要经过别人的机器，值得看清楚。 */
+.inline-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); cursor: pointer; }
+.inline-toggle input {
+  appearance: none; -webkit-appearance: none;
+  width: 38px; height: 21px; margin: 0; flex: none;
+  border-radius: 999px; border: 1px solid var(--line, rgba(201, 160, 92, 0.35));
+  background: rgba(255, 255, 255, 0.06);
+  position: relative; cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.inline-toggle input::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.inline-toggle input:checked { background: rgba(201, 160, 92, 0.28); border-color: var(--gold); }
+.inline-toggle input:checked::after { transform: translateX(17px); background: var(--gold-bright, var(--gold)); }
+.inline-toggle input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.proxy-block input.invalid { border-color: var(--cinnabar); }
+.endpoint-chips { margin: 8px 0 0; }
+.proxy-block .req { margin-left: 8px; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--cinnabar); }
+.hint.error { color: var(--cinnabar-bright); }
 .start-btn { width: 100%; padding: 14px; font-size: 1.05rem; margin-top: 8px; }
 
 /* 正文字号档位选择器（设置页 + 对局头部共用；控件本身固定字号，不随 --font-scale 缩放） */
@@ -1153,9 +1182,18 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
   padding: 8px 10px; border-radius: 2px; cursor: pointer;
 }
-.combo-item:hover { background: var(--ink-6); }
+/* 键盘高亮与鼠标 hover 是【同一个】视觉状态：JS 侧 mouseenter 会把 active 移过去，
+   所以只需要一条规则，不会出现"鼠标停在 A、方向键停在 B"两处同时亮的错觉。 */
+.combo-item.active { background: var(--ink-6); }
 .combo-item.selected { color: var(--cinnabar-bright); }
 .combo-hint { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+/* 分组标题：不可选，只做视觉分隔。首个之外的上方留白，避免和上一组挤在一起 */
+.combo-group {
+  padding: 8px 10px 4px; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.08em;
+  cursor: default; user-select: none;
+}
+.combo-group + .combo-item { margin-top: 0; }
+.combo-item + .combo-group { margin-top: 4px; border-top: 1px solid var(--line); padding-top: 8px; }
 
 /* ── 游戏页 ── */
 
