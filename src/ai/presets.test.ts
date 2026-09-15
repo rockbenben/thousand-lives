@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { PRESETS, PRESET_GROUPS, providerOptions, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking } from './presets'
+import { PRESETS, PRESET_GROUPS, providerOptions, visibleProviderOptions, isHiddenPreset, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking } from './presets'
 import { THINKING_MAX_TOKENS } from './adapters'
 import { PROVIDER_CATALOG } from './providerCatalog.generated'
 
@@ -104,6 +104,35 @@ describe('PRESETS', () => {
     expect(findPreset(undefined)).toBeUndefined()
     expect(findPreset('nope')).toBeUndefined()
     expect(findPreset('deepseek')?.label).toBe('DeepSeek')
+  })
+})
+
+describe('默认隐藏的订阅套餐（Coding Plan / Token Plan）', () => {
+  it('只有 volcengine / alibaba 两个隐藏项，其余预设都不隐藏', () => {
+    expect(PRESETS.filter((p) => p.hidden).map((p) => p.id).sort()).toEqual(['alibaba', 'volcengine'])
+    expect(isHiddenPreset('volcengine')).toBe(true)
+    expect(isHiddenPreset('alibaba')).toBe(true)
+    expect(isHiddenPreset('deepseek')).toBe(false)
+    expect(isHiddenPreset(undefined)).toBe(false)
+  })
+
+  it('默认列表不含隐藏项；开关打开后全部出现', () => {
+    const ids = (opts: typeof providerOptions) => opts.map((o) => o.value)
+    expect(ids(visibleProviderOptions(false))).not.toContain('volcengine')
+    expect(ids(visibleProviderOptions(false))).not.toContain('alibaba')
+    expect(ids(visibleProviderOptions(true))).toEqual(ids(providerOptions))
+  })
+
+  it('当前已选中隐藏项时把它留住，另一个隐藏项仍藏着 —— 老存档不能被藏没', () => {
+    const visible = visibleProviderOptions(false, 'volcengine')
+    expect(visible.map((o) => o.value)).toContain('volcengine')
+    expect(visible.map((o) => o.value)).not.toContain('alibaba')
+  })
+
+  it('隐藏只是 UI 过滤：matchPreset 仍按 presetId 解析出隐藏预设', () => {
+    const p = matchPreset('openai', 'https://ark.cn-beijing.volces.com/api/coding/v3', 'volcengine')
+    expect(p.id).toBe('volcengine')
+    expect(needsProxy('volcengine')).toBe(true)
   })
 })
 

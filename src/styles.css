@@ -1118,6 +1118,20 @@ html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
 /* 中转：开关 + 地址（地址只在开着时出现），与另外两个项目同一形态 */
 .proxy-block { margin-top: 14px; }
 .proxy-block .hint { margin-bottom: 8px; }
+/* 订阅套餐高级开关：极少用、又带着滥用封号的风险说明 —— 默认折成一行不起眼
+   的小字（比正文小一号、弱化色），展开后才露出开关与风险全文；开启后 React
+   会把 open 置真，状态不会被藏住。风险说明只在展开后出现，保留警示色。 */
+.hidden-providers-toggle { margin-top: 4px; }
+.hidden-providers-toggle > summary {
+  cursor: pointer; user-select: none; list-style: none;
+  color: var(--muted); font-size: 0.8rem;
+}
+.hidden-providers-toggle > summary::-webkit-details-marker { display: none; }
+.hidden-providers-toggle > summary::before { content: '▸ '; font-size: 0.75em; }
+.hidden-providers-toggle[open] > summary::before { content: '▾ '; }
+.hidden-providers-toggle > summary:hover { color: var(--paper-dim); }
+.hidden-providers-body { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.hidden-providers-body .hint { color: var(--cinnabar); margin: 0; }
 /* 开关：与另外两个项目同一控件语义（它们用组件库的 Switch，这里没有组件库，
    用一个原生 checkbox 画出来）。裸 checkbox 在这套鎏金界面里是唯一一个方框，
    突兀且不像"开关"——而这一栏决定的是 key 要不要经过别人的机器，值得看清楚。 */

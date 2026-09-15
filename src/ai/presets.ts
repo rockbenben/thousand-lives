@@ -15,6 +15,14 @@ export interface ProviderPreset {
   id: string
   group: PresetGroup
   label: string
+  /**
+   * 默认在服务商选择器里隐藏（来自目录 hidden）—— 当前是火山方舟 Coding Plan
+   * 与阿里百炼 Token Plan 两个订阅套餐：两家官方文档均写明，在非 AI 编程工具 /
+   * 允许范围之外使用套餐 Base URL / Key 可能被判滥用而封停账号 / 订阅。只是
+   * 【默认 UI 过滤】：已选中它的存档与按 id 解析必须照常工作
+   * （visibleProviderOptions 会把当前项留住）。
+   */
+  hidden?: boolean
   /** 官方 API 文档 */
   docs?: string
   /** 获取 / 管理 API Key 的控制台页面 */
@@ -81,6 +89,7 @@ function fromCatalog(key: string, pick: Pick): ProviderPreset {
     id: key,
     group: pick.group,
     label: pick.label ?? p.label,
+    ...(p.hidden ? { hidden: true as const } : {}),
     docs: p.docs,
     apiKeyUrl: p.apiKeyUrl,
     // 协议是三种之一由下面的启动校验保证（目录是超集，还有 azure-openai 之类）
@@ -167,6 +176,11 @@ const PICKED: Record<string, Pick> = {
   siliconflow: { group: 'aggregator', label: '硅基流动 SiliconFlow' },
   atlascloud: { group: 'aggregator' },
   nvidia: { group: 'aggregator', label: 'Nvidia NIM' },
+  // 订阅套餐端点 —— 目录标了 hidden（默认选择器不显示，官方文档称非 AI 编程工具 /
+  // 允许范围之外使用套餐端点可能被判定滥用而封停账号 / 订阅），由高级开关放出。
+  // alibaba 2026-09 由 Coding Plan 换成 Token Plan（host/SKU 全换，见目录）。
+  volcengine: { group: 'china', label: '字节方舟 Coding Plan' },
+  alibaba: { group: 'china', label: '阿里百炼 Token Plan' },
 }
 
 /**
@@ -272,6 +286,24 @@ export const providerOptions: ReadonlyArray<{ value: string; label: string; hint
     group: g.label,
   })),
 )
+
+/** 该预设是否默认隐藏（订阅套餐端点：火山 Coding Plan / 阿里 Token Plan）。 */
+export function isHiddenPreset(id: string | undefined): boolean {
+  return Boolean(findPreset(id)?.hidden)
+}
+
+/**
+ * 下拉【实际可见】的选项：hidden 预设默认过滤掉，用户打开高级开关才放出。
+ * 当前已选中的那一项永远保留 —— 老存档 / 导入的配置选了隐藏预设时，不能让
+ * SearchSelect 显示一个解析不出的裸 id。组顺序与连续性与 providerOptions 相同。
+ */
+export function visibleProviderOptions(
+  showHidden: boolean,
+  currentId?: string,
+): ReadonlyArray<{ value: string; label: string; hint: string; group: string }> {
+  if (showHidden) return providerOptions
+  return providerOptions.filter((o) => o.value === currentId || !isHiddenPreset(o.value))
+}
 
 export function findPreset(id: string | undefined): ProviderPreset | undefined {
   return PRESETS.find((p) => p.id === id)

@@ -1,6 +1,7 @@
 import type { ThinkingLevel } from '../ai/types'
-import { providerOptions, DEFAULT_PROXY } from '../ai/presets'
+import { visibleProviderOptions, DEFAULT_PROXY } from '../ai/presets'
 import { SearchSelect } from './SearchSelect'
+import { useShowCodingPlans } from './useShowCodingPlans'
 import type { useAIConfig } from './useAIConfig'
 
 /**
@@ -15,6 +16,9 @@ import type { useAIConfig } from './useAIConfig'
 export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> }) {
   // 当前地址落在哪条建议端点上（只有自定义那一项的端点带文档）
   const endpointDocs = (cfg.preset.endpoints ?? []).find((ep) => ep.url === cfg.baseURL.trim())?.docs
+  // 订阅套餐端点默认隐藏（目录 hidden：火山 Coding Plan / 阿里 Token Plan），
+  // 高级开关放出；当前选中项始终保留。
+  const { show: showCodingPlans, set: setShowCodingPlans } = useShowCodingPlans()
 
   return (
     <>
@@ -27,8 +31,25 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
             </a>
           )}
         </span>
-        <SearchSelect options={providerOptions} value={cfg.presetId} onChange={cfg.changePreset} placeholder="搜索服务商…" />
+        <SearchSelect options={visibleProviderOptions(showCodingPlans, cfg.presetId)} value={cfg.presetId} onChange={cfg.changePreset} placeholder="搜索服务商…" />
       </label>
+      {/* 极少用的高级开关，还带着「套餐可能被判滥用封号」的风险说明 ——
+          常驻一大行开关加红字说明过于扎眼。折成一行不起眼的小字，展开后才
+          露出开关与风险全文；已开启时 open 跟随状态为 true，免得它被藏住。 */}
+      <details className="hidden-providers-toggle" open={showCodingPlans}>
+        <summary>
+          高级：订阅套餐节点（Coding Plan / Token Plan）{showCodingPlans ? '· 已开启' : ''}
+        </summary>
+        <div className="hidden-providers-body">
+          <label className="inline-toggle">
+            <input type="checkbox" checked={showCodingPlans} onChange={(e) => setShowCodingPlans(e.target.checked)} />
+            <span>显示订阅套餐节点</span>
+          </label>
+          <span className="hint">
+            官方文档指明：套餐仅限在 AI 编程工具中交互式使用，在允许范围之外使用套餐的 Base URL 和 API Key 可能被识别为滥用，导致订阅停用或账号 / API Key 封禁。请确认了解风险后再开启。
+          </span>
+        </div>
+      </details>
 
       <label>
         <span className="label-row">
