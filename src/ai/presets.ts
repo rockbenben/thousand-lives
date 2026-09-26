@@ -169,7 +169,10 @@ const PICKED: Record<string, Pick> = {
   grok: { group: 'international', label: 'xAI Grok' },
   cohere: { group: 'international' },
   openrouter: { group: 'aggregator', label: 'OpenRouter（聚合）' },
-  opencode: { group: 'aggregator' },
+  // 上游 2026-09 把 key 从 opencode 改成 opencodeZen（同一账号下有 Zen 余额按量 /
+  // Go 订阅两条产品线，光写 opencode 读不出是哪条）。不跟改的话下面那条守卫会直接
+  // 抛错，整个启动就挂了。
+  opencodeZen: { group: 'aggregator' },
   tokenhub: { group: 'china', label: 'TokenHub（腾讯）' },
   groq: { group: 'aggregator' },
   cerebras: { group: 'aggregator' },
