@@ -48,9 +48,14 @@ export function pickLocalEvent(sc: Scenario, st: GameState, rng: Rng = Math.rand
   if (pool.length === 0) pool = events
 
   // 事件「分量」：选项里最大的单项效应绝对值——越大越是改变命运的大事件。
+  // 必须连 outcomes[] 分支一起看：晋阶/夺位这类大事把 ±30 的翻转写在分支里、选项自身的 effects
+  // 常是空的，只读 effects 会把它们全量成「小事」，阶段偏置就按错的量级排事件出场顺序。
   const magOf = (e: LocalEvent) => {
     let m = 0
-    for (const c of e.choices) for (const v of Object.values(c.effects)) m = Math.max(m, Math.abs(v))
+    for (const c of e.choices) {
+      for (const v of Object.values(c.effects)) m = Math.max(m, Math.abs(v))
+      for (const o of c.outcomes ?? []) for (const v of Object.values(o.effects)) m = Math.max(m, Math.abs(v))
+    }
     return m
   }
   // 阶段升格偏置:期望事件量级随回合进度上升(初期小吏小事 → 后期朝堂大事),

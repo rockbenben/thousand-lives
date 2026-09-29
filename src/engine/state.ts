@@ -1,5 +1,15 @@
 import type { Scenario, Opening, Attribute } from '../scenarios/schema'
-import { parseCondition, evalCondition, conditionImplies, type Condition } from './condition'
+import {
+  parseCondition,
+  evalCondition,
+  conditionImplies,
+  conditionSatisfiable,
+  regionOf,
+  regionEmpty,
+  regionCoveredBy,
+  type Condition,
+} from './condition'
+import { isHiddenSentinel } from './prompt'
 import type { GameState, TurnResult, Ending, Choice, Outcome } from './types'
 
 // 条件是否含「死亡级」子句：某致死属性 <= 其死线（hp<=40 这类高于死线的「重伤」不算死亡）。
@@ -171,13 +181,69 @@ export function checkEnding(
   return null
 }
 
+// 结局「可集齐性」判据：玩家到底有没有机会看到这条结局。两种「永不出局」：
+//  · 条件恒空——满足域为空（属性钳在 [0,max]，`attr<=-1` 这类无解）；
+//  · 永被压制——条件本身可满足，但每个开局印记下都必然存在一条结局顶掉它：或严格更具体
+//    （checkEnding 取最具体者），或互不蕴含而数组更靠前（并列取先后）。
+//    checkEnding 是本地/AI 两模式共用的唯一收口，故被压制者两模式都看不到。
+// 例外：挂了 endTone 的选项结局与哨兵结局（`attr<=低于死线`）由选项/AI 直接授予基调、不走条件匹配，
+// 一律视为可集齐——否则会把「寿元耗尽」那类刻意留的稀有彩蛋误判成死内容。
+export function uncollectableEndings(sc: Scenario): { tone: string; condition: string; why: string }[] {
+  const caps: Record<string, number> = {}
+  for (const a of sc.attributes) caps[a.key] = a.max
+  const granted = new Set<string>()
+  for (const ev of sc.localEvents ?? [])
+    for (const c of ev.choices) {
+      if (c.endTone) granted.add(c.endTone)
+      for (const o of c.outcomes ?? []) if (o.endTone) granted.add(o.endTone)
+    }
+  const parsed = sc.endings.map((e, i) => ({ e, i, cond: parseCondition(e.condition) }))
+  const partsOf = (c: Condition) => (c.kind === 'and' ? c.parts : [c])
+  const out: { tone: string; condition: string; why: string }[] = []
+  for (const x of parsed) {
+    if (granted.has(x.e.tone) || isHiddenSentinel(sc, x.e.condition)) continue
+    if (!conditionSatisfiable(x.cond, caps)) {
+      out.push({ tone: x.e.tone, condition: x.e.condition, why: '条件恒空（超出属性钳位区间）' })
+      continue
+    }
+    const openingFlags = (sc.openings ?? []).map((o) => o.flag).filter(Boolean) as string[]
+    if (!openingFlags.length) continue
+    // 能顶掉 x 的候选：严格更具体者（引擎取最具体），或互不蕴含而数组更靠前者（并列取先后）。
+    // 比 x 更宽的结局无论先后都抢不过 x，故排除。
+    const thieves = parsed
+      .filter((d) => {
+        if (d === x) return false
+        const dStricter = conditionImplies(d.cond, x.cond) && !conditionImplies(x.cond, d.cond)
+        const tied = !conditionImplies(d.cond, x.cond) && !conditionImplies(x.cond, d.cond)
+        return dStricter || (tied && d.i < x.i)
+      })
+      .map((d) => regionOf(d.cond))
+    if (!thieves.length) continue
+    // 每局必然携带自己开局的那枚印记；逐开局验证 x 的整片满足域是否被这些候选的并集盖住
+    // （单条盖不住不算数——常见形态是几条分段合起来盖死，如 art 70~84 归变体、85+ 归另一条）
+    const alwaysStolen = openingFlags.every((f) => {
+      const target = regionOf({
+        kind: 'and',
+        parts: [...partsOf(x.cond), { kind: 'has', flag: f, neg: false }],
+      } as Condition)
+      if (regionEmpty(target, caps)) return true // 该开局下这条本就不可能出现，谈不上被抢
+      return regionCoveredBy(target, thieves, caps)
+    })
+    if (alwaysStolen)
+      out.push({ tone: x.e.tone, condition: x.e.condition, why: '每个开局都有更具体/更靠前的同类结局顶掉它' })
+  }
+  return out
+}
+
 // 图鉴/成就口径：剧本「可真正触达」的结局基调全集。
 // 通用「死亡」是 checkEnding 在某致死属性归零、却没有作者写的死亡级结局时的兜底基调；
 // 仅当确有某致死属性缺少 简单 `key<=阈值`（阈值<=deathBelow）结局时它才会被触发——此时才计入。
 // 否则它是一个永不触发的幽灵槽：会让「集齐全部结局」成就与图鉴永远差一格、不可达。
 // 判定口径与上方 checkEnding 死亡分支严格一致（仅 kind==='cmp' 的 <= 简单条件算作死亡级结局）。
+// 同理，uncollectableEndings 判定的死内容也不计入——否则图鉴永远差格、集齐成就数学上不可达。
 export function reachableEndingTones(sc: Scenario): string[] {
-  const tones = sc.endings.map((e) => e.tone)
+  const dead = new Set(uncollectableEndings(sc).map((x) => x.tone))
+  const tones = sc.endings.filter((e) => !dead.has(e.tone)).map((e) => e.tone)
   const deaths = sc.attributes.filter((a) => a.deathBelow !== undefined)
   const genericDeathReachable = deaths.some(
     (a) =>

@@ -12,13 +12,15 @@
  *   ② 同质化：最大单一结局占比（越低越好；>50% 提示该剧本结局过于集中）
  *   ③ 登顶可达：explorer/climber 能否摸到最高境界印记（apex realm 触达率）
  *   ④ 阈值可行性：任一 `attr>=V` 的 V 若超过该属性的可达上限（ceilingUnlocks 顶档或 max）即真·死结局，标红
+ *   ⑤ 死内容（静态，不依赖采样）：条件恒空、或每个开局都有更具体/更靠前的结局顶掉它 → 两模式都永不触发。
+ *      这类基调已被 reachableEndingTones 从图鉴/成就分母中剔除，此处列出是提醒作者：配图与文案白做了。
  *
  * 死结局说明：很多「未触发」属正常——`<attr><=-1` 哨兵彩蛋(endTone 强制、概率稀有)、
  *   或需特定开局/支线 flag + 高属性的组合，本脚本的 5 策略 × 全开局已尽量覆盖，但极稀有路径仍可能漏掉，
  *   故输出标注「疑似」，需结合 condition 人工判断（阈值可行性那一栏是硬判定）。
  */
 import { builtinScenarios } from '../src/scenarios'
-import { initState, applyChoice } from '../src/engine/state'
+import { initState, applyChoice, uncollectableEndings } from '../src/engine/state'
 import { localTurn } from '../src/engine/local'
 import { parseCondition } from '../src/engine/condition'
 import { makeRng, deathAttrs, LETHAL_TONE as LETHAL } from './_sim-shared'
@@ -209,15 +211,32 @@ function check(scId: string, games: number) {
   if (apex) console.log(`   最高境界(${apex})触达率[climber/explorer]: ${apexRuns ? ((apexHit / apexRuns) * 100).toFixed(1) : '0'}%`)
   console.log(`   阈值可行性: ${infeasible.length ? '✗ ' + infeasible.length + ' 处超上限' : '✓ 全部 >= 阈值在可达上限内'}`)
   for (const b of infeasible) console.log(`      ✗ ${b}`)
-  return { id: sc.id, never: never.length, top: topEntry ? topEntry[1] / total : 0, infeasible: infeasible.length }
+  const deadContent = uncollectableEndings(sc)
+  console.log(`   死内容(静态·永不触发): ${deadContent.length ? `✗ ${deadContent.length} 条（已从图鉴/成就分母剔除）` : '✓ 无'}`)
+  for (const d of deadContent) console.log(`      ✗ 「${d.tone}」  [${d.condition}]  ${d.why}`)
+  return {
+    id: sc.id,
+    never: never.length,
+    top: topEntry ? topEntry[1] / total : 0,
+    infeasible: infeasible.length,
+    deadContent: deadContent.length,
+  }
 }
 
 const arg = process.argv[2] ?? 'all'
 const games = Number(process.argv[3] ?? 1500)
 const ids = arg === 'all' ? builtinScenarios.map((s) => s.id) : [arg]
-const rows = ids.map((id) => check(id, games)).filter(Boolean) as { id: string; never: number; top: number; infeasible: number }[]
+const rows = ids.map((id) => check(id, games)).filter(Boolean) as {
+  id: string
+  never: number
+  top: number
+  infeasible: number
+  deadContent: number
+}[]
 if (rows.length > 1) {
   console.log(`\n══ 汇总 ══`)
   for (const r of rows.sort((a, b) => b.top - a.top))
-    console.log(`   ${r.id.padEnd(12)} 疑似死结局 ${String(r.never).padStart(2)} | 同质化 ${(r.top * 100).toFixed(0).padStart(3)}% | 阈值不可行 ${r.infeasible}`)
+    console.log(
+      `   ${r.id.padEnd(12)} 疑似死结局 ${String(r.never).padStart(2)} | 同质化 ${(r.top * 100).toFixed(0).padStart(3)}% | 阈值不可行 ${r.infeasible} | 死内容 ${r.deadContent}`,
+    )
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { scenarioSchema, type Scenario } from '../scenarios/schema'
-import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollExtremeFate, rollOutcome, applyFlags, reachableEndingTones } from './state'
+import { initState, clampEffects, checkEnding, applyChoice, resolveCustomAction, applyMemory, nextProgress, rollFortune, rollExtremeFate, rollOutcome, applyFlags, reachableEndingTones, uncollectableEndings } from './state'
 import { builtinScenarios } from '../scenarios'
 import type { TurnResult } from './types'
 
@@ -50,8 +50,155 @@ describe('reachableEndingTones（图鉴/成就口径：仅计可真正触达的�
   })
 })
 
-describe('checkEnding 择优（满足的结局取最具体者，与数组顺序无关）', () => {
-  // 更具体的结局排在「更宽」的后面：旧的「数组顺序首中」会取宽的（遮蔽），新引擎应取具体的
+describe('uncollectableEndings（死内容：条件恒空 / 每个开局都被顶掉）', () => {
+  const openings = ['甲', '乙', '丙'].map((f) => ({ name: f, flag: f, prompt: `开局${f}` }))
+  const variants = ['甲', '乙', '丙'].map((f) => ({
+    condition: `maxTurns & gold>=80 & has(${f})`,
+    tone: `结局${f}`,
+  }))
+  // 「通用」被三条开局变体严格更具体地穷尽覆盖 → 任何状态下都有人顶掉它
+  const covered = scenarioSchema.parse({
+    id: 'cov',
+    title: '覆盖',
+    intro: '开局',
+    attributes: [{ key: 'gold', name: '金', initial: 50, max: 100 }],
+    maxTurns: 3,
+    systemPrompt: 'GM',
+    openings,
+    endings: [{ condition: 'maxTurns & gold>=80', tone: '通用' }, ...variants],
+  })
+  it('每个开局都有更具体变体时，通用结局判为死内容，且不计入图鉴/成就分母', () => {
+    expect(uncollectableEndings(covered).map((x) => x.tone)).toEqual(['通用'])
+    expect(reachableEndingTones(covered)).not.toContain('通用')
+    // 与真实行为对齐：三开局各自的高金满期局，赢的确实都是变体
+    for (const f of openings)
+      expect(checkEnding(covered, { gold: 90 }, 3, [f.flag])?.tone).toBe(`结局${f.name}`)
+  })
+  it('反例：少一个开局的变体，通用结局在该开局下能赢 → 不得判死', () => {
+    const partial: Scenario = { ...covered, endings: [covered.endings[0], variants[0], variants[1]] }
+    expect(uncollectableEndings(partial)).toEqual([])
+    expect(checkEnding(partial, { gold: 90 }, 3, ['丙'])?.tone).toBe('通用')
+  })
+  it('并列型遮蔽：变体与通用互不蕴含、但变体数组更靠前 → 通用同样永不出局（梨园「艺臻化境」即此型）', () => {
+    const tie: Scenario = {
+      ...covered,
+      endings: [
+        ...['甲', '乙', '丙'].map((f) => ({
+          condition: `maxTurns & gold>=80 & has(${f})`,
+          tone: `结局${f}`,
+        })),
+        { condition: 'maxTurns & gold>=85', tone: '通用' },
+      ],
+    }
+    // 互不蕴含：gold>=85 不满足 has 门，变体的 gold>=80 也不蕴含 85
+    for (const f of openings) expect(checkEnding(tie, { gold: 90 }, 3, [f.flag])?.tone).toBe(`结局${f.name}`)
+    expect(uncollectableEndings(tie).map((x) => x.tone)).toEqual(['通用'])
+  })
+  it('并列但通用更靠前时，通用按顺序取胜 → 不得判死', () => {
+    const first: Scenario = {
+      ...covered,
+      endings: [
+        { condition: 'maxTurns & gold>=85', tone: '通用' },
+        ...['甲', '乙', '丙'].map((f) => ({
+          condition: `maxTurns & gold>=80 & has(${f})`,
+          tone: `结局${f}`,
+        })),
+      ],
+    }
+    expect(checkEnding(first, { gold: 90 }, 3, ['甲'])?.tone).toBe('通用')
+    expect(uncollectableEndings(first)).toEqual([])
+  })
+  it('分段覆盖：单条都盖不住、几条合起来盖死 → 仍判死（宦海「万民称颂」、梨园「怀技遭妒」即此型）', () => {
+    const split: Scenario = {
+      ...covered,
+      endings: [
+        ...['甲', '乙', '丙'].map((f) => ({
+          condition: `maxTurns & gold>=80 & gold<=84 & has(${f})`,
+          tone: `中段${f}`,
+        })),
+        { condition: 'maxTurns & gold>=85', tone: '高段' },
+        { condition: 'maxTurns & gold>=80', tone: '通用' },
+      ],
+    }
+    // 三条开局变体只盖住 80~84，「高段」补上 85+：谁单独都盖不住通用条
+    expect(uncollectableEndings(split).map((x) => x.tone)).toEqual(['通用'])
+    expect(reachableEndingTones(split)).not.toContain('通用')
+  })
+  it('分段缺一角：拿掉「高段」，85 以上无人认领 → 通用条必须活着', () => {
+    const gap: Scenario = {
+      ...covered,
+      endings: [
+        ...['甲', '乙', '丙'].map((f) => ({
+          condition: `maxTurns & gold>=80 & gold<=84 & has(${f})`,
+          tone: `中段${f}`,
+        })),
+        { condition: 'maxTurns & gold>=80', tone: '通用' },
+      ],
+    }
+    expect(uncollectableEndings(gap)).toEqual([])
+    expect(checkEnding(gap, { gold: 90 }, 3, ['甲'])?.tone).toBe('通用')
+  })
+  it('条件恒空（属性钳在 0，gold<=-5 无解）判为死内容', () => {
+    const empty: Scenario = {
+      ...covered,
+      endings: [{ condition: 'gold<=-5', tone: '负数' }, ...variants],
+    }
+    const u = uncollectableEndings(empty)
+    expect(u.map((x) => x.tone)).toEqual(['负数'])
+    expect(u[0].why).toContain('恒空')
+  })
+  it('哨兵例外：致死属性 `attr<=低于死线` 由 AI 直接授予基调，不判死', () => {
+    const sentinel: Scenario = {
+      ...covered,
+      attributes: [
+        { key: 'gold', name: '金', initial: 50, max: 100 },
+        { key: 'hp', name: '命', initial: 50, max: 100, deathBelow: 0 },
+      ],
+      endings: [{ condition: 'hp<=-1', tone: '天谴' }, ...variants],
+    }
+    expect(uncollectableEndings(sentinel)).toEqual([])
+    expect(reachableEndingTones(sentinel)).toContain('天谴')
+  })
+  it('endTone 例外：挂在选项上的基调由本地模式直接授予，不判死', () => {
+    const wired: Scenario = {
+      ...covered,
+      endings: [{ condition: 'gold<=-5', tone: '横死' }, ...variants],
+      localEvents: [
+        {
+          narrative: '房梁忽断',
+          summary: '命丧房梁',
+          choices: [
+            { text: '躲开', effects: {} },
+            { text: '不躲', effects: {}, endTone: '横死' },
+          ],
+        },
+      ],
+    }
+    expect(uncollectableEndings(wired)).toEqual([])
+  })
+  it('回归护栏：内置剧本被排除的基调，模拟中确无一触发过', () => {
+    // 判据过宽会吃掉真结局；此处固化已知死内容清单，新增/漂移即失败
+    const known: Record<string, string[]> = {
+      spy: ['隐蔽战线·无名英雄'],
+      sanguo: ['经天纬地·名相千古'],
+      officialdom: [
+        '万民称颂·青天再世',
+        '媚上失士·身败名裂',
+        '声名扫地·削籍为民',
+        '名相贤臣·配享太庙',
+        '三朝元老·一代贤相',
+      ],
+      liyuan: ['怀技遭妒·暗害绝命'],
+    }
+    for (const s of builtinScenarios) {
+      expect(uncollectableEndings(s).map((x) => x.tone).sort(), s.id).toEqual(
+        (known[s.id] ?? []).slice().sort(),
+      )
+    }
+  })
+})
+
+describe('checkEnding 择优（满足的结局取最具体者，与数组顺序无关）', () => {  // 更具体的结局排在「更宽」的后面：旧的「数组顺序首中」会取宽的（遮蔽），新引擎应取具体的
   const byClause = scenarioSchema.parse({
     ...sc,
     endings: [
