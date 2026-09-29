@@ -156,8 +156,9 @@ describe('思考参数', () => {
     // tokenhub：上游没有已知的思考线格式
     expect(thinkingWireFor('tokenhub', 'hy3', 'high')).toBeUndefined()
     expect(supportsThinking('tokenhub', 'hy3')).toBe(false)
-    // 已知不思考的 SKU
-    expect(thinkingWireFor('minimax', 'MiniMax-M2.7', 'high')).toBeUndefined()
+    // 列了但整家没给思考形态的 SKU（AI Studio 兼容层目录就是不给）
+    expect(thinkingWireFor('gemini-openai', 'gemini-3.8-flash', 'high')).toBeUndefined()
+    expect(supportsThinking('gemini-openai', 'gemini-3.8-flash')).toBe(false)
   })
 
   it('Claude / Gemini 走原生协议，目录按原生形态给 —— 与兼容层的形状不同', () => {
@@ -180,8 +181,8 @@ describe('思考参数', () => {
       thinking: { type: 'adaptive' },
       output_config: { effort: 'high' },
     })
-    // Gemini 的形态自带 generationConfig 这一层，逐 SKU 档位不同（3.5 系有 minimal）
-    expect(thinkingWireFor('gemini', 'gemini-3.5-flash', 'off')).toEqual({
+    // Gemini 的形态自带 generationConfig 这一层，逐 SKU 档位不同（3.5 lite 有 minimal）
+    expect(thinkingWireFor('gemini', 'gemini-3.5-flash-lite', 'off')).toEqual({
       generationConfig: { thinkingConfig: { thinkingLevel: 'minimal' } },
     })
     expect(thinkingWireFor('gemini', 'gemini-3.7-flash', 'off')).toEqual({
@@ -350,7 +351,7 @@ describe('没有「关闭」这一档的服务商', () => {
     expect(canDisableThinking('claude', 'claude-opus-5')).toBe(true)
     expect(canDisableThinking('claude', 'claude-fable-5')).toBe(false)
     // 压根不思考的 SKU 无所谓关不关
-    expect(canDisableThinking('minimax', 'MiniMax-M2.7')).toBe(true)
+    expect(canDisableThinking('gemini-openai', 'gemini-3.8-flash')).toBe(true)
   })
 
   it('布尔关法也算真关 —— 只认字符串会对着真能关的服务商喊「仍会计费」', () => {
