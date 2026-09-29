@@ -82,7 +82,7 @@ export function LangToggle() {
     }
   }
   return (
-    <button className="lang-toggle" onClick={toggle} title="简体 / 繁體" aria-label="简繁切换">
+    <button className="lang-toggle" onClick={toggle} title="简体 / 繁體" aria-label={lang === 'cn' ? '繁体' : '简体'}>
       {lang === 'cn' ? '繁' : '简'}
     </button>
   )

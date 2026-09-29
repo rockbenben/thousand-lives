@@ -234,7 +234,7 @@ label { display: block; margin: 14px 0; color: var(--paper-dim); font-size: 0.9r
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 /* Firefox：scrollbar-color 可继承，根上设一次即全站生效 */
-html { scrollbar-color: rgba(203, 168, 90, 0.42) transparent; }
+html { scrollbar-color: var(--line-strong) transparent; }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }

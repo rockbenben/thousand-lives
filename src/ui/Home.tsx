@@ -212,7 +212,6 @@ export function Home({
           href="https://github.com/rockbenben/thousand-lives"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="在 GitHub 查看并共撰千世书开源仓库"
         >
           <span className="colophon-seal" aria-hidden="true">
             <span>开</span>

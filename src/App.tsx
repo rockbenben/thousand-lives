@@ -38,6 +38,11 @@ export default function App() {
     }
   }, [])
 
+  // 换屏回到页首：各屏都从自己的第一屏读起（对局/结局为整屏布局，归零无副作用）
+  useEffect(() => {
+    scrollTo(0, 0)
+  }, [screen])
+
   const startSetup = (sc: Scenario) => {
     setSetupScenario(sc)
     setSetupOpening(undefined)
