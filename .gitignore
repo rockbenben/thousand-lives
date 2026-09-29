@@ -6,3 +6,5 @@ dev-dist
 .env.*
 .gstack/
 .claude/
+.design-qa/
+.qoder*

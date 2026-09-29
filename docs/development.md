@@ -40,3 +40,14 @@ src/
 ```bash
 npx vite-node scripts/gen-og-pages.mjs
 ```
+
+## 配图清单与出图
+
+`src/assets/` 的 2092 个配图槽位由**剧本源码**决定，不由磁盘决定 —— 所以新事件即使还没图也会出现在清单里，而不是静默回退到主题图：
+
+```bash
+npx vite-node scripts/art-inventory.ts   # 重新枚举 → design/art-inventory.json（缺图 / 尺寸 / 孤儿对账）
+```
+
+补图用的英文场景提示词缓存在 `design/art-prompts.json`（键 `scenario|中文标题`），清单会把它带进对应槽位的 `prompt` 字段。
+新增结局 / 本地事件不必先手写 `art`：清单按 `djb2(tone | summary)` 给出稳定文件名，图落到位即生效。但**改现有 tone / summary 之前必须先把 `art` 显式写进源码**，否则旧图立刻变孤儿。
