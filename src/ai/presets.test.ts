@@ -198,13 +198,27 @@ describe('思考参数', () => {
   })
 })
 
-describe('预填模型', () => {
-  it('目录指定的 defaultModel 排首位 —— models[0] 就是界面填进去的那个', () => {
+describe('预填模型（顺序与默认是两个通道）', () => {
+  it('preset.models 保持目录原序 —— 顺序是上游的展示契约，不许重排', () => {
+    for (const p of PROVIDER_CATALOG) {
+      const preset = findPreset(p.key)
+      if (!preset) continue
+      expect(preset.models, `${p.key} 的清单顺序`).toEqual(p.models.map((m) => m.id))
+    }
+  })
+  it('预填落点 = defaultModel（独立字段），不是靠谁排第一', () => {
     for (const p of PROVIDER_CATALOG) {
       const preset = findPreset(p.key)
       if (!preset || !p.defaultModel) continue
-      expect(preset.models[0], `${p.key} 的预填模型`).toBe(p.defaultModel)
+      expect(preset.defaultModel, `${p.key} 的默认通道`).toBe(p.defaultModel)
+      // 兜底链的另一半：界面取 defaultModel ?? models[0]
+      expect(preset.defaultModel ?? preset.models[0]).toBe(p.defaultModel)
     }
+  })
+  it('claude 的错位点是故意的：首行 opus、默认 sonnet 5.5', () => {
+    const c = findPreset('claude')!
+    expect(c.models[0]).toBe('claude-opus-5-5')
+    expect(c.defaultModel).toBe('claude-sonnet-5-5')
   })
 })
 

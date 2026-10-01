@@ -106,7 +106,7 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
           options={cfg.preset.models.map((m) => ({ value: m }))}
           value={cfg.model}
           onChange={cfg.changeModel}
-          placeholder={cfg.preset.models[0] ?? '模型名'}
+          placeholder={cfg.preset.defaultModel ?? cfg.preset.models[0] ?? '模型名'}
         />
       </label>
 

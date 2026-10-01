@@ -15,7 +15,7 @@ export function useAIConfig(onChange?: () => void) {
   const [provider, setProvider] = useState<Provider>(saved?.provider ?? initPreset.provider)
   const [baseURL, setBaseURL] = useState(saved?.baseURL ?? initPreset.baseURL)
   const [apiKey, setApiKey] = useState(saved?.apiKey ?? '')
-  const [model, setModel] = useState(saved?.model ?? initPreset.models[0] ?? '')
+  const [model, setModel] = useState(saved?.model ?? initPreset.defaultModel ?? initPreset.models[0] ?? '')
   const [thinkingLevel, setThinkingLevel] = useState<ThinkingLevel>(saved?.thinkingLevel ?? 'off')
   /**
    * 中转拆成【开关 + 地址】两件事，与另外两个项目一致。
@@ -60,7 +60,7 @@ export function useAIConfig(onChange?: () => void) {
       provider: prev?.provider ?? p.provider,
       baseURL: prev?.baseURL ?? p.baseURL,
       apiKey: prev?.apiKey ?? '',
-      model: prev?.model ?? p.models[0] ?? '',
+      model: prev?.model ?? p.defaultModel ?? p.models[0] ?? '',
       // 思考档位跟着服务商走：换回某家时恢复它上次的选择，没配过则关闭
       thinkingLevel: prev?.thinkingLevel ?? 'off',
       // 中转同理；没配过的话，直连已坏的那几家默认开

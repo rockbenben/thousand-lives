@@ -33,8 +33,14 @@ export interface ProviderPreset {
   baseURL: string
   /** 可选的备用地址（多区域 / 多计费模式），进 Base URL 的下拉建议 */
   endpoints?: { label: string; url: string; docs?: string }[]
-  /** 推荐模型，第一个为默认值；模型输入框支持搜索与自定义 */
+  /** 推荐模型。**顺序是目录声明的展示契约**（如 zen 两家按输入价升序、claude 按官方在售对应），消费方不得重排；模型输入框支持搜索与自定义 */
   models: string[]
+  /**
+   * 预填/默认型号 = 目录的 defaultModel —— 与顺序分开的独立通道。
+   * 曾经的做法是把默认重排到 models[0]，那等于把上游的顺序语义盖掉；
+   * 而默认落在哪家、什么档，本来就【不该】由"它排第一"来表达。
+   */
+  defaultModel?: string
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -97,19 +103,15 @@ function fromCatalog(key: string, pick: Pick): ProviderPreset {
     baseURL: eps[0].url,
     // 只有一个端点时不出下拉（沿用原有约定：endpoints 表示"有别的选择"）
     ...(eps.length > 1 ? { endpoints: eps } : {}),
-    // 目录指定了 defaultModel 就把它排首位 —— models[0] 是界面的预填值，让上游的
-    // 排序来决定它，用户不动手就可能按 Opus 5 计费（目录默认给的是 Sonnet 5）。
-    models: orderedModels(p),
+    // 顺序原样跟随目录（那是上游的展示契约）；预填值走独立的 defaultModel
+    // 通道。两者分开后，"用户不动手就按 Opus 计费"由 defaultModel 挡，不必再
+    // 靠换序表达。
+    models: p.models.map((m) => m.id),
+    ...(p.defaultModel ? { defaultModel: p.defaultModel } : {}),
   }
 }
 
-/** 模型清单，目录指定的 defaultModel 排首位（它是界面的预填值）。 */
-function orderedModels(p: CatalogProvider): string[] {
-  const ids = p.models.map((m) => m.id)
-  return p.defaultModel && ids.includes(p.defaultModel)
-    ? [p.defaultModel, ...ids.filter((id) => id !== p.defaultModel)]
-    : ids
-}
+
 
 /**
  * 通用兜底项。目录里它就叫 llm / Custom (OpenAI-compatible)。
