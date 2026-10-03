@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { spy } from './spy'
 import { clampEffects, initState, applyChoice } from '../engine/state'
+import { parseCondition, evalCondition } from '../engine/condition'
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('spy 情报功勋封顶', () => {
@@ -126,5 +127,23 @@ describe('spy 衰减与 sim 健壮性', () => {
   it('每个本地事件选项都带 effects（含 outcomes 分支选项），防 sim magOf 崩溃', () => {
     for (const ev of spy.localEvents ?? [])
       for (const c of ev.choices) expect(c.effects, `${ev.summary}/${c.text}`).toBeDefined()
+  })
+  it('名册互斥：焚册落旗后，换防之夜的门控不再满足', () => {
+    const burn = (spy.localEvents ?? []).find((e) => e.summary === '焚毁名册')!
+    const night = (spy.localEvents ?? []).find((e) => e.summary === '换防之夜')!
+    const pick = burn.choices.findIndex((c) => (c.flagsSet ?? []).includes('名册已焚'))
+    expect(pick, '焚毁名册应有一支落「名册已焚」印记').toBeGreaterThan(-1)
+
+    let st = initState(spy, spy.openings![0])
+    st = { ...st, attributes: { cover: 60, intel: 60, trust: 60 }, inventory: ['微型相机'] }
+    const after = applyChoice(spy, st, burn as never, pick, () => 0.5)
+    expect(after.flags).toContain('名册已焚')
+
+    const gate = parseCondition(night.requires!)
+    const attrs = { cover: 60, intel: 30 }
+    // 门控求值走引擎同一套解释器：属性不足进不去，够格时可进，焚册后必挡
+    expect(evalCondition(gate, attrs, 20, spy.maxTurns, [])).toBe(false)
+    expect(evalCondition(gate, { cover: 60, intel: 60 }, 20, spy.maxTurns, [])).toBe(true)
+    expect(evalCondition(gate, { cover: 60, intel: 60 }, 20, spy.maxTurns, ['名册已焚'])).toBe(false)
   })
 })
