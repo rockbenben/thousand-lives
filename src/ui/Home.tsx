@@ -1,3 +1,4 @@
+import { cssVars } from '../utils/cssVars'
 import { useRef, useState } from 'react'
 import { ZodError } from 'zod'
 import { msg } from './messages'
@@ -23,7 +24,14 @@ const TRIGRAMS = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷']
 function importErrorMessage(e: unknown): string {
   if (e instanceof ZodError) {
     const issue = e.issues[0]
-    return issue ? `字段 ${issue.path.join('.') || '(根)'}: ${issue.message}` : e.message
+    if (!issue) return e.message
+    const path = issue.path
+    const evAt = path.indexOf('events')
+    const last = String(path[path.length - 1] ?? '')
+    const where = evAt >= 0 && typeof path[evAt + 1] === 'number'
+      ? `剧本文件第 ${Number(path[evAt + 1]) + 1} 个事件里的「${last}」一项`
+      : last ? `「${last}」这一项` : '剧本文件的顶层结构'
+    return `${where}格式不对（详情：${issue.message}；格式说明见项目 README）`
   }
   return e instanceof Error ? e.message.slice(0, 200) : String(e)
 }
@@ -65,13 +73,13 @@ export function Home({
     try {
       const sc = importScenarioSchema.parse(JSON.parse(await file.text()))
       if (builtinScenarios.some((b) => b.id === sc.id)) {
-        throw new Error(`剧本 id "${sc.id}" 与内置剧本冲突，请改用其他 id`)
+        throw new Error(`剧本 id "${sc.id}" 与内置剧本冲突：请编辑该 JSON 文件，把 id 改成别的名字后重新导入`)
       }
       addCustomScenario(sc)
       setCustom(loadCustomScenarios())
       setImportError('')
     } catch (e) {
-      setImportError(`${msg.importFailed}：${importErrorMessage(e)}`)
+      setImportError(`${msg.importFailed}${importErrorMessage(e)}`)
     }
   }
 
@@ -103,7 +111,7 @@ export function Home({
             {endingsSeen > 0 && (
               <span
                 className="cs-bar-fill"
-                style={{ width: `${endingsTotal ? Math.round((endingsSeen / endingsTotal) * 100) : 0}%` }}
+                style={cssVars({ '--fill': `${endingsTotal ? Math.round((endingsSeen / endingsTotal) * 100) : 0}%` })}
               />
             )}
           </span>
@@ -113,8 +121,8 @@ export function Home({
           <span className="cs-bar" aria-hidden="true">
             {achDone > 0 && (
               <span
-                className="cs-bar-fill ach"
-                style={{ width: `${achievements.length ? Math.round((achDone / achievements.length) * 100) : 0}%` }}
+                className="cs-bar-fill gold"
+                style={cssVars({ '--fill': `${achievements.length ? Math.round((achDone / achievements.length) * 100) : 0}%` })}
               />
             )}
           </span>
@@ -161,7 +169,7 @@ export function Home({
               {seen > 0 && <span className="card-seen">已历 {seen}/{total} 结局</span>}
               {seen > 0 && (
                 <span className="card-meter" aria-hidden="true">
-                  <span className="card-meter-fill" style={{ width: `${pct}%` }} />
+                  <span className="card-meter-fill" style={cssVars({ '--fill': `${pct}%` })} />
                 </span>
               )}
             </button>
@@ -170,12 +178,12 @@ export function Home({
         <button className="scenario-card gen-card" onClick={() => setShowGen(true)}>
           <span className="scenario-emoji">✨</span>
           <span className="scenario-title">AI 生成剧本</span>
-          <span className="scenario-intro">给一个主题，AI 现编一个带上百支线的全新剧本，加入剧本库</span>
+          <span className="scenario-intro">给一个主题，AI 现编一个带数十至上百支线的全新剧本，加入剧本库</span>
         </button>
         <button className="scenario-card import-card" onClick={() => fileRef.current?.click()}>
           <span className="scenario-emoji">＋</span>
           <span className="scenario-title">导入剧本</span>
-          <span className="scenario-intro">选择符合剧本格式的 JSON 文件，详见 README</span>
+          <span className="scenario-intro">选择符合剧本格式的 JSON 文件；可先在命书阁点「导出」拿现成模板</span>
         </button>
       </div>
 

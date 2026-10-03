@@ -4,6 +4,7 @@ import type { GameState } from '../engine/types'
 import { drawShareCard, canvasToBlob, type CardAchievement } from './shareCard'
 import { copyImage, downloadBlob, copyText } from './download'
 import { useModalA11y } from './useModalA11y'
+import { Lightbox } from './Lightbox'
 import { buildShareUrl, openingIndexOf, ogImageUrl } from './challengeLink'
 import { hookQuestion } from './hookQuestion'
 import { socialTargets, openSocialShare } from './socialShare'
@@ -28,6 +29,7 @@ export function ShareCardModal({
   const [blob, setBlob] = useState<Blob | null>(null)
   const [err, setErr] = useState(false)
   const [msg, setMsg] = useState('')
+  const [zoom, setZoom] = useState(false)
   const aliveRef = useRef(true)
 
   // 挂载即生成卡图（drawShareCard 内含配图加载，故异步）
@@ -62,7 +64,7 @@ export function ShareCardModal({
   const onCopy = async () => {
     if (!blob) return
     // 复制图片需安全上下文(HTTPS 或 localhost)；不可用时提示退而用「保存图片」
-    flash((await copyImage(blob)) ? '已复制图，去聊天框粘贴 ✓' : '此环境不支持复制图，请用「保存图片」')
+    flash((await copyImage(blob)) ? '已复制图片，去聊天框粘贴 ✓' : '当前环境无法直接复制图片，请改用「保存图片」')
   }
   const onSave = () => {
     if (blob) {
@@ -79,6 +81,7 @@ export function ShareCardModal({
   }
 
   return (
+    <>
     <div
       className="modal-backdrop"
       onClick={onClose}
@@ -93,9 +96,15 @@ export function ShareCardModal({
         <div className="share-modal-body">
           <div className="share-preview">
             {err ? (
-              <p className="share-err">命运卡生成失败，请重试。</p>
+              <p className="share-err">命运卡生成失败：关闭本窗口再打开即可重新生成；也可先用「复制链接」分享。</p>
             ) : imgUrl ? (
-              <img src={imgUrl} alt="命运卡预览" />
+              <img
+                src={imgUrl}
+                alt="命运卡预览"
+                className="share-preview-img"
+                title="轻触放大查看完整卡面"
+                onClick={() => setZoom(true)}
+              />
             ) : (
               <p className="share-loading">正在生成命运卡…</p>
             )}
@@ -129,5 +138,7 @@ export function ShareCardModal({
         </div>
       </div>
     </div>
+    {zoom && imgUrl && <Lightbox src={imgUrl} onClose={() => setZoom(false)} />}
+    </>
   )
 }

@@ -59,7 +59,7 @@ export default function App() {
     if (
       existing &&
       !existing.state.ended &&
-      !window.confirm(`开始新游戏将覆盖未完成的「${existing.scenario.title}」进度，确定？`)
+      !window.confirm(`开新的人生将覆盖未完成的「${existing.scenario.title}」进度，确定？`)
     ) {
       return
     }

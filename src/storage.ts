@@ -22,6 +22,9 @@ const CUSTOM_KEY = 'tl.customScenarios'
 const SLOTS_KEY = 'tl.slots'
 const ENDINGS_KEY = 'tl.endings'
 const STATS_KEY = 'tl.stats'
+// 简繁偏好：LangToggle 直接读写（DOM 转换层不走本模块的类型化 API），
+// 分享卡画布要判同一个态——两处共用这一个常量，改键名不会只改一半
+export const LANG_KEY = 'tl.lang'
 
 export const SAVE_VERSION = 2
 

@@ -1,3 +1,4 @@
+import { cssVars } from '../utils/cssVars'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { applyChoice, resolveCustomAction, effectiveCeiling } from '../engine/state'
 import { bandOf } from '../engine/bands'
@@ -265,12 +266,28 @@ export function Play({
 
   // 分享当下：打开预览弹窗，所见即所得地复制/保存/分享此刻的命运卡
   const [showShare, setShowShare] = useState(false)
+  // 窄屏下 ☰ 升成占七成屏的抽屉，外区点击是唯一出口；键盘用户补一条 Esc。
+  // 判据取自身状态而非查 DOM：弹窗被 useModalA11y 关掉时是同步卸载的，
+  // 轮到 window 上的这个监听时 [role=dialog] 已经不在树里了。
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (showMemoir || showShare || lightbox) return
+      setMenuOpen(false)
+      // 抽屉不是 dialog、不走 useModalA11y 的焦点回落，自己补上：关合后焦点回 ☰
+      document.querySelector<HTMLElement>('.play-menu-btn')?.focus()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen, showMemoir, showShare, lightbox])
 
   return (
     <div className={`play vn ${peek ? 'peek' : ''}`}>
       {ambientBg && (
         <div
           className="play-ambient"
+          /* inline-style-ok: 装饰绑定 */
           style={{ backgroundImage: `url(${ambientBg})` }}
           aria-hidden="true"
         />
@@ -280,6 +297,7 @@ export function Play({
         <div
           className="vn-scene"
           key={sceneArt}
+          /* inline-style-ok: 装饰绑定 */
           style={{ backgroundImage: `url(${sceneArt})` }}
           aria-hidden="true"
         />
@@ -293,7 +311,7 @@ export function Play({
       <header className="vn-hud">
         <div className="vn-hud-row">
           <span className="vn-title">{scenario.title}</span>
-          {auto && <span className="play-auto-flag" title="托管中：AI 正替你的角色演进">托管中</span>}
+          {auto && <span className="play-auto-flag" title="托管中：AI 正替你的角色做抉择">托管中</span>}
           <button
             className="vn-eye"
             onClick={() => setPeek((v) => !v)}
@@ -321,7 +339,7 @@ export function Play({
                   className={`play-menu-item ${auto ? 'on' : ''}`}
                   role="menuitem"
                   onClick={() => setAuto((v) => !v)}
-                  title="开启后由 AI 替你的角色自动抉择、自动演进"
+                  title="开启后由 AI 替你自动抉择、推进剧情"
                 >
                   <span>{auto ? '停止托管' : '交由 AI 托管'}</span>
                   <span className="play-menu-glyph">{auto ? '⏸' : '▶'}</span>
@@ -334,7 +352,7 @@ export function Play({
                 </button>
                 <div className="play-menu-sep" />
                 <button className="play-menu-item" role="menuitem" onClick={saveSlot}>
-                  <span>{saved ? '已存入卷宗' : '存档'}</span><span className="play-menu-glyph">{saved ? '✓' : '⌑'}</span>
+                  <span>{saved ? '已存入命书阁' : '存档'}</span><span className="play-menu-glyph">{saved ? '✓' : '⌑'}</span>
                 </button>
                 <button className="play-menu-item" role="menuitem" onClick={() => { exportSave(); setMenuOpen(false) }}>
                   <span>导出存档</span><span className="play-menu-glyph">↧</span>
@@ -384,7 +402,7 @@ export function Play({
             // 已达当前上限、且上限低于该属性的绝对 max（说明有更高上限被印记锁着）→ 封顶，需晋阶方可再涨
             const cap = effectiveCeiling(a, flags)
             const atCap = value >= cap && cap < a.max
-            const capHint = `已达${scenario.tierLabel ?? ''}上限，需晋阶突破方可提升`
+            const capHint = `已达${scenario.tierLabel ?? ''}上限，需晋阶后才能继续提升`
             return (
               <span
                 key={a.key}
@@ -411,7 +429,7 @@ export function Play({
             <span className="vn-path-track">
               <span
                 className="vn-path-fill"
-                style={{ width: `${Math.min(100, (turnNo / scenario.maxTurns) * 100)}%` }}
+                style={cssVars({ '--fill': `${Math.min(100, (turnNo / scenario.maxTurns) * 100)}%` })}
               />
             </span>
             <span className="vn-path-label">命途 {turnNo} / {scenario.maxTurns} {scenario.turnUnit}</span>
@@ -448,7 +466,7 @@ export function Play({
                 return (
                   <span className="goal-progress" title={`目标进度 · ${label}`}>
                     <span className="goal-progress-track">
-                      <span className="goal-progress-fill" style={{ width: `${(step / 4) * 100}%` }} />
+                      <span className="goal-progress-fill" style={cssVars({ '--fill': `${(step / 4) * 100}%` })} />
                     </span>
                     <span className="goal-progress-stage">{label}</span>
                   </span>
@@ -514,9 +532,10 @@ export function Play({
             )}
           </div>
 
+        </div>
       {pendingTurn && !loading && !pendingAction && (streamedRef.current || proseDone) && (
         <div className={`choices ${keyMoment ? 'key-moment' : ''}`}>
-          {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或「托管 ⏸」可随时接管</p>}
+          {auto && <p className="auto-hint">托管中 · AI 正替你的角色做出抉择，点任意选项或菜单里的「停止托管 ⏸」可随时接管</p>}
           {pendingTurn.choices.map((c, i) => {
             const isRec = auto && pendingTurn.recommend === i
             return (
@@ -558,7 +577,6 @@ export function Play({
             ))}
         </div>
       )}
-        </div>
         {((state.inventory ?? []).length > 0 || (state.memory ?? []).length > 0) && (
           <div className="vn-meta">
             {(state.inventory ?? []).length > 0 && (

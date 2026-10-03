@@ -5,16 +5,19 @@ export const msg = {
   noApiConfig: '未找到 API 配置，请回到卷首重新设置',
 
   /** Import error prefix */
-  importFailed: '剧本导入失败',
+  importFailed: '剧本导入失败：请确认选择的是命书阁「导出」生成的 JSON 文件。原因：',
 
   /** Save import error prefix */
-  saveImportFailed: '存档导入失败',
+  saveImportFailed: '存档导入失败：请确认选择的是「导出存档」生成的 JSON 文件。原因：',
 
   /** Clipboard copy failed */
   copyFailed: '复制失败：浏览器拒绝了剪贴板访问，请手动选择文本复制',
 
   /** Lightbox / art thumbnail tooltip */
-  clickToEnlarge: '点击看全图',
+  clickToEnlarge: '轻触查看全图',
+
+  /** Badge enlarge tooltip (Archive/Ending 同串收拢单源) */
+  badgeEnlarge: '轻触放大徽章',
 
   /** Lightbox aria-label */
   viewLargeImage: '查看大图',

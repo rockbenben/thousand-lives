@@ -90,11 +90,12 @@ export function Setup({
 
   return (
     <div className="setup">
-      <button className="ghost setup-back" onClick={onBack}>← 返回</button>
+      <button className="ghost setup-back" onClick={onBack}>← 返回卷首</button>
       <div className={`setup-hero ${covers[scenario.id] ? 'has-art' : ''}`}>
         {covers[scenario.id] && (
           <div
             className="setup-hero-art"
+            /* inline-style-ok: 装饰绑定 */
             style={{ backgroundImage: `url(${covers[scenario.id]})` }}
             aria-hidden="true"
           />
@@ -119,7 +120,7 @@ export function Setup({
               }}
             >
               <strong>本地试玩 · 无需 Key</strong>
-              <span>引擎按内置剧情池随机演进，即点即玩、完全免费；每局不同，但剧情有限</span>
+              <span>从内置剧情库随机取材推进，即点即玩、完全免费；每局不同，但剧情有限</span>
             </button>
             <button
               className={`mode-card ${mode === 'ai' ? 'selected' : ''}`}
@@ -169,7 +170,7 @@ export function Setup({
               title="AI 会据此身份演绎你的专属剧情与际遇"
             >
               <strong>✎ 自定义身份</strong>
-              <span>自己写一个角色：身份、性格、秘密、处境……</span>
+              <span>自己写一个角色：身份、性格、秘密、处境…</span>
             </button>
           )}
           {mode === 'ai' && customId && (
@@ -185,7 +186,7 @@ export function Setup({
         </div>
         {mode === 'local' && (
           <p className="hint">
-            本地试玩从内置事件池取材，开局身份决定你会遇上哪些事件——三种身份走的是三条不同的线。切到「AI 驱动」还能自己写身份，由 AI 现编贴合你设定的剧情。
+            本地试玩从内置剧情库取材，开局身份决定你会遇上哪些事件——不同身份走的是不同的线。切到「AI 驱动」还能自己写身份，由 AI 现编贴合你设定的剧情。
           </p>
         )}
       </section>

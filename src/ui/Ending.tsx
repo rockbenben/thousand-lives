@@ -1,3 +1,4 @@
+import { cssVars } from '../utils/cssVars'
 import { useEffect, useRef, useState } from 'react'
 import { buildEndingMessages } from '../engine/prompt'
 import { buildSummaryCard } from '../engine/summary'
@@ -160,6 +161,7 @@ export function EndingScreen({
             {art && (
               <div
                 className="fate-card-art"
+                /* inline-style-ok: 装饰绑定 */
                 style={{ backgroundImage: `url(${art})` }}
                 aria-hidden="true"
               />
@@ -184,6 +186,7 @@ export function EndingScreen({
       {art && (
         <div
           className="ending-art"
+          /* inline-style-ok: 装饰绑定 */
           style={{ backgroundImage: `url(${art})` }}
           aria-hidden="true"
         />
@@ -204,13 +207,14 @@ export function EndingScreen({
               <button
                 key={a.id}
                 className="ach-unlock-chip"
-                style={{ animationDelay: `${1 + i * 0.18}s` }}
+                style={cssVars({ '--reveal-delay': `${1 + i * 0.18}s` })}
                 onClick={() => setLightbox(badge)}
-                title="点击放大徽章"
+                title={msg.badgeEnlarge}
                 aria-label={`查看新解锁徽章「${a.name}」`}
               >
                 <span
                   className="ach-unlock-img"
+                  /* inline-style-ok: 装饰绑定 */
                   style={{ backgroundImage: `url(${badge})` }}
                   aria-hidden="true"
                 />
@@ -220,7 +224,7 @@ export function EndingScreen({
               <span
                 key={a.id}
                 className="ach-unlock-chip"
-                style={{ animationDelay: `${1 + i * 0.18}s` }}
+                style={cssVars({ '--reveal-delay': `${1 + i * 0.18}s` })}
               >
                 {a.icon} {a.name}
               </span>
@@ -251,7 +255,7 @@ export function EndingScreen({
       {text && <p className="ending-text">{text}</p>}
       {state.mode === 'local' && (
         <p className="local-ending-note">
-          本局为本地模式生成；填入 AI Key 可获得由大模型实时编织的独特剧情与结局。
+          本局为本地试玩内容；填入 API Key 并切到「AI 驱动」，可获得由大模型实时编织的独特剧情与结局。
         </p>
       )}
       <details className="summary-card-fold">

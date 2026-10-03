@@ -38,12 +38,12 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
           露出开关与风险全文；已开启时 open 跟随状态为 true，免得它被藏住。 */}
       <details className="hidden-providers-toggle" open={showCodingPlans}>
         <summary>
-          高级：订阅套餐节点（Coding Plan / Token Plan）{showCodingPlans ? '· 已开启' : ''}
+          高级：订阅套餐服务商（Coding Plan / Token Plan）{showCodingPlans ? '· 已开启' : ''}
         </summary>
         <div className="hidden-providers-body">
           <label className="inline-toggle">
             <input type="checkbox" checked={showCodingPlans} onChange={(e) => setShowCodingPlans(e.target.checked)} />
-            <span>显示订阅套餐节点</span>
+            <span>显示订阅套餐服务商</span>
           </label>
           <span className="hint">
             官方文档指明：套餐仅限在 AI 编程工具中交互式使用，在允许范围之外使用套餐的 Base URL 和 API Key 可能被识别为滥用，导致订阅停用或账号 / API Key 封禁。请确认了解风险后再开启。
@@ -126,7 +126,7 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
             <option value="high">高</option>
           </select>
           {!cfg.canDisableThinking && (
-            <span className="hint">该服务商不支持关闭思考——「最低」发送它自己的最低值，仍会推理、仍会计费。调高通常更准确，但更慢、更耗额度。</span>
+            <span className="hint">该服务商不支持关闭思考——选「最低」发的是它自己的最低推理档，仍会推理、仍会计费。调高通常更准确，但更慢、更耗额度。</span>
           )}
         </label>
       )}
@@ -136,7 +136,7 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
       {/* 中转块对自填地址整块不显示，但跨域问题它一样会遇到 —— 不给一句话，用户
           只会看到 friendlyError 里那句「打开 CORS 中转」，而那个开关根本不在他屏幕上。 */}
       {!cfg.proxyApplicable && (
-        <p className="hint">自填地址不走中转：那台按域名白名单转发，够不着局域网 / 自建地址。遇到跨域（CORS）失败，要在你自己的服务端加响应头。</p>
+        <p className="hint">自填地址不走中转：中转服务按域名白名单转发，够不着局域网/自建地址。遇到跨域（CORS）失败，要在你自己的服务端加跨域响应头（见文档）。</p>
       )}
 
       {cfg.proxyApplicable && (
@@ -162,13 +162,13 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
           </span>
           <p className="hint">
             {cfg.proxyRequired
-              ? '该服务商不给浏览器发跨域头，直连发不出请求 —— 这一项已默认开启。'
-              : '请求默认从浏览器直连；遇到跨域（CORS）或 403 错误时开启它转发一次。'}
+              ? '该服务商不给浏览器发跨域头，直连发不出请求——这一项已默认开启。'
+              : '请求默认从浏览器直连；遇到跨域（CORS）或 403 错误时开启它转发。'}
             {/* 措辞与 types.ts 里那段一致：说清「经过」是真的，也说清「只转发
                 不留存」（worker 那段就是 fetch 透传，没有日志、不写存储），再给出
                 可做的事。少了后半句就成了一句吓人而无从应对的话，而这一项对
                 directBlocked 的几家【默认就是开的】—— 吓退用户等于让 app 用不了。 */}
-            {cfg.proxyOn && ' 开启后你的 API Key 与完整 prompt 会经过这台中转再到服务商；它只转发不留存，在意的话可改成自建地址（见文档）。'}
+            {cfg.proxyOn && ' 开启后你的 API Key 与完整请求内容会经过这台中转再到服务商；它只转发不留存，在意的话可改成自建中转地址（见文档）。'}
           </p>
           {cfg.proxyOn && (
             <>

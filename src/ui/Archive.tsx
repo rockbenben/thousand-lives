@@ -1,3 +1,4 @@
+import { cssVars } from '../utils/cssVars'
 import { useRef, useState } from 'react'
 import { msg } from './messages'
 import { builtinScenarios } from '../scenarios'
@@ -58,7 +59,7 @@ export function Archive({
       setSaveError('')
       onLoadGame(game)
     } catch (e) {
-      setSaveError(`${msg.saveImportFailed}：${e instanceof Error ? e.message : String(e)}`)
+      setSaveError(`${msg.saveImportFailed}${e instanceof Error ? e.message : String(e)}`)
     }
   }
   const exportSlot = (slot: SaveSlot) =>
@@ -97,6 +98,7 @@ export function Archive({
         {img ? (
           <span
             className={`ach-img${a.done ? '' : ' sealed'}`}
+            /* inline-style-ok: 装饰绑定 */
             style={{ backgroundImage: `url(${img})` }}
             aria-hidden="true"
           />
@@ -109,7 +111,7 @@ export function Archive({
           {!a.done && a.progress && a.progress.cur > 0 && a.progress.total > 1 && (
             <span className="ach-prog">
               <span className="ach-bar" aria-hidden="true">
-                <span className="ach-bar-fill" style={{ width: `${pct}%` }} />
+                <span className="ach-bar-fill" style={cssVars({ '--fill': `${pct}%` })} />
               </span>
               <span className="ach-bar-num">{a.progress.cur}/{a.progress.total}</span>
             </span>
@@ -122,7 +124,7 @@ export function Archive({
         key={a.id}
         className="ach done ach-clickable"
         onClick={() => setBadge({ img, name: a.name, desc: a.desc })}
-        title="点击放大徽章"
+        title={msg.badgeEnlarge}
         aria-label={`查看徽章「${a.name}」`}
       >
         {inner}
@@ -252,7 +254,7 @@ export function Archive({
                     {sc.title}
                   </span>
                   <span className="gal-bar" aria-hidden="true">
-                    {pct > 0 && <span className="gal-bar-fill" style={{ width: `${pct}%` }} />}
+                    {pct > 0 && <span className="gal-bar-fill" style={cssVars({ '--fill': `${pct}%` })} />}
                   </span>
                   <span className="gal-scene-count">
                     {complete && <span className="gal-seal-done" aria-hidden="true">圆满</span>}
@@ -352,6 +354,7 @@ function EndingDetailModal({
         {art ? (
           <button
             className="ed-art"
+            /* inline-style-ok: 装饰绑定 */
             style={{ backgroundImage: `url(${art})` }}
             onClick={() => onViewArt(art)}
             title={msg.clickToEnlarge}
@@ -396,6 +399,7 @@ function BadgeModal({
       >
         <span
           className="badge-show-img"
+          /* inline-style-ok: 装饰绑定 */
           style={{ backgroundImage: `url(${badge.img})` }}
           aria-hidden="true"
         />

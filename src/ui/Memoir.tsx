@@ -46,7 +46,7 @@ export function Memoir({
           </button>
         </div>
         {cards.length === 0 ? (
-          <p className="memoir-empty">这一生尚未落笔，留影待续……</p>
+          <p className="memoir-empty">这一生尚未落笔，留影待续…</p>
         ) : (
           <div className="memoir-grid">
             {cards.map(({ t, turnNo, key }) => {
@@ -56,6 +56,7 @@ export function Memoir({
                 {cardArt && (
                   <div
                     className="memoir-card-art"
+                    /* inline-style-ok: 装饰绑定 */
                     style={{ backgroundImage: `url(${cardArt})` }}
                     onClick={() => onViewArt?.(cardArt)}
                     title={onViewArt ? msg.clickToEnlarge : undefined}

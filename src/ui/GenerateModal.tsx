@@ -82,7 +82,7 @@ export function GenerateModal({
         tabIndex={-1}
       >
         <h3>✨ AI 生成新剧本</h3>
-        <p className="hint">给一个主题，AI 会为你设计属性、结局与上百条支线，生成后加入剧本库（可本地试玩）。</p>
+        <p className="hint">给一个主题，AI 会为你设计属性、结局与数十至上百条支线（数量下方可调），生成后加入剧本库（可本地试玩）。</p>
 
         <label>
           剧本主题
