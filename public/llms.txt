@@ -1,0 +1,34 @@
+# 千世书
+
+> AI 文字人生模拟器：挑一个世界与出身，用一次次抉择过完一世，结局由内置剧情库与大模型共同收束。纯前端单页应用，无需 Key 即可试玩，可离线、可装成 PWA。
+
+- 站点没有账号、没有服务端数据库：进度、结局收集与统计都存在浏览器本地（localStorage），分享链接把「哪个世界、哪种出身」写进 URL。
+- 界面文字为简体中文，右上角可一键切繁体；剧本散文是内容资产，引用时请勿改写。
+
+## 内置世界
+
+每个世界有三种出身开场，链接是该开场的分享落地页（`-0` / `-1` / `-2`）。
+
+- [仙侠 · 缥缈仙途](https://lives.newzone.top/s/xian/): 从炼气吐纳到金丹元婴，渡劫或身死道消
+- [穿越 · 穿书逆袭](https://lives.newzone.top/s/book/): 穿进一本文里，改写原定结局
+- [武侠 · 快意江湖](https://lives.newzone.top/s/wuxia/): 刀光恩仇，问鼎一代宗师
+- [三国 · 乱世谋臣](https://lives.newzone.top/s/sanguo/): 谋主之位，从草庐到庙堂
+- [末世 · 末世求生](https://lives.newzone.top/s/wasteland/): 废土之上找物资、立秩序
+- [官场 · 宦海浮沉](https://lives.newzone.top/s/officialdom/): 科举入仕，在案牍与党争里保全身家
+- [谍战 · 孤岛谍影](https://lives.newzone.top/s/spy/): 敌后潜伏，每一份档案都是筹码
+- [科幻 · 群星彼端](https://lives.newzone.top/s/scifi/): 世代飞船上的抉择与航向
+- [航海 · 怒海争锋](https://lives.newzone.top/s/voyage/): 帆与炮，七海之王
+- [民国 · 梨园浮梦](https://lives.newzone.top/s/liyuan/): 乱世名角，戏台即命台
+
+## 资源
+
+- [开源仓库](https://github.com/rockbenben/thousand-lives): 源码与剧本数据（MIT）
+- [站点地图](https://lives.newzone.top/sitemap.xml): 入口页与更新频率
+- [robots.txt](https://lives.newzone.top/robots.txt): 抓取许可
+- [分享图](https://lives.newzone.top/og.jpg): 首页社交卡
+
+## 怎么玩
+
+1. 选世界、选出身，可选「本地试玩」（内置剧情库，即点即玩）或「AI 驱动」（自带大模型 Key，实时编织剧情）。
+2. 每回合读一段卷文、做一次抉择；命数、声望等属性暗中累积，走投无路即落幕。
+3. 一世收束后落印记档，结局进命书阁图鉴；同一世界可反复投胎，收集不同结局。
