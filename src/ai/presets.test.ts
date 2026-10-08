@@ -162,16 +162,18 @@ describe('思考参数', () => {
   })
 
   it('Claude / Gemini 走原生协议，目录按原生形态给 —— 与兼容层的形状不同', () => {
-    // Claude 分两代：adaptive 世代用 output_config，旧世代用 budget_tokens
+    // Claude 分代：adaptive 世代用 output_config，且判代规则由目录下发
     expect(thinkingWireFor('claude', 'claude-opus-5', 'high')).toEqual({
       thinking: { type: 'adaptive' },
       output_config: { effort: 'high' },
     })
-    expect(thinkingWireFor('claude', 'claude-haiku-4-5', 'high')).toEqual({
-      thinking: { type: 'enabled', budget_tokens: 12000 },
-    })
-    // Haiku 服务端默认就是关的 → 关闭态什么都不发才对
-    expect(thinkingWireFor('claude', 'claude-haiku-4-5', 'off')).toBeUndefined()
+    // ⚠ 旧世代（budget_tokens）【不再】有代表：目录已把 haiku-4-5 换成 haiku-5-5，
+    // 而 extended 那条从来不是一条规则 —— 它是「两条判代规则都不命中」时的形状。
+    // 这里钉的是本 app 的政策：未列出的 Claude 型号一律不发思考参数（发错世代是
+    // 每请求 400，不发只是没有思考）。要恢复手填旧型号的思考能力，得让目录显式带
+    // 一条【点名旧世代家族】的规则，而不是在这里按名字猜。
+    expect(thinkingWireFor('claude', 'claude-haiku-4-5', 'high')).toBeUndefined()
+    expect(supportsThinking('claude', 'claude-haiku-4-5')).toBe(false)
     // adaptive 世代服务端可能默认开 → 关闭态必须显式关
     expect(thinkingWireFor('claude', 'claude-opus-5', 'off')).toEqual({ thinking: { type: 'disabled' } })
     // ……但同代里还有【关不掉】的一支（官方逐模型表标 Always on，连关闭值都回 400），
