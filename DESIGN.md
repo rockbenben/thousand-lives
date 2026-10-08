@@ -325,3 +325,41 @@ components:
 - 圆角登记（与 U-19 同口径）：`{rounded}` 尺度外的既有值 `6px`/`7px` 共 11 条声明（反应条、浮层小角、`.vn-zoom` 等，含两处与其它值混写）与非对称四写法（`.reaction` `0 6px 6px 0`、`.play-menu-panel` `14px 14px 0 0`、两枚「择」角印 `::after`（`.choice.recommended`、`.mode-card.selected`/`.opening.selected`））登记保留——共同点是「贴边/相接的一侧不切角」；`4px` 一档另由钤印方章与滚动条等既有形状句覆盖，不在此重复；新增圆角仍走 `{rounded.*}` 档位。
 
 - U-23/F-18 追加：内联 `style` 的口径。**数据驱动量**（进度百分比、动效延迟）经 `cssVars()` 注入自定义属性 `--fill` / `--reveal-delay`，视觉属性写在 `src/styles.css` 的类规则里；**装饰性背景图绑定**（`style={{ backgroundImage: url(...) }}`）保留内联，就地标 `/* inline-style-ok: 装饰绑定 */`——它是逐实例数据，不是可复用的视觉决策。内联写颜色、圆角、间距一律算债。
+
+## 视觉体系改版（v2）
+
+本轮不换皮、不推翻既有语汇，在 `{colors.*}` / `{typography.*}` 之上补三层令牌，并修若干实机暴露的缺陷。`--ink-*` / `--gold` / `--cinnabar` / `--jade` 一律未动。
+
+### 新增令牌
+
+- **动效**：`--ease-out`（入场，快起慢收）、`--ease-out-quint`（仪式级揭晓）、`--ease-spring`（落定回弹）、`--dur-1..5`（0.14/0.22/0.34/0.55/0.9s）。全站时长与缓动只从此出，不再随手写 `0.2s ease`。
+- **玻璃层**：`--veil-bg`（贴画）、`--glass-bg` / `--glass-bg-strong` / `--glass-blur` / `--glass-edge`。浮于任意背景之上时，底色透明度是唯一不可控变量（背景亮度未知），此前 HUD 药丸、浮钮、徽标各写各的 rgba，叠在同一张画上明度不一。
+- **层次**：在既有 `--shadow-glow-sm/-lift/-panel/-seal` 外补 `--shadow-glass`（浮钮）、`--shadow-inset-page`（卷页内框）、`--shadow-raise`。
+- **选中语义**：`--select` / `--select-bright` / `--select-bg`。全站「当前选中」统一走金色，朱砂只留给印、危急与落定反馈。
+
+### 新增/改动组件
+
+- **收藏刻盘** `.cs-dial`：conic 进度环取代原先的 3px 细线 + emoji 前缀。0% 时细线几乎不可见，整块明度发灰，撑不起收集钩子；刻盘的占比本身就是图形。
+- **HUD 控件簇** `.vn-hud-ctl`：「图 / ☰」两枚圆钮共一块玻璃底、中隔细线。
+- **粘性操作条** `.start-bar`：`position: sticky` + 渐隐背衬，供 AI 模式长表单使用。
+- **动作卡** `.action-card`：AI 生成 / 导入两张卡与海报卡同吃 `aspect-ratio: 1/1`，卡阵才是一块完整方格；头图用「拟 / 入」两枚裸字（钤印词汇）取代 emoji。
+- **命途珠** `.vn-path-track::after`：菱形珠随 `--fill` 滑到当前进度处，进度因此是个位置而非百分比。`--fill` 改注入在 `.vn-path` 上，填充段与珠子共用同一个量。
+
+### 三条易踩的坑（均已实机复现并修）
+
+1. **`overflow-y:auto` 会把 `overflow-x` 从 `visible` 计算成 `auto`。** 选项悬停右移 2px，顶出容器右缘即长出一条永远滚不动的横向滚动条——表现为卷文底部一条金色横条。修法是给容器留等量横向内距（`.vn-panel .choices { padding-right: 3px }`），而不是加 `overflow-x: hidden`（那会把位移部分切掉）。
+2. **`backdrop-filter` 使元素自成层叠上下文，并按 `z-index: 0` 参与父级排序。** `.vn-hud-ctl` 用了 `backdrop-filter` 后，簇内下拉面板的 `z-index: 31` 被困在簇内出不来，与同样用了 `backdrop-filter` 的 `.vn-vitals` 站成平手，最终由 DOM 先后决定——而命数行在后，菜单一开就被药丸压住半截。凡用 `backdrop-filter` 且内含浮层的容器，必须显式 `position: relative; z-index: N`。
+3. **`button:hover:not(:disabled)` 的特异度是 (0,2,1)，高于绝大多数「无底控件」的类选择器 (0,1,1)。** 全局悬停一旦加底色，页签、语言钮、菜单项背后就会浮出色块。基元悬停因此只提 `border-color`，填色反馈交给各自的按钮族。
+
+### 其它实机修正
+
+- 首页 hero 尺寸改为 `min(520px, 94vw, 58vh)`：原先只随宽度缩放，宽而矮的视口上罗盘仍吃满 520px，剧本卡被压到折叠线以下。
+- 命书阁整页 `min-height: 100dvh` + 内容区 `margin-block: auto`：三个页签内容长短悬殊，顶对齐会让空签页下半屏死黑。用 auto 外边距而非 `justify-content: center`，内容过长时外边距归零，不会把顶部顶出视口。
+- 开局页模式卡 / 身份卡选中态由朱砂改为金色，朱砂只留给角印「择」：同屏两张朱砂大块读起来像两处告警。
+- 卦象 `.card-rune` 去框、移到右下角、降透明度：卦象 `☰` 本身就是三条横线，外框一加即与「菜单」按钮原型重合，挪位置治不了，只能让它退成纹样。
+- 结局页 `.ach-unlock-label` 独占一行：原先与徽章挤在同一行，导致首行左对齐、末行落单徽章却居中，两行轴线对不上。
+
+### 已知遗留
+
+- `xian`（缥缈仙途）未设 `maxTurns`，因而**完全不渲染命途进度条**（10 个内置剧本里仅此一个）。属剧本内容/节奏决策，不在视觉改版范围内，按红线不擅自改。
+- `--font-scale` 仍只缩放阅读类文字；本轮新增的 chrome 类文字一律固定字号，契约未变。

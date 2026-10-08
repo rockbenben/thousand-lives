@@ -312,6 +312,9 @@ export function Play({
         <div className="vn-hud-row">
           <span className="vn-title">{scenario.title}</span>
           {auto && <span className="play-auto-flag" title="托管中：AI 正替你的角色做抉择">托管中</span>}
+          {/* 两枚浮钮读作一组：共一块玻璃底、中隔一道细线，
+              避免「图」「☰」散落成两粒孤立的系统图标 */}
+          <span className="vn-hud-ctl">
           <button
             className="vn-eye"
             onClick={() => setPeek((v) => !v)}
@@ -393,6 +396,7 @@ export function Play({
             </>
           )}
           </div>
+          </span>
         </div>
         <div className="vn-vitals">
           {scenario.attributes.map((a) => {
@@ -425,12 +429,15 @@ export function Play({
 
       <section className="vn-panel">
         {scenario.maxTurns ? (
-          <div className="vn-path" aria-hidden="true">
+          /* --fill 注入在 .vn-path 上：填充段与轨道上的「命途珠」共用同一个量，
+             珠不必再单独拿一遍进度，也就不会与填充段脱节 */
+          <div
+            className="vn-path"
+            aria-hidden="true"
+            style={cssVars({ '--fill': `${Math.min(100, (turnNo / scenario.maxTurns) * 100)}%` })}
+          >
             <span className="vn-path-track">
-              <span
-                className="vn-path-fill"
-                style={cssVars({ '--fill': `${Math.min(100, (turnNo / scenario.maxTurns) * 100)}%` })}
-              />
+              <span className="vn-path-fill" />
             </span>
             <span className="vn-path-label">命途 {turnNo} / {scenario.maxTurns} {scenario.turnUnit}</span>
           </div>

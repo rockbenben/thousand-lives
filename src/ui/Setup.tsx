@@ -222,16 +222,20 @@ export function Setup({
       </section>
       )}
 
-      <button
-        className="primary start-btn"
-        disabled={!ready}
-        onClick={() => {
-          // 配置已在编辑时即时落盘（useAIConfig），此处无需再存
-          onStart(scenario, finalOpening(), mode === 'ai' ? ambition : '', mode)
-        }}
-      >
-        开始这段人生
-      </button>
+      {/* 粘性操作条：AI 模式下表单很长（模式/身份/目标/API 配置），主行动原本埋在
+          末尾，窄屏要一路滚到底才够得着。钉在视口下沿，玩家随时能落子开卷。 */}
+      <div className="start-bar">
+        <button
+          className="primary start-btn"
+          disabled={!ready}
+          onClick={() => {
+            // 配置已在编辑时即时落盘（useAIConfig），此处无需再存
+            onStart(scenario, finalOpening(), mode === 'ai' ? ambition : '', mode)
+          }}
+        >
+          开始这段人生
+        </button>
+      </div>
     </div>
   )
 }

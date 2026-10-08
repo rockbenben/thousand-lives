@@ -50,8 +50,39 @@
   --shadow-lift: 0 30px 80px var(--shade-a65), 0 0 50px var(--gold-a18);
   --shadow-panel: 0 14px 38px var(--shade-a50), 0 0 22px var(--gold-a18);
   --shadow-seal: 0 0 0 1px var(--shade-a35) inset, 0 2px 10px var(--cinnabar-a35);
+  /* ── 层次补档：HUD 药丸 / 内嵌卷页 / 浮起动作键 ──
+     卷页内框与 HUD 玻璃层是本项目最高频的两层纵深，原先散写其值，故归档为 token */
+  --shadow-glass: 0 2px 14px var(--shade-a38), inset 0 0 0 1px var(--gold-a10);
+  --shadow-inset-page: inset 0 0 0 1px var(--gold-a14);
+  --shadow-raise: 0 10px 28px var(--shade-a45), 0 2px 6px var(--shade-a35);
+
+  /* ── 玻璃层：浮于画面/画布之上的半透明底，统一底色+模糊+描边的配比 ──
+     此前 HUD 药丸、浮钮、卷文徽标各自手写 rgba 底与不同 alpha，叠在同一张画上时
+     明度不一、像贴了几块不同材料。统一成三档：veil（贴画）/ glass（浮钮）/ sheet（面板） */
+  --veil-bg: var(--ink-a72);
+  --glass-bg: rgba(10, 14, 34, 0.62);
+  --glass-bg-strong: rgba(10, 14, 34, 0.82);
+  --glass-blur: 6px;
+  --glass-edge: var(--gold-a24);
+
+  /* ── 动效语汇：全站时长与缓动只从此出，避免各处随手写 ──
+     ease-out 用于入场（快起慢收，落位稳）、out-quint 用于强调、spring 用于落定回弹 */
+  --ease-out: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.16, 0.84, 0.3, 1);
+  --ease-spring: cubic-bezier(0.2, 1.3, 0.4, 1);
+  --dur-1: 0.14s;
+  --dur-2: 0.22s;
+  --dur-3: 0.34s;
+  --dur-4: 0.55s;
+  --dur-5: 0.9s;
+
   --line-strong: var(--gold-a42); /* 金色细线 */
   --radius: 5px;
+  /* 选中语义色：全站「当前选中」统一走金色（品牌与结构色），
+     朱砂只留给印、危急与落定反馈——原先模式卡/身份卡用朱砂、chip 用金，同屏三语 */
+  --select: var(--gold);
+  --select-bright: var(--gold-bright);
+  --select-bg: var(--gold-a10);
   font-size: 16px;
   /* 正文字号档位（玩家可调，仅缩放阅读类文字，不动布局）；默认 1=中 */
   --font-scale: 1;
@@ -185,10 +216,11 @@ body::before {
 }
 
 /* ── 数据驱动变量：组件只注入量值，类规则负责消费 ── */
-.ach-bar-fill, .gal-bar-fill, .cs-bar-fill, .card-meter-fill, .goal-progress-fill, .vn-path-fill { width: var(--fill, 0%); }
+.ach-bar-fill, .gal-bar-fill, .card-meter-fill, .goal-progress-fill, .vn-path-fill { width: var(--fill, 0%); }
 
 /* ── 控件 ── */
-
+/* 所有按钮共享一条基元：抬升面 + 金细边 + 悬停提亮描边 + 按压下沉。
+   时长/缓动走 --dur-* / --ease-out，与全站动效同源。 */
 button {
   font: inherit;
   color: var(--paper);
@@ -197,8 +229,18 @@ button {
   border-radius: var(--radius);
   padding: 10px 18px;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    background var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
 }
+/* 悬停只提描边，不加底色。
+   本项目大量按钮是「无底控件」（页签、语言钮、HUD 簇内圆钮、菜单项…），
+   它们各自声明 background:none/transparent，而 `button:hover:not(:disabled)`
+   的特异度 (0,2,1) 高于这些类选择器 (0,1,1)——一旦这里加底色，悬停页签就会在
+   标签后面浮出一块色块。需要填色反馈的按钮族各自在自己的 hover 里写。 */
 button:hover:not(:disabled) { border-color: var(--gold); }
 button:disabled { opacity: 0.4; cursor: not-allowed; }
 button.primary {
@@ -215,7 +257,7 @@ button.primary:hover:not(:disabled) {
   box-shadow: 0 0 28px var(--gold-a40);
 }
 button.ghost { background: transparent; border-color: transparent; color: var(--muted); }
-button.ghost:hover { color: var(--paper); }
+button.ghost:hover { color: var(--paper); background: var(--gold-a08); }
 
 input, select {
   font: inherit;
@@ -226,8 +268,14 @@ input, select {
   background: var(--ink-9);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
 }
-input:focus, select:focus { outline: none; border-color: var(--gold); }
+input:hover, select:hover { border-color: var(--gold-a42); }
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-a12);
+}
 input::placeholder { color: #586089; }
 
 /* 键盘导航焦点：鎏金描边（鼠标点击不显，仅 Tab 走查时浮现）；
@@ -271,13 +319,17 @@ html { scrollbar-color: var(--line-strong) transparent; }
 .home { position: relative; text-align: center; padding-top: 4vh; }
 
 /* 标题区：大罗盘居中，题铭安于盘心；盘转而字定。
-   .hero 高度 ≥ 罗盘直径，故罗盘绝不溢出到下方副标题/卡片，从根本上消除重叠 */
+   .hero 高度 ≥ 罗盘直径，故罗盘绝不溢出到下方副标题/卡片，从根本上消除重叠。
+   尺寸同时受视口宽与高约束（--hero-size）：原先只随宽度缩放，在 1440×720 这类
+   宽而矮的视口上罗盘仍吃满 520px，标题区独占近一屏，剧本卡被压到折叠线以下；
+   引入 vh 一项后矮屏自动收窄，宽屏维持原尺寸不变。 */
 .hero {
+  --hero-size: min(520px, 94vw, 58vh);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: min(520px, 96vw);
+  min-height: var(--hero-size);
   margin: 1vh 0 26px;
 }
 
@@ -286,14 +338,14 @@ html { scrollbar-color: var(--line-strong) transparent; }
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(520px, 94vw);
-  height: min(520px, 94vw);
-  margin-top: calc(min(520px, 94vw) / -2);
-  margin-left: calc(min(520px, 94vw) / -2);
+  width: var(--hero-size);
+  height: var(--hero-size);
+  margin-top: calc(var(--hero-size) / -2);
+  margin-left: calc(var(--hero-size) / -2);
   pointer-events: none;
   z-index: 0;
   /* 1s 而非 1.8s：入场再拖首屏就暗过头了，题铭 0.7s 进场后罗盘紧随其后即可 */
-  animation: bannerIn 1s ease-out both;
+  animation: bannerIn var(--dur-5) var(--ease-out) both;
 }
 .home-banner .ring,
 .home-banner .ticks,
@@ -449,37 +501,83 @@ html { scrollbar-color: var(--line-strong) transparent; }
   animation: fadeUp 0.7s 0.2s ease-out both;
 }
 
-/* 收集进度条：把留存钩子（结局/成就收集）摆到首页明面，点击进命书阁 */
-/* 收藏入口条：两道鎏金量表（结局 / 成就）+ 通往命书阁的引线 */
+/* 收藏入口条：两枚进度刻盘（结局 / 成就）+ 通往命书阁的引线。
+   原先是两条 3px 细线 + emoji 前缀：0% 时只剩一道几乎看不见的轨道，整块明度发灰，
+   撑不起「收集」这个留存钩子。改为 conic 刻盘——占比本身就是图形，且进度越高越亮。 */
 .collection-strip {
   display: inline-flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--sp-lg);
   margin: 0 auto 30px;
-  padding: 11px var(--sp-lg);
+  padding: 12px var(--sp-lg) 12px var(--sp-md);
   background: rgba(12, 16, 38, 0.55);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-xl);
   backdrop-filter: blur(3px);
-  animation: fadeUp 0.7s 0.24s ease-out both;
-  transition: border-color 0.2s, background 0.2s;
+  animation: fadeUp var(--dur-4) 0.24s var(--ease-out) both;
+  transition: border-color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-3) var(--ease-out);
 }
-.collection-strip:hover { border-color: var(--gold); background: var(--gold-a09); }
-.cs-gauge { display: flex; flex-direction: column; gap: 5px; min-width: 124px; }
-.cs-top { font-size: 0.82rem; letter-spacing: 0.03em; color: var(--paper-dim); white-space: nowrap; }
-.cs-top b { color: var(--gold-bright); font-variant-numeric: tabular-nums; font-weight: 600; font-size: 0.92rem; }
-.cs-top i { color: var(--muted); font-style: normal; }
-.cs-bar { position: relative; height: 3px; border-radius: var(--r-sm); background: rgba(40, 50, 106, 0.6); overflow: hidden; }
-.cs-bar-fill {
-  position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: var(--r-sm);
-  background: linear-gradient(to right, var(--cinnabar), var(--gold-bright));
-  box-shadow: var(--shadow-glow-sm);
+.collection-strip:hover {
+  border-color: var(--gold);
+  background: var(--gold-a09);
+  box-shadow: 0 0 22px var(--gold-a14);
 }
-/* 成就量表用金色区分。修饰类不可叫 .ach——命书阁成就卡的 .ach（padding 11px 13px + border）
-   会串到这条 3px 高的条上，把宽度顶到 28px 下限，7% 直接画成 22% */
-.cs-bar-fill.gold { background: linear-gradient(to right, var(--gold), var(--gold-bright)); }
-.cs-go { color: var(--gold); letter-spacing: 0.1em; font-size: 0.86rem; white-space: nowrap; align-self: center; }
+.cs-dials { display: flex; align-items: center; gap: var(--sp-lg); }
+.cs-dial-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+/* 刻盘：conic 画弧，内嵌深底盘托住数字；--pct 由 Home.tsx 经 cssVars 注入 */
+.cs-dial {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: conic-gradient(from -90deg, var(--cinnabar) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0);
+  transition: background var(--dur-4) var(--ease-out), box-shadow var(--dur-3) var(--ease-out);
+}
+.cs-dial.gold { background: conic-gradient(from -90deg, var(--gold) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0); }
+.cs-dial::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: var(--r-full);
+  background: var(--ink-9);
+  box-shadow: inset 0 0 0 1px var(--gold-a14);
+}
+.cs-dial-num {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--gold-bright);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.cs-dial-label {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+  white-space: nowrap;
+}
+.cs-dial-label i { color: var(--muted); font-style: normal; font-variant-numeric: tabular-nums; }
+.cs-go {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding-left: var(--sp-lg);
+  border-left: 1px solid var(--line);
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  font-size: 0.86rem;
+  white-space: nowrap;
+  align-self: stretch;
+}
+.cs-go i { font-style: normal; transition: transform var(--dur-2) var(--ease-out); }
 .collection-strip:hover .cs-go { color: var(--gold-bright); }
+.collection-strip:hover .cs-go i { transform: translateX(3px); }
 
 /* 卷尾牌记：开源仓库以朱砂印收束首页，复用 .seal 的视觉词汇（千世在卷首，开源在卷尾） */
 .colophon {
@@ -654,29 +752,25 @@ html { scrollbar-color: var(--line-strong) transparent; }
   box-shadow: var(--shadow-panel);
 }
 .scenario-card:hover::before { border-color: var(--gold-a55); }
-/* 卡角卦象点缀（星盘呼应） */
+/* 卡角卦象点缀（星盘呼应）。
+   卦象☰☱☲…本身就是三条横线，外框一加就与「菜单」按钮的原型重合；挪到左上角
+   同样会被读成菜单。最终落在右下角、去掉框与底，只留极淡一痕——贴在海报角上的
+   纹样，而不是一枚可点的圆钮。 */
 .card-rune {
   position: absolute;
-  bottom: 10px;
+  bottom: 9px;
   right: 12px;
   z-index: 1;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--gold-a28);
-  border-radius: var(--r-full);
-  font-size: 0.78rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
   line-height: 1;
   color: var(--gold);
-  opacity: 0.5;
-  transition: opacity 0.25s, text-shadow 0.25s;
+  opacity: 0.22;
+  transition: opacity var(--dur-3) var(--ease-out), text-shadow var(--dur-3) var(--ease-out);
   pointer-events: none;
+  text-shadow: 0 1px 8px var(--shade-a85);
 }
-.scenario-card:hover .card-rune { opacity: 0.9; border-color: var(--gold-a55); text-shadow: 0 0 10px var(--gold-a50); }
-.scenario-emoji { font-size: 2.1rem; line-height: 1.2; transition: transform 0.25s; filter: drop-shadow(0 0 8px var(--gold-a25)); }
-.scenario-card:hover .scenario-emoji { transform: scale(1.12); }
+.scenario-card:hover .card-rune { opacity: 0.6; text-shadow: 0 0 12px var(--gold-a45), 0 1px 8px var(--shade-a85); }
 /* 题名=卡面主角：站酷小薇显示体，明确大一档、字距舒展，与正文简介拉开层级 */
 .scenario-title {
   font-family: var(--font-display);
@@ -722,8 +816,6 @@ html { scrollbar-color: var(--line-strong) transparent; }
   border: 1px solid var(--line-strong); opacity: 0; transition: opacity 0.25s;
 }
 .scenario-card:hover .card-seen { opacity: 1; }
-
-.import-card { border-style: dashed; justify-content: center; align-items: center; text-align: center; }
 
 /* 存档管理 */
 .saves { margin-top: var(--sp-xl); text-align: left; animation: fadeUp 0.6s 0.5s ease-out both; }
@@ -964,7 +1056,17 @@ html { scrollbar-color: var(--line-strong) transparent; }
 
 
 /* ── 命书阁（存档 / 成就 / 结局图鉴） ── */
-.archive { animation: fadeIn 0.5s ease-out both; }
+/* 三个页签内容长短悬殊：存档空态只有一屏的零头，成就/图鉴却近一屏。
+   原先整页顶对齐，空签页下半屏大片死黑、像没加载完。改为整页至少一屏高，
+   内容区用 auto 外边距在余下空间里居中——内容过长时 auto 外边距归零，
+   不会把顶部顶出视口（这是 auto margin 区别于 justify-content:center 的关键）。 */
+.archive {
+  animation: fadeIn var(--dur-4) var(--ease-out) both;
+  min-height: calc(100dvh - var(--sp-section) - 24px);
+  display: flex;
+  flex-direction: column;
+}
+.archive > section { margin-block: auto; }
 .archive-back { margin-bottom: var(--sp-xs); }
 .archive-title {
   margin: 10px 0 2px; text-align: center;
@@ -994,9 +1096,10 @@ html { scrollbar-color: var(--line-strong) transparent; }
 .archive-tabs button {
   background: none; border: none; border-bottom: 2px solid transparent;
   padding: 10px 18px var(--sp-sm); color: var(--muted); letter-spacing: 0.12em;
-  font-size: 0.98rem; transition: color 0.2s, border-color 0.2s;
+  font-size: 0.98rem;
+  transition: color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out);
 }
-.archive-tabs button:hover { color: var(--paper); }
+.archive-tabs button:hover { color: var(--paper); border-bottom-color: var(--gold-a32); }
 .archive-tabs button.active { color: var(--gold-bright); border-bottom-color: var(--gold); text-shadow: 0 0 12px var(--gold-a40); }
 .archive-tabs .tab-num {
   margin-left: 7px; font-size: 0.74rem; color: var(--gold);
@@ -1125,8 +1228,8 @@ html { scrollbar-color: var(--line-strong) transparent; }
 .opening-list { display: flex; flex-direction: column; gap: 10px; }
 .opening { display: flex; flex-direction: column; gap: var(--sp-xxs); text-align: left; }
 .opening span { color: var(--muted); font-size: 0.85rem; }
-.opening.selected { border-color: var(--cinnabar); background: var(--cinnabar-a08); }
-.opening.selected strong { color: var(--cinnabar-bright); }
+.opening.selected { border-color: var(--select); background: var(--select-bg); }
+.opening.selected strong { color: var(--select-bright); }
 .mode-row { display: flex; gap: var(--sp-sm); flex-wrap: wrap; }
 
 .mode-card {
@@ -1136,8 +1239,8 @@ html { scrollbar-color: var(--line-strong) transparent; }
 }
 .mode-card strong { font-size: 1rem; }
 .mode-card span { color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
-.mode-card.selected { border-color: var(--cinnabar); background: var(--cinnabar-a08); }
-.mode-card.selected strong { color: var(--cinnabar-bright); }
+.mode-card.selected { border-color: var(--select); background: var(--select-bg); }
+.mode-card.selected strong { color: var(--select-bright); }
 
 .ambition-list, .chip-list { display: flex; flex-wrap: wrap; gap: var(--sp-xs); margin-bottom: 10px; }
 .ambition-chip, .chip { padding: 6px 14px; font-size: 0.9rem; border-radius: 16px; }
@@ -1399,18 +1502,20 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   width: 56px; height: 1px;
   background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
 }
-/* 选项=可走的路，正文为主角；不再是填色按钮 */
+/* 选项=可走的路，正文为主角；不再是填色按钮。
+   静息态留一道极淡金边：原先全透明时选项近乎隐形，玩家读完正文得再扫一遍才发现这里能点。 */
 .choice {
   position: relative;
   display: flex; flex-direction: column; align-items: flex-start; gap: 5px;
   text-align: left;
   background: linear-gradient(100deg, rgba(28, 38, 84, 0.34), rgba(20, 29, 64, 0.16));
-  border: 1px solid transparent;
+  border: 1px solid var(--gold-a14);
   border-radius: var(--radius);
   padding: 13px var(--sp-md) 13px 20px;
   /* backwards：同选关卡，避免 fill 钉住 transform 屏蔽 :hover 位移 */
-  animation: fadeUp 0.4s ease-out backwards;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.22s;
+  animation: fadeUp var(--dur-3) var(--ease-out) backwards;
+  transition: background var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out), box-shadow var(--dur-3) var(--ease-out);
 }
 .choice:nth-child(2) { animation-delay: 0.07s; }
 .choice:nth-child(3) { animation-delay: 0.14s; }
@@ -1429,12 +1534,22 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   box-shadow: 0 4px 20px var(--shade-a36), -4px 0 20px var(--gold-a10);
 }
 .choice:hover::before { opacity: 1; }
-/* 选项正文：主角，温暖而克制 */
+/* 选项正文：主角，温暖而克制。行首缀一枚菱形路标，让一列选项读作「几条可走的路」而非几个按钮 */
 .choice-text {
   line-height: 1.75; font-size: calc(17px * var(--font-scale));
   color: var(--paper); letter-spacing: 0.01em;
 }
+.choice-text::before {
+  content: '◇';
+  display: inline-block;
+  margin-right: 9px;
+  color: var(--gold-a45);
+  transition: color var(--dur-2) var(--ease-out), text-shadow var(--dur-2) var(--ease-out);
+}
 .choice:hover .choice-text { color: var(--gold-bright); }
+.choice:hover .choice-text::before { color: var(--gold); text-shadow: 0 0 10px var(--gold-a50); }
+/* 自定义行动自带 ✎ 笔形记号，不再叠路标 */
+.custom-trigger .choice-text::before { content: none; }
 /* 数值影响：只在落子之后随承接段一并揭晓。这是整局唯一报数的地方，
    所以要比周围的敛色文字更立得住——别再耳语化 */
 .recap-fx { display: flex; gap: var(--sp-sm); flex-wrap: wrap; margin: var(--sp-xxs) 0 0; }
@@ -1803,7 +1918,11 @@ a.ext:hover { color: var(--cinnabar-bright); text-decoration: underline; }
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
   gap: var(--sp-xs); margin: 10px 0 2px;
 }
+/* 标签自占一行：它原先是第一个 flex 项，与徽章挤在同一行，于是首行左对齐、
+   末行落单的徽章却按容器居中——两行轴线对不上，看着像排错了。独占一行后两者同轴。 */
 .ach-unlock-label {
+  flex: 0 0 100%;
+  margin-bottom: var(--sp-xxs);
   font-size: 0.74rem; letter-spacing: 0.3em; text-indent: 0.3em;
   color: var(--gold); opacity: 0.85;
   animation: fadeIn 0.4s 0.9s ease-out backwards;
@@ -1913,14 +2032,17 @@ span.ach-unlock-chip { padding: var(--sp-xxs) 15px; cursor: default; }
 }
 .panel > h3::before { content: '◈ '; color: var(--gold); opacity: 0.62; font-size: 0.9em; }
 
-/* 模式 / 开局身份卡：悬浮微抬；选中即钤一枚朱砂角印「择」，如落子定身 */
+/* 模式 / 开局身份卡：悬浮微抬；选中即钤一枚朱砂角印「择」，如落子定身。
+   卡片本体走金色（与同页目标 chip 同一套「选中」语言），朱砂只留给角印这一笔，
+   两张卡同屏选中时不再像两处告警。 */
 .mode-card, .opening {
   position: relative; overflow: hidden;
-  transition: border-color 0.2s, background 0.2s, transform 0.18s, box-shadow 0.2s;
+  transition: border-color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out),
+    transform 0.18s var(--ease-out), box-shadow var(--dur-3) var(--ease-out);
 }
 .mode-card:hover, .opening:hover { transform: translateY(-2px); box-shadow: 0 8px 22px var(--shade-a38); }
 .mode-card.selected, .opening.selected {
-  box-shadow: 0 6px 20px var(--cinnabar-a14), 0 0 0 1px var(--cinnabar-a35) inset;
+  box-shadow: 0 6px 20px var(--gold-a12), 0 0 0 1px var(--gold-a32) inset;
 }
 .mode-card.selected::after, .opening.selected::after {
   content: '择'; position: absolute; top: 0; right: 0;
@@ -1936,7 +2058,25 @@ span.ach-unlock-chip { padding: var(--sp-xxs) 15px; cursor: default; }
 .start-btn {
   letter-spacing: 0.28em; text-indent: 0.28em; border-radius: 6px;
   box-shadow: 0 0 22px var(--gold-a26), 0 6px 18px var(--shade-a42);
-  transition: box-shadow 0.25s, background 0.2s, border-color 0.2s, transform 0.12s;
+  transition: box-shadow var(--dur-3) var(--ease-out), background var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+/* 粘性操作条：AI 模式表单很长，主行动原本埋在末尾，窄屏要滚到底才够得着。
+   sticky 钉住，随滚随在；::before 是渐隐背衬，卷页滑到条下时化进暗处而非硬切。 */
+.start-bar {
+  position: sticky;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 20;
+  margin-top: var(--sp-lg);
+  padding-top: var(--sp-md);
+}
+.start-bar::before {
+  content: '';
+  position: absolute;
+  inset: -26px calc(var(--sp-md) * -1) -14px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--ink-9) 58%, rgba(8, 11, 24, 0));
 }
 .start-btn:hover:not(:disabled) { box-shadow: 0 0 36px var(--gold-a50), 0 8px 24px var(--shade-a50); }
 .start-btn:active:not(:disabled) { transform: translateY(1px); }
@@ -1966,11 +2106,33 @@ span.ach-unlock-chip { padding: var(--sp-xxs) 15px; cursor: default; }
   font-size: 0.5rem; text-align: center; color: var(--gold); opacity: 0.8;
 }
 
-/* 选关卡片去 emoji 后改海报式：竖向海报比例、题名与简介沉到卡底暗角，露出更多封面、压字更清晰 */
+/* 选关卡片改海报式：竖向海报比例、题名与简介沉到卡底暗角，露出更多封面、压字更清晰 */
 .scenario-card.has-cover { justify-content: flex-end; aspect-ratio: 1 / 1; min-height: 0; }
-/* 生成/导入动作卡(无封面)：内容垂直居中、简介可多展一行 */
-.scenario-card:not(.has-cover) { justify-content: center; align-items: center; text-align: center; }
-.scenario-card:not(.has-cover) .scenario-intro { -webkit-line-clamp: 3; }
+/* 动作卡（AI 生成 / 导入）：与海报卡同吃 1:1，整片卡阵才是一块完整的方格。
+   原先它们只有内容高，落在末行时把栅格拉出一个大缺口；头像是「拟 / 入」两枚裸字，
+   沿用全站钤印词汇（择/拟/启/历/封），不再用彩色 emoji 破格。 */
+.scenario-card.action-card {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  border-style: dashed;
+  border-color: var(--line-strong);
+}
+.scenario-card.action-card:hover { border-color: var(--gold); border-style: solid; }
+.scenario-card.action-card .scenario-intro { -webkit-line-clamp: 3; }
+.scenario-glyph {
+  margin-bottom: var(--sp-xxs);
+  font-family: var(--font-script);
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--gold);
+  opacity: 0.85;
+  text-shadow: 0 0 18px var(--gold-a25);
+  transition: transform var(--dur-3) var(--ease-spring), text-shadow var(--dur-3) var(--ease-out);
+}
+.scenario-card.action-card:hover .scenario-glyph { transform: scale(1.1); text-shadow: 0 0 26px var(--gold-a45); }
 
 /* 滑块(支线数量)：脱离默认灰条，改鎏金细轨 + 金珠拨钮，融入玄学调 */
 input[type='range'] {
@@ -2023,10 +2185,18 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
   from { opacity: 0.2; transform: translateX(4%) scale(1.04); }
   to { opacity: 1; transform: none; }
 }
-/* 顶部暗渐变罩：托起 HUD 可读（底部交给卷文区自身的渐变） */
+/* 顶部暗渐变罩：托起 HUD 可读（底部交给卷文区自身的渐变）。
+   原先只压到 34% 即归零、峰值也仅 0.72，遇上仙侠/航海这类大面积亮天空的场景画，
+   HUD 药丸叠上去仍被背景提亮、状态词糊成一团。改为「上密下疏」：近顶几乎压实，
+   到 26% 完全交还给画面，既托住字又不切出可见的黑边。 */
 .vn-scrim {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: linear-gradient(to bottom, var(--ink-a72) 0%, transparent 34%, transparent 100%);
+  background: linear-gradient(to bottom,
+    rgba(5, 7, 16, 0.86) 0%,
+    rgba(5, 7, 16, 0.62) 7%,
+    rgba(5, 7, 16, 0.30) 15%,
+    rgba(5, 7, 16, 0.10) 21%,
+    transparent 28%);
 }
 
 /* ── 顶部 HUD（浮于画台上沿） ── */
@@ -2038,35 +2208,74 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
 }
 .vn-hud-row { display: flex; align-items: center; gap: var(--sp-sm); }
 .vn-title {
+  position: relative;
   font-family: var(--font-display); font-size: 1.06rem;
   letter-spacing: 0.08em; color: var(--paper);
-  text-shadow: 0 1px 12px var(--shade-a85);
+  text-shadow: 0 1px 12px var(--shade-a85), 0 0 22px var(--gold-a10);
+  padding-bottom: 4px;
 }
-.vn-hud-row .play-menu { margin-left: var(--sp-xs); }
-.vn .play-menu-btn { background: var(--ink-a55); border-color: var(--gold-a20); backdrop-filter: blur(6px); }
-/* 看全图：HUD 内圆钮，隐去卷文看整张场景画 */
-.vn-eye {
-  margin-left: auto; flex: none;
-  width: 34px; height: 34px; padding: 0;
-  font-family: var(--font-display); font-size: 0.92rem; line-height: 1;
-  color: var(--gold); background: var(--ink-a55);
-  border: 1px solid var(--gold-a20); border-radius: var(--r-full);
-  backdrop-filter: blur(6px);
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+/* 剧本体之下压一道短金线：把标题钉在 HUD 上，也不与右侧控件争注意力 */
+.vn-title::after {
+  content: '';
+  position: absolute; left: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: 0.7;
 }
-.vn-eye:hover { color: var(--gold-bright); border-color: var(--gold); }
+.vn-hud-row .play-menu { margin-left: 0; }
 
-/* 命数：浮于画上的小药丸，状态词为主、数字退后 */
-.vn-vitals { display: flex; flex-wrap: wrap; gap: var(--sp-xs) var(--sp-sm); transition: opacity 0.3s ease; }
+/* HUD 控件簇：两枚同款玻璃圆钮共一块底、中隔一道细线，读作一组而非散落两粒。
+   position/z-index 不可省：本簇用了 backdrop-filter，会自成层叠上下文并按 z-index:0
+   参与父级排序；簇内的下拉面板即使写着 z-index:31 也困在簇内出不来。整簇因此与同样
+   用了 backdrop-filter 的 .vn-vitals 站成平手，最终由 DOM 先后决定——而命数行在后，
+   菜单一开就被药丸压住半截。抬到 z-index:2 才压得住。 */
+.vn-hud-ctl {
+  position: relative;
+  z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  margin-left: auto; padding: 3px 5px 3px 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(var(--glass-blur));
+}
+.vn-hud-ctl::before {
+  content: '';
+  flex: none;
+  width: 1px; height: 15px;
+  background: linear-gradient(to bottom, transparent, var(--gold-a28), transparent);
+}
+.vn .play-menu-btn, .vn-eye {
+  flex: none;
+  width: 30px; height: 30px; padding: 0;
+  display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 0.9rem; line-height: 1;
+  color: var(--gold); background: transparent;
+  border: 1px solid transparent; border-radius: var(--r-full);
+  transition: color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out),
+    background var(--dur-2) var(--ease-out);
+}
+.vn .play-menu-btn:hover, .vn-eye:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold-a40);
+  background: var(--gold-a10);
+}
+.vn .play-menu-btn.open { color: var(--gold-bright); border-color: var(--gold); background: var(--gold-a14); }
+
+/* 命数：浮于画上的玻璃药丸。状态词为主、数字退后。
+   底色从 --ink-a55 提到 --glass-bg：背景亮度是这一层唯一不可控的变量（任意场景画），
+   半透明越浅、叠上去越容易被画面吃掉。标签色由 --muted 提到 --paper-dim，
+   在最亮的天空上也能保持可读，而状态词仍是着色主角。 */
+.vn-vitals { display: flex; flex-wrap: wrap; gap: var(--sp-xs) var(--sp-sm); transition: opacity var(--dur-3) var(--ease-out); }
 .vn-vital {
   display: inline-flex; align-items: baseline; gap: 7px;
-  padding: 3px var(--sp-sm); border-radius: 20px;
-  background: var(--ink-a55); border: 1px solid var(--gold-a22);
-  box-shadow: inset 0 0 0 1px var(--ink-a50);
-  backdrop-filter: blur(6px);
-  font-size: 0.78rem; text-shadow: 0 1px 6px var(--shade-a70);
+  padding: 4px var(--sp-sm); border-radius: 20px;
+  background: var(--glass-bg); border: 1px solid var(--glass-edge);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.1);
+  font-size: 0.78rem; text-shadow: 0 1px 6px var(--shade-a85);
 }
-.vn-vital-name { color: var(--muted); }
+.vn-vital-name { color: var(--paper-dim); }
 .vn-vital-band.sev-high { color: var(--jade); }
 .vn-vital-band.sev-normal { color: var(--paper-dim); }
 .vn-vital-band.sev-low { color: var(--gold); }
@@ -2075,16 +2284,45 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
 /* 属性封顶标记：暗金小字「满」，鼠标悬停解释需晋阶突破 */
 .vn-vital-cap { margin-left: 3px; color: var(--gold); opacity: 0.72; font-size: 0.64rem; cursor: help; }
 
-/* ── 命途长卷进度（贴近卷文上沿） ── */
+/* ── 命途长卷进度（贴近卷文上沿）──
+   一条走在命运线上的金缕：轨道是暗槽，填充段是已走的路，
+   轨道尽头缀一枚菱形「命途珠」落在当前进度处——进度因此是个位置，不只是一个百分比 */
 .vn-path {
   position: relative; z-index: 6;
   width: min(760px, 94vw); margin-inline: auto;
   display: flex; align-items: center; gap: var(--sp-sm);
   padding: 0 var(--sp-xs) 9px;
 }
-.vn-path-track { flex: 1; height: 2px; border-radius: var(--r-xs); background: var(--gold-a18); overflow: hidden; }
-.vn-path-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--cinnabar), var(--gold-bright)); box-shadow: var(--shadow-glow-sm); transition: width 0.6s ease; }
-.vn-path-label { font-size: 0.72rem; letter-spacing: 0.16em; color: var(--gold); white-space: nowrap; text-shadow: 0 1px 6px var(--shade-a80); }
+.vn-path-track {
+  position: relative; flex: 1; height: 3px;
+  border-radius: var(--r-xs);
+  background: var(--gold-a16);
+  box-shadow: inset 0 1px 2px var(--shade-a45);
+  overflow: visible;
+}
+.vn-path-fill {
+  display: block; height: 100%; border-radius: var(--r-xs);
+  background: linear-gradient(90deg, var(--cinnabar), var(--gold-bright));
+  box-shadow: var(--shadow-glow-sm);
+  transition: width var(--dur-4) var(--ease-out);
+}
+/* 命途珠：随 --fill 滑到当前进度处，菱形取「落子」的形 */
+.vn-path-track::after {
+  content: '';
+  position: absolute; top: 50%; left: var(--fill, 0%);
+  width: 7px; height: 7px;
+  margin-left: -3.5px;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--gold-bright);
+  box-shadow: 0 0 8px var(--gold-a70), 0 0 16px var(--gold-a32);
+  transition: left var(--dur-4) var(--ease-out);
+}
+.vn-path-label {
+  flex: none;
+  font-size: 0.72rem; letter-spacing: 0.16em; color: var(--gold);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 6px var(--shade-a90);
+}
 
 /* ── 卷文区：贴底，画面经渐变隐入暗处承托文字（非硬框，画仍透出） ── */
 .vn-panel {
@@ -2109,11 +2347,17 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
 /* 看全图：卷文滑出、命数隐去，整张场景画无遮 */
 .play.vn.peek .vn-panel { transform: translateY(100%); opacity: 0; pointer-events: none; }
 .play.vn.peek .vn-vitals { opacity: 0; pointer-events: none; }
-.vn-panel-head { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 10px; }
+.vn-panel-head {
+  display: flex; align-items: flex-end; gap: 10px;
+  margin-bottom: 12px; padding-bottom: 9px;
+  border-bottom: 1px solid var(--gold-a14);
+}
 .vn-label-col { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .vn-scene-label {
-  font-family: var(--font-display); font-size: 0.94rem; letter-spacing: 0.12em;
-  color: var(--gold-bright); text-shadow: 0 0 12px var(--gold-a25);
+  font-family: var(--font-display);
+  font-size: 1rem; letter-spacing: 0.14em;
+  color: var(--gold-bright);
+  text-shadow: 0 0 14px var(--gold-a25), 0 1px 6px var(--shade-a85);
 }
 /* 关键节点就地轻标记：题签上缀「命运抉择」鎏金眉标即可，替代原每 4 回合的弹卡（不再加面板辉光——它会沿浮层透明上沿浮出一道金线） */
 .vn-keymark {
@@ -2136,8 +2380,12 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px);
   mask-image: linear-gradient(to bottom, transparent 0, #000 18px);
 }
-/* 选项区固定于面板底、不随卷文共滚（U-09）：卷文在上方自滚，选项多时限高内滚 */
-.vn-panel .choices { flex: none; max-height: 44vh; overflow-y: auto; }
+/* 选项区固定于面板底、不随卷文共滚（U-09）：卷文在上方自滚，选项多时限高内滚。
+   横向留 3px 余量：选项悬停要右移 2px（.choice:hover 的 translateX），而本容器声明了
+   overflow-y:auto —— 按 CSS 规范，只要一个轴非 visible/clip，另一个轴的 visible 就会
+   计算成 auto。右移顶出容器右缘 2px，于是长出一条永远滚不动的横向滚动条，表现为
+   卷文底部一条突兀的金色横条。留 3px 内距，位移便落在余量里，滚动条不再出现。 */
+.vn-panel .choices { flex: none; max-height: 44vh; overflow-y: auto; padding-right: 3px; }
 /* 刚才的抉择与他人反馈：作为新场景的承接引子，敛色置于卷文之首 */
 .vn-recap {
   margin: 0 0 9px; padding: 0 0 var(--sp-xs);
@@ -2204,13 +2452,18 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
     gap: 10px var(--sp-md);
     padding: 10px 14px;
   }
-  .cs-gauge { min-width: 116px; flex: 1 1 40%; }
+  .cs-dials { gap: var(--sp-md); flex: 1; justify-content: center; }
+  .cs-dial { width: 42px; height: 42px; }
+  .cs-go { padding-left: var(--sp-md); align-self: center; }
 }
 
 /* ── 触屏设备：hover 才浮现的信息改为常显，指尖无从悬停 ── */
 @media (hover: none) {
-  /* 触屏（`@media (hover: none)`）：hover 才浮现的信息改常显，圆形钮放大到 ≥44px */
-  .lang-toggle, .play-menu-btn, .vn-eye { width: 44px; height: 44px; }
+  /* 圆形钮放大到 ≥44px（本项目取 44 而非 WCAG 下限 40）；
+     HUD 控件簇内的两枚随之长高，簇体整体随之变大 */
+  .lang-toggle { width: 44px; height: 44px; }
+  .vn-hud-ctl { padding: 4px 6px 4px 10px; }
+  .vn-hud-ctl .play-menu-btn, .vn-hud-ctl .vn-eye { width: 44px; height: 44px; font-size: 1rem; }
   .vn-zoom { width: 44px; height: 44px; }
   /* 浮层的关闭叉：指尖点得中 */
   .memoir-close, .ed-close { min-width: 44px; min-height: 44px; }
@@ -2289,10 +2542,6 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
   to { filter: drop-shadow(0 0 60px rgba(236, 210, 143, 0.75)); }
 }
 /* —— AI 生成剧本 —— */
-.gen-card { border-style: dashed; border-color: var(--cinnabar); }
-.gen-card:hover { border-color: var(--cinnabar-bright); }
-.gen-card .scenario-emoji { color: var(--cinnabar-bright); }
-
 .modal-backdrop {
   position: fixed;
   inset: 0;

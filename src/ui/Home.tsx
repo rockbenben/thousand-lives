@@ -105,29 +105,35 @@ export function Home({
       </div>
 
       <button className="collection-strip" onClick={onOpenArchive}>
-        <span className="cs-gauge">
-          <span className="cs-top">📖 已历结局 <b>{endingsSeen}</b><i>/{endingsTotal}</i></span>
-          <span className="cs-bar" aria-hidden="true">
-            {endingsSeen > 0 && (
-              <span
-                className="cs-bar-fill"
-                style={cssVars({ '--fill': `${endingsTotal ? Math.round((endingsSeen / endingsTotal) * 100) : 0}%` })}
-              />
-            )}
+        <span className="cs-dials">
+          <span className="cs-dial-cell">
+            <span
+              className="cs-dial"
+              style={cssVars({ '--pct': `${endingsTotal ? (endingsSeen / endingsTotal) * 100 : 0}` })}
+              aria-hidden="true"
+            >
+              <span className="cs-dial-num">{endingsSeen}</span>
+            </span>
+            <span className="cs-dial-label">
+              已历结局<i>/{endingsTotal}</i>
+            </span>
+          </span>
+          <span className="cs-dial-cell">
+            <span
+              className="cs-dial gold"
+              style={cssVars({ '--pct': `${achievements.length ? (achDone / achievements.length) * 100 : 0}` })}
+              aria-hidden="true"
+            >
+              <span className="cs-dial-num">{achDone}</span>
+            </span>
+            <span className="cs-dial-label">
+              成就<i>/{achievements.length}</i>
+            </span>
           </span>
         </span>
-        <span className="cs-gauge">
-          <span className="cs-top">🏅 成就 <b>{achDone}</b><i>/{achievements.length}</i></span>
-          <span className="cs-bar" aria-hidden="true">
-            {achDone > 0 && (
-              <span
-                className="cs-bar-fill gold"
-                style={cssVars({ '--fill': `${achievements.length ? Math.round((achDone / achievements.length) * 100) : 0}%` })}
-              />
-            )}
-          </span>
+        <span className="cs-go" aria-hidden="true">
+          命书阁<i>→</i>
         </span>
-        <span className="cs-go" aria-hidden="true">命书阁 →</span>
       </button>
 
       {save && !save.state.ended && (
@@ -175,13 +181,13 @@ export function Home({
             </button>
           )
         })}
-        <button className="scenario-card gen-card" onClick={() => setShowGen(true)}>
-          <span className="scenario-emoji">✨</span>
+        <button className="scenario-card action-card gen-card" onClick={() => setShowGen(true)}>
+          <span className="scenario-glyph" aria-hidden="true">拟</span>
           <span className="scenario-title">AI 生成剧本</span>
           <span className="scenario-intro">给一个主题，AI 现编一个带数十至上百支线的全新剧本，加入剧本库</span>
         </button>
-        <button className="scenario-card import-card" onClick={() => fileRef.current?.click()}>
-          <span className="scenario-emoji">＋</span>
+        <button className="scenario-card action-card import-card" onClick={() => fileRef.current?.click()}>
+          <span className="scenario-glyph" aria-hidden="true">入</span>
           <span className="scenario-title">导入剧本</span>
           <span className="scenario-intro">选择符合剧本格式的 JSON 文件；可先在命书阁点「导出」拿现成模板</span>
         </button>
