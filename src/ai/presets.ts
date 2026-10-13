@@ -230,6 +230,44 @@ export function keyOptional(presetId: string | undefined): boolean {
   return presetId ? findProvider(presetId)?.keyOptional === true : false
 }
 
+/** 空 = 用内置那台；把内置地址【写明白】也还是内置（那是输入框的提示语，照着填最常见）。 */
+export function isBuiltinProxy(proxy: string | undefined): boolean {
+  const t = proxy?.trim().replace(/\/+$/, '')
+  return !t || t === DEFAULT_PROXY.replace(/\/+$/, '')
+}
+
+/**
+ * 「开关开着，这一跳到底会不会走」—— 内置那台公共中转按 host 白名单转发：把自建
+ * 网关或局域网地址递过去，它只回一句 Target host not allowed，而那条地址（自建网关
+ * 常把密钥写成 ?token=…）已经完整离开浏览器、进了别人那台机器的请求行。所以这里
+ * 替用户挡掉，而不是等他拿到 403 再去猜原因。
+ *
+ * 三条判据，按【中转归谁】和【要发出去的是哪个地址】分，与开关本身正交：
+ *   · 没开中转（proxy 空）→ 谈不上走不走。
+ *   · 用户自己填的中转地址 → 一律照发：那台机器归他所有、白名单由他声明，
+ *     「开关 + 地址」拆成两件事就是为了支持这个场景。
+ *   · 内置那台 → 只转发【这家在目录里声明过的官方地址】。地址留空 = 用预设自己的
+ *     官方地址，同样算官方。局域网 / 自建地址天然不在这份集合里，所以不必在这里
+ *     枚举内网网段 —— 枚举地址写法永远漏得完，而集合是现成的。
+ *
+ * ⚠ 「地址才是凭据」那几家（目录 keyOptional：本地运行时 / 自建网关）永远不发给内置
+ * 中转。它们的芯片表里 127.0.0.1 与公开聚合混在一起，按集合判会把环回地址当成
+ * 「可中转」。界面本来就不给这几家显示这个开关，这里再挡一次是因为【开关不显示 ≠
+ * 存档里的中转值不存在】：切回这些预设时 cfg.proxy 可能还带着上次记住的值。
+ */
+export function proxyWouldServe(presetId: string | undefined, baseURL: string | undefined, proxy: string | undefined): boolean {
+  const p = proxy?.trim()
+  if (!p) return false
+  if (!isBuiltinProxy(p)) return true
+  if (keyOptional(presetId)) return false
+  const preset = presetId ? findPreset(presetId) : undefined
+  if (!preset) return false
+  const norm = (u: string): string => u.trim().replace(/\/+$/, '')
+  const official = [preset.baseURL, ...(preset.endpoints ?? []).map((e) => e.url)].map(norm)
+  const target = norm(baseURL ?? '')
+  return target === '' || official.includes(target)
+}
+
 /**
  * 关闭形态是不是【明确的关】而不是「发最低档」。
  *

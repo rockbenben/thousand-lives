@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { PRESETS, PRESET_GROUPS, providerOptions, visibleProviderOptions, isHiddenPreset, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking } from './presets'
+import { PRESETS, PRESET_GROUPS, providerOptions, visibleProviderOptions, isHiddenPreset, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking, proxyWouldServe, isBuiltinProxy, DEFAULT_PROXY } from './presets'
 import { THINKING_MAX_TOKENS } from './adapters'
 import { PROVIDER_CATALOG } from './providerCatalog.generated'
 
@@ -383,5 +383,92 @@ describe('没有「关闭」这一档的服务商', () => {
     expect(canDisableThinking('claude')).toBe(true)
     expect(canDisableThinking(undefined)).toBe(true)
     expect(canDisableThinking('不存在的服务商')).toBe(true)
+  })
+})
+
+describe('内置中转只转发官方地址（proxyWouldServe）', () => {
+  // 样本地址一律从 PRESETS 取，不在测试里抄厂商 host —— 抄的那份下次同步就漂。
+  const BUILTIN = DEFAULT_PROXY
+  const OWN = 'https://my-relay.example.workers.dev'
+  const GATEWAY = 'https://my-gateway.example.com/v1?token=SECRET'
+  const PRIVATE = ['http://127.0.0.1:11434/v1', 'http://localhost:1234/v1', 'http://192.168.1.20:8000/v1', 'http://172.17.0.2:11434/v1', 'http://[::1]:11434/v1']
+
+  const normal = PRESETS.find((p) => !keyOptional(p.id) && p.endpoints && p.endpoints.length > 1)
+  const custom = PRESETS.find((p) => keyOptional(p.id))
+  const official = PRESETS.find((p) => !keyOptional(p.id) && p.baseURL)
+
+  it('官方地址 + 内置中转 → 走中转；尾斜杠与空白不影响判定', () => {
+    expect(official, '目录里一家官方预设都没有 —— 这条在空转').toBeTruthy()
+    const p = official!
+    expect(proxyWouldServe(p.id, p.baseURL, BUILTIN)).toBe(true)
+    expect(proxyWouldServe(p.id, `${p.baseURL}/`, BUILTIN)).toBe(true)
+    expect(proxyWouldServe(p.id, `  ${p.baseURL}  `, BUILTIN)).toBe(true)
+    // 地址留空 = 用预设自己的官方地址，同样可中转
+    expect(proxyWouldServe(p.id, '', BUILTIN)).toBe(true)
+  })
+
+  it('同一家的其它官方变体也能走中转', () => {
+    expect(normal, '目录里没有"多端点"的预设 —— 这条在空转').toBeTruthy()
+    for (const e of normal!.endpoints!) {
+      expect(proxyWouldServe(normal!.id, e.url, BUILTIN), `${normal!.id} 的变体 ${e.url}`).toBe(true)
+    }
+  })
+
+  it('自建网关 / 局域网地址不发给内置中转 —— 它只会 403，而那条地址（常带 ?token=）已经出门', () => {
+    expect(official, '同上').toBeTruthy()
+    expect(proxyWouldServe(official!.id, GATEWAY, BUILTIN)).toBe(false)
+    for (const addr of PRIVATE) {
+      expect(proxyWouldServe(official!.id, addr, BUILTIN), `${official!.id} + ${addr} 不该走内置中转`).toBe(false)
+    }
+    // 「地址才是凭据」那一家（本地运行时 / 自建网关）连内置中转都不给用：
+    // 它的芯片表里 127.0.0.1 与公开聚合混在一起，按集合判会把环回当成可中转。
+    expect(custom, '目录里没有 keyOptional 的预设 —— 这条在空转').toBeTruthy()
+    for (const e of custom!.endpoints ?? []) {
+      expect(proxyWouldServe(custom!.id, e.url, BUILTIN), `${custom!.id} 的 ${e.url} 不该走内置中转`).toBe(false)
+    }
+  })
+
+  it('用户自己填的中转地址一律照发（那台机器归他，白名单由他声明）', () => {
+    expect(official, '同上').toBeTruthy()
+    expect(proxyWouldServe(official!.id, GATEWAY, OWN)).toBe(true)
+    // ⚠ 与 web-tools 的一处取舍差异：那边连自建中转也不接环回地址（远端结构上
+    // 够不着）。这里判的是【归谁】——局域网可能是他自己那台中转够得着的地址，
+    // 替他断掉就是把他的自建中转削成了官方地址专用通道。
+    expect(proxyWouldServe(official!.id, PRIVATE[0], OWN)).toBe(true)
+    expect(proxyWouldServe(custom!.id, custom!.baseURL || PRIVATE[0], OWN)).toBe(true)
+  })
+
+  it('没开中转就是直连，认不出的预设 fail closed', () => {
+    expect(proxyWouldServe(official!.id, official!.baseURL, '')).toBe(false)
+    expect(proxyWouldServe(official!.id, official!.baseURL, undefined)).toBe(false)
+    expect(proxyWouldServe('不存在的预设', 'https://api.openai.com/v1', BUILTIN)).toBe(false)
+    expect(proxyWouldServe(undefined, undefined, BUILTIN)).toBe(false)
+  })
+
+  it('每一家在册预设的官方地址都必须能走内置中转 —— 否则直连已坏的那几家会被这条判据卡死', () => {
+    // directBlocked 那几家（opencodeZen / tokenhub / 订阅套餐端点…）唯一的出路就是
+    // 中转。这条不变量把它们的路径钉住：判据写错时不是"少个功能"而是"整家发不出去"。
+    let blocked = 0
+    for (const p of PRESETS) {
+      if (keyOptional(p.id)) continue
+      expect(proxyWouldServe(p.id, p.baseURL, BUILTIN), `${p.id} 的默认地址被判定不能走内置中转`).toBe(true)
+      for (const e of p.endpoints ?? []) {
+        expect(proxyWouldServe(p.id, e.url, BUILTIN), `${p.id} 的变体 ${e.url} 被判定不能走内置中转`).toBe(true)
+      }
+      if (needsProxy(p.id)) blocked++
+    }
+    expect(blocked, '目录里没有"直连已坏"的预设 —— 上面那半条在空转').toBeGreaterThan(0)
+  })
+
+  it('内置中转的识别：留空或把内置地址写明白都算内置', () => {
+    expect(proxyWouldServe(official!.id, official!.baseURL, '')).toBe(false) // 空 = 没开
+    expect(isBuiltinProxy('')).toBe(true)
+    expect(isBuiltinProxy(undefined)).toBe(true)
+    expect(isBuiltinProxy(DEFAULT_PROXY)).toBe(true)
+    expect(isBuiltinProxy(`${DEFAULT_PROXY}/`)).toBe(true)
+    expect(isBuiltinProxy(OWN)).toBe(false)
+    // 写明白内置地址时，判定与留空一致（都是"只用官方地址"）
+    expect(proxyWouldServe(official!.id, GATEWAY, DEFAULT_PROXY)).toBe(false)
+    expect(proxyWouldServe(official!.id, GATEWAY, `${DEFAULT_PROXY}/`)).toBe(false)
   })
 })

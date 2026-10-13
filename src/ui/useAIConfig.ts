@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { AIConfig, Provider, ThinkingLevel } from '../ai/types'
-import { PRESETS, findPreset, matchPreset, supportsThinking, needsProxy, keyOptional, canDisableThinking, DEFAULT_PROXY } from '../ai/presets'
+import { PRESETS, findPreset, matchPreset, supportsThinking, needsProxy, keyOptional, canDisableThinking, proxyWouldServe, DEFAULT_PROXY } from '../ai/presets'
 import { isComplete, loadConfig, loadPresetConfig, saveConfig } from '../storage'
 import { isHttpUrl } from '../utils/url'
 
@@ -133,11 +133,15 @@ export function useAIConfig(onChange?: () => void) {
     changeProxyAddr,
     // 这家直连已坏 —— 关掉中转就发不出请求，UI 据此给出提示
     proxyRequired: needsProxy(presetId),
-    // 自填地址（本地服务 / 自建网关）不该送进中转：那台按 host 白名单转发，
-    // 局域网地址它根本够不着，公网自建地址也不在白名单里，只会拿到 400。
-    // 判据用 keyOptional（=「地址才是凭据」）而不是列 id：presets.ts 里刚说过
-    // 「不在这里按 id 列名单」，下一家自建网关预设进来时不该还要回头改 UI 文件。
+    // 自填地址（本地服务 / 自建网关）整块不给这个开关：内置那台按 host 白名单转发，
+    // 够不着局域网，也不该收到自建地址。判据用 keyOptional（=「地址才是凭据」）而不是
+    // 列 id：presets.ts 里刚说过「不在这里按 id 列名单」。
     proxyApplicable: !keyOptional(presetId),
+    // ⚠ 但「这家有开关」不等于「当前这个地址会真的经它」：地址栏对每一家都是自由
+    // 输入（芯片只是快捷填充），把官方地址换成自建网关后，开关还亮着而那一跳已经
+    // 无处可去。界面必须按【真话】显示，判据与传输层同一条（presets.proxyWouldServe
+    // 在 chat* 里就是这么决定要不要挂中转前缀的）—— 各写一份必然漂。
+    proxyInert: proxyOn && !proxyWouldServe(presetId, baseURL, proxy),
     proxyAddrInvalid,
     // 「配好了」= storage 肯存 + 真发得出去。界面自己再写一份必然漂 —— 放行开局却
     // 存不下来，玩家刷新后归零，全程没有任何报错（isComplete 那段注释说的就是这个

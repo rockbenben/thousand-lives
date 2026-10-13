@@ -170,6 +170,11 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
                 directBlocked 的几家【默认就是开的】—— 吓退用户等于让 app 用不了。 */}
             {cfg.proxyOn && ' 开启后你的 API Key 与完整请求内容会经过这台中转再到服务商；它只转发不留存，在意的话可改成自建中转地址（见文档）。'}
           </p>
+          {/* 开关亮着而那一跳其实没走 —— 不写出来，用户只会看到一次说不清的失败。
+              判据与传输层同一条（presets.proxyWouldServe），这里只是把它翻成人话。 */}
+          {cfg.proxyInert && (
+            <p className="hint">当前填写的服务地址不是这家服务商的官方地址，公共中转只转发官方地址，因此这次请求【没有】经过它，已直接发出。要让自建网关经中转，请把上面的中转地址换成你自己部署的那一台。</p>
+          )}
           {cfg.proxyOn && (
             <>
               {/* 漏写 https:// 是这一栏最常见的错法，而它【不会报错】：拼出来的

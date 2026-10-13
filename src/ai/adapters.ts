@@ -1,6 +1,6 @@
 import { AIError, type AIConfig } from './types'
 import type { ChatMessage } from '../engine/types'
-import { canDisableThinking, thinkingWireFor } from './presets'
+import { canDisableThinking, proxyWouldServe, thinkingWireFor } from './presets'
 import { isHttpUrl } from '../utils/url'
 
 /**
@@ -44,6 +44,18 @@ function viaProxy(url: string, proxy?: string): string {
   // 用 400 而不是 0：这是配置错，重试一次还是同样的错（0 会被判成可重试）
   if (!isHttpUrl(p)) throw new AIError(400, `中转地址不是完整的网址（要带 https://）：${p}`)
   return `${p}/${url}`
+}
+
+/**
+ * 实际生效的中转。三条 chat* 都从这里取，免得将来第四条忘了挡，也免得界面与传输
+ * 各判一遍（判据只有 presets.proxyWouldServe 一处）。
+ *
+ * ⚠ 这里【不改写 cfg.proxy】：存档里那是用户的意图（他要经哪台中转），界面读同一
+ * 条判据把这一跳显示成"已自动跳过"。静默改存档等于把用户没做的事替他做了，
+ * 还会在他把地址换回官方端点时发现开关自己关了。
+ */
+function effectiveProxy(cfg: AIConfig): string | undefined {
+  return proxyWouldServe(cfg.presetId, cfg.baseURL, cfg.proxy) ? cfg.proxy : undefined
 }
 
 /**
@@ -169,7 +181,7 @@ export async function chatOpenAI(
   const base = (cfg.baseURL || 'https://api.openai.com/v1').replace(/\/+$/, '')
   let text = ''
   await postStream(
-    viaProxy(`${base}/chat/completions`, cfg.proxy),
+    viaProxy(`${base}/chat/completions`, effectiveProxy(cfg)),
     { authorization: `Bearer ${cfg.apiKey}` },
     // 不发送 temperature：前端无温度设置项，且部分新推理模型（GPT-5.x 等）
     // 只接受默认采样值，显式发送会 400；交由各家服务端默认
@@ -202,7 +214,7 @@ export async function chatAnthropic(
   const { system, rest } = splitSystem(messages)
   let text = ''
   await postStream(
-    viaProxy(`${base}/v1/messages`, cfg.proxy),
+    viaProxy(`${base}/v1/messages`, effectiveProxy(cfg)),
     {
       'x-api-key': cfg.apiKey,
       'anthropic-version': '2023-06-01',
@@ -244,7 +256,7 @@ export async function chatGemini(
   const { system, rest } = splitSystem(messages)
   let text = ''
   await postStream(
-    viaProxy(`${base}/v1beta/models/${cfg.model}:streamGenerateContent?alt=sse`, cfg.proxy),
+    viaProxy(`${base}/v1beta/models/${cfg.model}:streamGenerateContent?alt=sse`, effectiveProxy(cfg)),
     { 'x-goog-api-key': cfg.apiKey },
     {
       // Gemini 对空 text 参数返回 400，无 system 消息时（如连接测试）必须整个省略
