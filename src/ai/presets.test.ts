@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { PRESETS, PRESET_GROUPS, providerOptions, visibleProviderOptions, isHiddenPreset, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking, proxyWouldServe, isBuiltinProxy, DEFAULT_PROXY } from './presets'
+import { PRESETS, PRESET_GROUPS, providerOptions, visibleProviderOptions, isHiddenPreset, matchPreset, findPreset, thinkingWireFor, supportsThinking, needsProxy, keyOptional, canDisableThinking, clampThinkingLevel, isBinaryThinkingModel, selectableThinkingLevels, thinkingSelectValue, proxyWouldServe, isBuiltinProxy, DEFAULT_PROXY } from './presets'
 import { THINKING_MAX_TOKENS } from './adapters'
 import { PROVIDER_CATALOG } from './providerCatalog.generated'
 
@@ -153,12 +153,30 @@ describe('思考参数', () => {
   })
 
   it('目录没给形态的 SKU 一个参数都不发，控件也不显示', () => {
-    // tokenhub：上游没有已知的思考线格式
-    expect(thinkingWireFor('tokenhub', 'hy3', 'high')).toBeUndefined()
-    expect(supportsThinking('tokenhub', 'hy3')).toBe(false)
-    // 列了但整家没给思考形态的 SKU（AI Studio 兼容层目录就是不给）
-    expect(thinkingWireFor('gemini-openai', 'gemini-3.8-flash', 'high')).toBeUndefined()
-    expect(supportsThinking('gemini-openai', 'gemini-3.8-flash')).toBe(false)
+    // tokenhub 的 deepseek-v4.1-flash / mimo-v2.6-pro：官方三处思考文档
+    // （1823/131208 两张表 + 1823/132248）都没有它们 ⇒ 目录不给形态 ⇒ 一个参数都不发。
+    // （tokenhub 其余在册型号【有】形态了 —— 逐型号三种，见下面那条。）
+    for (const model of ['deepseek-v4.1-flash', 'mimo-v2.6-pro']) {
+      expect(thinkingWireFor('tokenhub', model, 'high'), model).toBeUndefined()
+      expect(supportsThinking('tokenhub', model), model).toBe(false)
+    }
+    // 列了但整家没给思考形态的 SKU（Ministral 3 14B：官方 reasoning 页只列了
+    // adjustable-reasoning 那两支，它不在其中）
+    expect(thinkingWireFor('mistral', 'ministral-14b-2512', 'high')).toBeUndefined()
+    expect(supportsThinking('mistral', 'ministral-14b-2512')).toBe(false)
+  })
+
+  it('TokenHub 逐型号形态（2026-10-21 按官方逐型号表重做）', () => {
+    // 关得掉的多数型号：只发一个开关（官方没写档位表的型号不给档位 —— 摆三档就是摆设）
+    expect(thinkingWireFor('tokenhub', 'hy3', 'off')).toEqual({ thinking: { type: 'disabled' } })
+    expect(thinkingWireFor('tokenhub', 'hy3', 'high')).toEqual({ thinking: { type: 'enabled' } })
+    // 关不掉（官方 enabled（不支持关闭））：关闭态只能发最低档，不发 thinking 参数
+    expect(thinkingWireFor('tokenhub', 'glm-5.3', 'off')).toEqual({ reasoning_effort: 'low' })
+    expect(thinkingWireFor('tokenhub', 'kimi-k3', 'high')).toEqual({ reasoning_effort: 'high' })
+    // minimax-m3 只接受 adaptive / disabled（发 enabled 直接 400）
+    expect(thinkingWireFor('tokenhub', 'minimax-m3', 'high')).toEqual({ thinking: { type: 'adaptive' } })
+    // 阿里百炼的 glm-5.3 是「仅思考模式」：不发 enable_thinking:false
+    expect(thinkingWireFor('alibaba', 'glm-5.3', 'off')).toEqual({ reasoning_effort: 'low' })
   })
 
   it('Claude / Gemini 走原生协议，目录按原生形态给 —— 与兼容层的形状不同', () => {
@@ -367,7 +385,48 @@ describe('没有「关闭」这一档的服务商', () => {
     expect(canDisableThinking('claude', 'claude-opus-5')).toBe(true)
     expect(canDisableThinking('claude', 'claude-fable-5')).toBe(false)
     // 压根不思考的 SKU 无所谓关不关
-    expect(canDisableThinking('gemini-openai', 'gemini-3.8-flash')).toBe(true)
+    expect(canDisableThinking('mistral', 'ministral-14b-2512')).toBe(true)
+    // ⚠ Gemini 3.x 兼容面：目录给了思考形态（2026-10-20 起，官方 OpenAI 兼容页
+    //   有 reasoning_effort → thinking_level 映射表），而 Gemini 3 系关不掉思考
+    //   （官方「Reasoning cannot be turned off for Gemini 2.5 Pro or 3 models」）
+    //   ⇒ 关闭档发的是最低档，仍在推理 ⇒ 判为【关不掉】。
+    expect(canDisableThinking('gemini-openai', 'gemini-3.8-flash')).toBe(false)
+  })
+
+  it('档位按型号收窄，显示值 = 钳到该型号真有的那一档', () => {
+    // 厂商的 supported 集合逐型号不同（Kimi K3 只收 low/high、GLM-5.3 只收 low/high），
+    // 摆一个它不收的档不是 400，而是被钳到更低的一档 ⇒ 用户拨的档与实际跑的档不是一档。
+    let narrowed = 0
+    for (const p of PROVIDER_CATALOG) {
+      for (const m of p.models) {
+        const levels = selectableThinkingLevels(p.key, m.id)
+        expect(levels.length, `${p.key}/${m.id}`).toBeGreaterThan(0)
+        const table = m.effortLevels ?? m.thinkingLevels
+        if (table?.length) {
+          narrowed++
+          expect(levels, `${p.key}/${m.id}`).toEqual(['low', 'medium', 'high'].filter((l) => table.includes(l)))
+        }
+        for (const want of ['low', 'medium', 'high'] as const) {
+          expect(levels, `${p.key}/${m.id} @${want} 钳完仍要在表内`).toContain(clampThinkingLevel(p.key, m.id, want))
+        }
+      }
+    }
+    expect(narrowed, '目录里一个声明了档位表的型号都没有 —— 这条在空转').toBeGreaterThan(0)
+    // 具体一支：Kimi K3 官方只收 low/high ⇒ 存的 medium 落到 low，线上也发 low
+    expect(selectableThinkingLevels('moonshot', 'kimi-k3')).toEqual(['low', 'high'])
+    expect(clampThinkingLevel('moonshot', 'kimi-k3', 'medium')).toBe('low')
+    // 二元型号（线上三档同 body）下拉必须只剩一个「开」—— 摆低/中/高是骗人：
+    // 拨哪个跑的都是同一份，拨「低」以为省了 token 其实没省。
+    for (const p of PROVIDER_CATALOG) {
+      for (const m of p.models) {
+        const wire = m.thinkingWire as Record<string, unknown> | undefined
+        if (!wire) continue
+        const slots = ['low', 'medium', 'high'].map((l) => JSON.stringify(wire[l] ?? null))
+        const bin = slots[0] === slots[1] && slots[1] === slots[2]
+        expect(isBinaryThinkingModel(p.key, m.id), `${p.key}/${m.id} 二元判定`).toBe(bin)
+        if (bin) expect(thinkingSelectValue(p.key, m.id, 'medium'), `${p.key}/${m.id} 二元应显示 on`).toBe('on')
+      }
+    }
   })
 
   it('布尔关法也算真关 —— 只认字符串会对着真能关的服务商喊「仍会计费」', () => {

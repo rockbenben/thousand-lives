@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { AIConfig, Provider, ThinkingLevel } from '../ai/types'
-import { PRESETS, findPreset, matchPreset, supportsThinking, needsProxy, keyOptional, canDisableThinking, proxyWouldServe, DEFAULT_PROXY } from '../ai/presets'
+import { PRESETS, findPreset, matchPreset, supportsThinking, needsProxy, keyOptional, canDisableThinking, selectableThinkingLevels, isBinaryThinkingModel, thinkingSelectValue, proxyWouldServe, DEFAULT_PROXY } from '../ai/presets'
 import { isComplete, loadConfig, loadPresetConfig, saveConfig } from '../storage'
 import { isHttpUrl } from '../utils/url'
 
@@ -127,6 +127,13 @@ export function useAIConfig(onChange?: () => void) {
     keyOptional: keyOptional(presetId),
     // 这个型号有没有「关闭」这一档 —— 没有的话最低档仍在推理、仍在计费，界面不能写「关闭」
     canDisableThinking: canDisableThinking(presetId, model),
+    // 该型号真有的档（目录逐型号下发）—— 摆一个它不收的档，线上会被钳到更低的一档，
+    // 界面上写着「中」而实际跑的是 low
+    thinkingLevels: selectableThinkingLevels(presetId, model),
+    // 二元型号（线上三档同一份 body）只给一个「开」—— 摆低/中/高是骗人
+    thinkingBinary: isBinaryThinkingModel(presetId, model),
+    // 显示的必须是【钳到该型号真有的那一档】—— 存的 medium 在 Kimi K3 上实际是 low
+    thinkingLevelValue: thinkingSelectValue(presetId, model, thinkingLevel),
     proxyOn,
     proxyAddr,
     changeProxyOn,

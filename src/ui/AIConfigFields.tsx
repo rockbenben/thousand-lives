@@ -113,7 +113,7 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
       {cfg.canThink && (
         <label>
           思考强度
-          <select value={cfg.thinkingLevel} onChange={(e) => cfg.changeThinkingLevel(e.target.value as ThinkingLevel)}>
+          <select value={cfg.thinkingLevelValue} onChange={(e) => cfg.changeThinkingLevel((e.target.value === 'on' ? 'medium' : e.target.value) as ThinkingLevel)}>
             {/* ⚠ 最低那一档写什么，取决于这家【有没有关闭值】。gemini / grok /
                 groq / cerebras 这些没有，它们的「关」实际发的是自己的最低档 ——
                 仍在推理、仍在计费。写成「关闭（更快更省）」就是在撒谎：用户以为
@@ -121,9 +121,17 @@ export function AIConfigFields({ cfg }: { cfg: ReturnType<typeof useAIConfig> })
                 选项只留一个词、代价说明放到下面那行 —— 与上游同一分工，下拉保持
                 可扫读。 */}
             <option value="off">{cfg.canDisableThinking ? '关闭（更快更省）' : '最低'}</option>
-            <option value="low">低</option>
-            <option value="medium">中</option>
-            <option value="high">高</option>
+            {/* 二元型号（线上三档同一份 body）只给一个「开」—— 摆低/中/高是骗人：
+                拨哪个跑的都是同一份，拨「低」以为省了 token 其实没省。
+                其余型号只给该型号真有的档（目录逐型号下发）：摆一个它不收的档，
+                线上会被钳到更低的一档，界面上写着「中」而实际跑的是 low。 */}
+            {cfg.thinkingBinary ? (
+              <option value="on">开</option>
+            ) : (
+              cfg.thinkingLevels.map((l) => (
+                <option key={l} value={l}>{l === 'low' ? '低' : l === 'medium' ? '中' : '高'}</option>
+              ))
+            )}
           </select>
           {!cfg.canDisableThinking && (
             <span className="hint">该服务商不支持关闭思考——选「最低」发的是它自己的最低推理档，仍会推理、仍会计费。调高通常更准确，但更慢、更耗额度。</span>
