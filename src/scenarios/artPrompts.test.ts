@@ -20,7 +20,7 @@ describe('配图提示词缓存键 ↔ 剧本身份字段', () => {
     }
     const isAlive = (k: string) => alive.has(k) || titlePrefixes.some((p) => k.startsWith(p))
     // 成就徽章键（`-|…`）不在本判据内：其标签源自 achievements.ts 磁盘反查，噪音大于信号。
-    // 历史遗留孤儿键豁免清单。Phase 2 迁移批（MG-1/MG-2，见 docs/superpowers/audit/2026-10-02-report.md §4）已兑现已归零：
+    // 历史遗留孤儿键豁免清单。Phase 2 迁移批（MG-1/MG-2）已兑现已归零：
     // `officialdom|文字风狱`——旧标签改名遗留的同一场景废稿，现事件「文字狱」自有活键 `officialdom|文字狱`，孤儿键退役删除；
     // `xian|极西求道`——同理，事件「云游访仙」自有活键，孤儿键退役删除。新增豁免须先入迁移清单定夺。
     const LEGACY_ORPHAN_KEYS: string[] = []

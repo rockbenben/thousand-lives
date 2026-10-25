@@ -9,3 +9,4 @@ dev-dist
 .design-qa/
 .qoder*
 docs/superpowers/
+scripts/.regen-state*.json

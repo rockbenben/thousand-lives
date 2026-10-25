@@ -8,18 +8,23 @@ import path from 'node:path'
 import { builtinScenarios } from '../src/scenarios'
 import { NODE_THEMES } from '../src/ui/nodeArt'
 import { djb2 } from '../src/ui/djb2'
+import { planFor } from './art-surfaces.mjs'
+import { webpDimsOf } from './webp-dims.mjs'
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const ASSETS = `${ROOT}/src/assets`
-// 各类槽位的成品规格：宽高比 + 下限尺寸。下限而非精确值 —— 更大的旧文件（节点 / 主题曾是 1920×1280）
-// 判为合格；把小图放大凑数不增加细节，所以只卡「够不够」和「比例对不对」。
-const SIZE: Record<string, [number, number]> = {
-  cover: [1264, 848],
-  ending: [1264, 848],
-  node: [1264, 848],
-  theme: [1264, 848],
-  achievement: [320, 320],
-}
+// 各类槽位的成品规格：宽高比 + 下限尺寸。
+// 规格不再手写：scripts/art-surfaces.mjs 登记了每一类配图会出现在哪些面
+// （真实盒子的尺寸、object-fit、位置上压了多少文字），由它推出画幅与像素。
+// 下限而非精确值 —— 后端直出可能略大于规格，更大的旧文件也判为合格；
+// 反过来，把小图放大凑数不增加细节（节点 / 主题图此前是 720×480 被 Real-ESRGAN
+// 放大到 1920×1280，尺寸够但细节是假的），所以下限要卡在「原生重绘的尺寸」上。
+const SIZE: Record<string, [number, number]> = Object.fromEntries(
+  (['cover', 'ending', 'node', 'theme', 'achievement'] as const).map((kind) => [
+    kind,
+    planFor(kind).pixels as [number, number],
+  ]),
+)
 // 不合格 = 比例不对，或任一维小于下限
 function offSpec(i: { w: number; h: number; actual: string }): string | null {
   const m = /^(\d+)x(\d+)$/.exec(i.actual)
@@ -29,24 +34,12 @@ function offSpec(i: { w: number; h: number; actual: string }): string | null {
   if (aw < i.w || ah < i.h) return `${i.actual} 小于下限 ${i.w}x${i.h}`
   return null
 }
-// webp 头里读实际宽高（VP8 有损 / VP8X 扩展 / VP8L 无损三种布局）
+// webp 头里读实际宽高（VP8 有损 / VP8X 扩展 / VP8L 无损三种布局）——
+// 解析在 scripts/webp-dims.mjs，与 scripts/verify-art.mjs 共用同一份实现。
+// 这里以前自己抄了一份，无损（VP8L）那一支的位偏移抄错了五位：640×480 的
+// 无损文件被读成 1×14713，槽位于是被当成「缺图」。两份拷贝迟早漂，所以只留一份。
 function realDims(file: string): [number, number] | null {
-  let b: Buffer
-  try {
-    b = fs.readFileSync(file)
-  } catch {
-    return null
-  }
-  if (b.toString('ascii', 0, 4) !== 'RIFF') return null
-  const c = b.toString('ascii', 12, 16)
-  if (c === 'VP8X') return [b.readUIntLE(24, 3) + 1, b.readUIntLE(27, 3) + 1]
-  if (c === 'VP8 ') return [(b.readUInt16LE(26) & 0x3fff), (b.readUInt16LE(28) & 0x3fff)]
-  if (c === 'VP8L') {
-    const n = (b.readUInt32LE(17) >> 5) & 0x3fff
-    const m = (b.readUInt32LE(19) >> 5) & 0x3fff
-    return [n + 1, m + 1]
-  }
-  return null
+  return webpDimsOf(file)
 }
 // 源码里 art 字段登记（`art: 'x', gen: 'gemini'`），用于回填 gen 与「改名不丢图」的稳定 id
 function ledger(file: string) {
@@ -91,7 +84,7 @@ const push = (kind: string, scenario: string, label: string, slot: string, dir: 
   items.push({
     kind, scenario, label, slot, file, path: rel, w, h, hasFile: !!d,
     actual: d ? `${d[0]}x${d[1]}` : '缺图', gen,
-    ...(prompts[`${scenario}|${label}`] ? { prompt: prompts[`${scenario}|${label}`] } : {}),
+    ...(prompts[kind === 'achievement' ? `-|${slot}` : `${scenario}|${label}`] ? { prompt: prompts[kind === 'achievement' ? `-|${slot}` : `${scenario}|${label}`] } : {}),
   })
 }
 
