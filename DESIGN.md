@@ -212,7 +212,7 @@ components:
 
 ## Overview
 
-千世书是纯 React/Vite 单页应用，没有组件库、没有 Tailwind：全部视觉集中在一张全局样式表 `src/styles.css`（约 2300 行）加 `src/fonts.css`（字体分片），组件样式以全局 CSS 类名约定实现。视觉语言为「玄夜书卷」：**绀青深夜为底、鎏金为文、朱砂为印**——面板即卷页（内嵌金色细框），关键状态与落定动作以朱砂小印（`{colors.seal}` + 书法体 `{typography.seal-glyph}`）钤记，装饰动效取星盘缓旋与辉光呼吸。
+千世书是纯 React/Vite 单页应用，没有组件库、没有 Tailwind：全部视觉集中在一张全局样式表 `src/styles.css`（约 2700 行）加 `src/fonts.css`（字体分片），组件样式以全局 CSS 类名约定实现。视觉语言为「玄夜书卷」：**绀青深夜为底、鎏金为文、朱砂为印**——面板即卷页（内嵌金色细框），关键状态与落定动作以朱砂小印（`{colors.seal}` + 书法体 `{typography.seal-glyph}`）钤记，装饰动效取星盘缓旋与辉光呼吸。
 
 注意与常见「宣纸底」话术的差异：本项目的 `--paper` 是**亮色文字**（`{colors.ink}` #dcdcef），`--ink-*` 系列是**深色面板**（`{colors.canvas}` 至 `{colors.surface-hover}`）——墨与纸的命名指向「以墨为夜、以纸为字」的暗色系，而非浅色宣纸底。捕获置信度：色彩/字体/间距为 `confirmed`（:root 变量与重复用法）；组件状态矩阵为 `confirmed`（styles.css 明确成对写出）；动效时长为 `likely`（散落但未集中成 token）。本文件为**静态代码捕获**，实机截图比对 待 Task 6 实机复核。
 

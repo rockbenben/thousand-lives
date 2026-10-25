@@ -15,7 +15,7 @@ import {
 import { computeAchievements } from '../engine/achievements'
 import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
-import { covers } from './covers'
+import { covers, coverThumbs } from './covers'
 import { GenerateModal } from './GenerateModal'
 
 // 八卦：作为剧本卡角落的星盘点缀，按序轮替
@@ -146,6 +146,9 @@ export function Home({
       <div className="scenario-grid">
         {[...builtinScenarios, ...custom].map((sc, i) => {
           const cover = covers[sc.id]
+          // 卡片用方形缩略图：卡片只画 252px，封面要铺满 1440px 的 VN 幕布，
+          // 整张封面进卡片等于首屏多下 1.7MB 的看不见的像素
+          const cardArt = coverThumbs[sc.id] || cover
           const total = reachableEndingTones(sc).length
           const seen = new Set(seenEndings(sc.id)).size
           const pct = total ? Math.round((seen / total) * 100) : 0
@@ -160,7 +163,7 @@ export function Home({
               {cover && (
                 <img
                   className="card-cover"
-                  src={cover}
+                  src={cardArt}
                   loading="lazy"
                   decoding="async"
                   alt=""

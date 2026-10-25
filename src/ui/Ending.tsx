@@ -5,7 +5,7 @@ import { buildSummaryCard } from '../engine/summary'
 import { localEnding } from '../engine/local'
 import { gradeRun } from '../engine/grade'
 import { ShareCardModal } from './ShareCardModal'
-import { endingImage } from './endingArt'
+import { endingImage, endingTile } from './endingArt'
 import { achievementImage } from './achievementArt'
 import { Memoir } from './Memoir'
 import { Lightbox } from './Lightbox'
@@ -141,6 +141,8 @@ export function EndingScreen({
   const [showShare, setShowShare] = useState(false)
 
   const art = endingImage(scenario.id, ending.tone)
+  // 命运之卡是 384×512 的小框：它要的是结局图中央竖幅的缩略图，不是 2528px 的原图
+  const cardArt = endingTile(scenario.id, ending.tone)
 
   // 揭晓前先以一张「命运之卡」呈现，轻触翻开方见此生结局——仪式感与绚丽收束
   if (!revealed) {
@@ -158,11 +160,11 @@ export function EndingScreen({
           }}
         >
           <div className="fate-card-inner">
-            {art && (
+            {cardArt && (
               <div
                 className="fate-card-art"
                 /* inline-style-ok: 装饰绑定 */
-                style={{ backgroundImage: `url(${art})` }}
+                style={{ backgroundImage: `url(${cardArt})` }}
                 aria-hidden="true"
               />
             )}

@@ -22,7 +22,7 @@ import { achievementConfig } from '../scenarios/achievementConfig'
 import { reachableEndingTones } from '../engine/state'
 import { hasEndingArt } from './endingArt'
 import { downloadText, safeFilename } from './download'
-import { endingImage } from './endingArt'
+import { endingImage, endingTile } from './endingArt'
 import { achievementImage } from './achievementArt'
 import { Lightbox } from './Lightbox'
 import { useModalA11y } from './useModalA11y'
@@ -270,7 +270,9 @@ export function Archive({
                         </div>
                       )
                     }
-                    const art = endingImage(sc.id, t)
+                    // 图鉴格子是 105×140 的小框：同样用中央竖幅缩略图，
+                    // 不要为了一格 105px 去下载 2528px 的原图
+                    const art = endingTile(sc.id, t)
                     const own = hasEndingArt(sc.id, t)
                     return (
                       <button
