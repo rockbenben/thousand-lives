@@ -48,9 +48,10 @@
 | `attributes` | array | 属性列表（至少 1 个） |
 | `openings` | array? | 可选的开局身份列表，每项含 `name` 和 `prompt` |
 | `turnUnit` | string | 回合单位名称，默认 `"回合"` |
-| `maxTurns` | integer | 最大回合数（正整数） |
+| `maxTurns` | integer? | 可选，最大回合数（正整数）；缺省不限回合，由 `EMERGENT_HARD_CAP = 300` 兜底 |
 | `systemPrompt` | string | 给 AI 的系统提示词，定义 GM 风格与规则 |
 | `endings` | array | 结局列表（至少 1 个） |
+| `finale` | string? | 可选，走到 `maxTurns` 时的收束语 |
 | `ambitions` | array? | 可选，建议的「目标/野心」文本列表，玩家可选或自填 |
 | `localEvents` | array? | 可选，本地事件池；提供后该剧本支持「无需 Key」本地试玩模式 |
 
@@ -91,6 +92,8 @@
 - `attr<=N` — 某属性值 ≤ N（如 `hp<=0`）
 - `attr>=N` — 某属性值 ≥ N（如 `sanity>=95`）
 - `has(印记)` — 持有某状态印记（开局身份或晋阶解锁的 flag）
+- `!has(印记)` — 持有与否取反
+- `turn>=N` — 伪属性 `turn` = 当前已完成回合数（如 `name<=4 & turn>=18`）
 - `&` 串联多个条件（如 `maxTurns & has(营地) & supplies>=70`）
 
 > 结局判定**取所有满足条件中最具体的那个**（更严格的条件自动胜出，作者无需手工排序防遮蔽）；仅当多个满足条件互不蕴含时，才按数组顺序取靠前者。
