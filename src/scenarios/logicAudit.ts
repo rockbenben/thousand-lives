@@ -1,6 +1,7 @@
 // 剧本逻辑结构审查：invariants.test.ts 管「引用是否存在」，这里管「印记链与时间窗是否自洽」。
-// 规则编号 G-L 与 scripts/logic-check.ts 的报告前缀一致；两侧共用本文件，避免判据分叉。
+// 规则编号 G-M 与 scripts/logic-check.ts 的报告前缀一致；两侧共用本文件，避免判据分叉。
 import { keyMomentTurns } from '../engine/keymoment'
+import { EMERGENT_HARD_CAP } from '../engine/state'
 import type { Scenario } from './schema'
 
 export interface LogicAudit {
@@ -86,18 +87,31 @@ export function auditScenarioLogic(sc: Scenario): LogicAudit {
       )
     }
 
-  // ── L. 里程碑落在关键回合之外：keyMoment 事件只在关键回合出现（pickLocalEvent 的 phaseOk），
-  //      minTurn 若晚于最后一个关键回合则该事件永不出现 ──
+  // ── L. 里程碑落在最后一个关键回合上：minTurn 恰为最后一回合且非 once，只有一次出场机会
+  //      （窗口与关键回合完全无交集的硬伤由 M 统一报） ──
   if (sc.maxTurns) {
     const keys = keyMomentTurns(sc.maxTurns)
     const last = keys[keys.length - 1]
     for (const e of ev) {
       if (!e.keyMoment) continue
-      if ((e.minTurn ?? 1) > last)
-        hard.push(`L 里程碑「${e.summary}」minTurn ${e.minTurn} 超过最后一个关键回合 ${last} → 永不出现`)
-      else if ((e.minTurn ?? 1) === last && !e.once)
+      if ((e.minTurn ?? 1) === last && !e.once)
         soft.push(`L 里程碑「${e.summary}」minTurn ${e.minTurn} 恰为最后一个关键回合，只有一次出场机会`)
     }
+  }
+
+  // ── M. 里程碑窗口与关键回合无交集：keyMoment 只在关键回合出现（pickLocalEvent 的 phaseOk），
+  //      minTurn/maxTurn 若跨不到任何一个关键回合，事件永不出现。L 只看 minTurn 是否越过末尾，
+  //      窗口整个落在两个关键回合之间（如 minTurn=5、maxTurn=7）时此前不会报。 ──
+  const keyTurns = sc.maxTurns
+    ? keyMomentTurns(sc.maxTurns)
+    : Array.from({ length: Math.floor(EMERGENT_HARD_CAP / 4) }, (_, i) => (i + 1) * 4)
+  for (const e of ev) {
+    if (!e.keyMoment) continue
+    const lo = e.minTurn ?? 1
+    const hi = e.maxTurn ?? (sc.maxTurns ?? EMERGENT_HARD_CAP)
+    if (e.maxTurn !== undefined && lo > e.maxTurn) continue // 显式回合窗倒置由 invariants 的 B4 报
+    if (!keyTurns.some((t) => t >= lo && t <= hi))
+      hard.push(`M 里程碑「${e.summary}」窗口 [${lo},${hi}] 内没有任何关键回合 → 永不出现`)
   }
 
   return { hard, soft }

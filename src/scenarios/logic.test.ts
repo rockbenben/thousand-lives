@@ -61,17 +61,24 @@ describe('剧本逻辑结构（印记链 / endTone 悬空 / 里程碑时间窗�
     expect(auditScenarioLogic(sc).hard.some((h) => h.startsWith('I ') && h.includes(ladderFlag))).toBe(true)
   })
 
-  it('L：里程碑 minTurn 晚于最后一个关键回合 → 报', () => {
-    const sc = clone()
-    const km = (sc.localEvents ?? []).find((e) => e.keyMoment)!
-    km.minTurn = (sc.maxTurns ?? 40) + 5
-    expect(auditScenarioLogic(sc).hard.some((h) => h.startsWith('L '))).toBe(true)
+  it('M：里程碑窗口内没有任何关键回合 → 报（越过末尾 / 落在两回合之间）', () => {
+    const after = clone()
+    const km1 = (after.localEvents ?? []).find((e) => e.keyMoment)!
+    km1.minTurn = (after.maxTurns ?? 40) + 5
+    delete km1.maxTurn
+    expect(auditScenarioLogic(after).hard.some((h) => h.startsWith('M '))).toBe(true)
+
+    const gap = clone()
+    const km2 = (gap.localEvents ?? []).find((e) => e.keyMoment)!
+    km2.minTurn = 5
+    km2.maxTurn = 7
+    expect(auditScenarioLogic(gap).hard.some((h) => h.startsWith('M '))).toBe(true)
   })
 
   it('反例：把里程碑的 minTurn 挪回窗口内 → 不该报', () => {
     const sc = clone()
     const km = (sc.localEvents ?? []).find((e) => e.keyMoment)!
     km.minTurn = 1
-    expect(auditScenarioLogic(sc).hard.some((h) => h.startsWith('L '))).toBe(false)
+    expect(auditScenarioLogic(sc).hard.some((h) => h.startsWith('M '))).toBe(false)
   })
 })

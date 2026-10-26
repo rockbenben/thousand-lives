@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { builtinScenarios } from './index'
 import { parseCondition, conditionAttrs } from '../engine/condition'
+import { effectiveCeiling } from '../engine/state'
 
 // 内置剧本内容完整性：覆盖 scenarioSchema 之外的语义不变量，
 // 防止新增/编辑剧本时引入「死效果 / 不可达门控 / 重复剧情」等隐患。
@@ -37,15 +38,42 @@ describe('内置剧本内容完整性', () => {
         expect(bad).toEqual([])
       })
 
-      it('choice.effects 只作用于已定义属性（无死效果）', () => {
+      it('effects 只作用于已定义属性（choice / outcome 两层，无死效果）', () => {
         const bad: string[] = []
         events.forEach((e, i) =>
-          e.choices.forEach((c, ci) =>
+          e.choices.forEach((c, ci) => {
             Object.keys(c.effects ?? {})
               .filter((k) => !attrKeys.has(k))
-              .forEach((k) => bad.push(`event#${i} choice#${ci} 死效果 ${k}`)),
-          ),
+              .forEach((k) => bad.push(`event#${i} choice#${ci} 死效果 ${k}`))
+            ;(c.outcomes ?? []).forEach((o, oi) =>
+              Object.keys(o.effects ?? {})
+                .filter((k) => !attrKeys.has(k))
+                .forEach((k) => bad.push(`event#${i} choice#${ci} outcome#${oi} 死效果 ${k}`)),
+            )
+          }),
         )
+        expect(bad).toEqual([])
+      })
+
+      it('choice.effects 不与 outcomes 同时存在（引擎会用分支 effects 覆盖基础效果）', () => {
+        const bad: string[] = []
+        events.forEach((e, i) =>
+          e.choices.forEach((c, ci) => {
+            if ((c.outcomes?.length ?? 0) > 0 && Object.keys(c.effects ?? {}).length > 0)
+              bad.push(`event#${i} choice#${ci}「${c.text}」的基础 effects 会被分支覆盖`)
+          }),
+        )
+        expect(bad).toEqual([])
+      })
+
+      it('属性 initial 不超过任一开局的初始有效上限（含开局自带封顶印记）', () => {
+        const bad: string[] = []
+        const openings = sc.openings?.length ? sc.openings : [undefined]
+        for (const o of openings)
+          for (const a of sc.attributes) {
+            const cap = effectiveCeiling(a, o?.flag ? [o.flag] : [])
+            if (a.initial > cap) bad.push(`${o?.name ?? '无开局'} / ${a.key}: initial ${a.initial} > 初始有效上限 ${cap}`)
+          }
         expect(bad).toEqual([])
       })
 

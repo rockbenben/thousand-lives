@@ -388,6 +388,7 @@ export function applyChoice(
   let itemsGained = turnRes.itemsGained
   let itemsLost = turnRes.itemsLost
   if (picked) {
+    // 有 outcomes 时只结算被掷中分支的 effects；choice.effects 不叠加
     baseEffects = picked.effects ?? {}
     setFlags = picked.flagsSet ?? setFlags
     clearFlags = picked.flagsClear ?? clearFlags

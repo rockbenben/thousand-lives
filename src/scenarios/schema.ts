@@ -60,6 +60,7 @@ export const outcomeSchema = z.object({
 // 本地事件：无需 AI 即可游玩的预置剧情单元。本地模式下引擎从事件池加权随机抽取组合成一局。
 export const localChoiceSchema = z.object({
   text: z.string().min(1),
+  // 仅无 outcomes 时生效；有 outcomes 时引擎只结算被掷中分支的 effects，不要两处同时写
   effects: z.record(z.string(), z.number()).default({}),
   // 选择后他人的即时反馈（本地模式展示，营造代入与「爽感」）
   reaction: z.string().optional(),
