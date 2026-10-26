@@ -41,19 +41,54 @@ function apexFlag(sc: Scenario): string | null {
 }
 
 type Pick = (sc: Scenario, st: GameState, tr: TurnResult) => number
-const sumEff = (c: { effects: Record<string, number> }) => Object.values(c.effects ?? {}).reduce((a, v) => a + v, 0)
+const branchesOf = (c: any): any[] => [c, ...(c.outcomes ?? [])]
+// 选项带 outcomes 时引擎只结算分支 effects，choice.effects 是死数据。策略必须按分支评分：
+// 收益取加权期望，致死属性取全分支最坏值；否则采样器会照着不会结算的数值做选择。
+const expectedEff = (c: any, key: string): number => {
+  const outs = c.outcomes ?? []
+  if (!outs.length) return c.effects?.[key] ?? 0
+  const total = outs.reduce((s: number, o: any) => s + (o.weight ?? 1), 0)
+  return outs.reduce((s: number, o: any) => s + ((o.effects?.[key] ?? 0) * (o.weight ?? 1)), 0) / total
+}
+const sumEff = (c: any): number => {
+  const keys = new Set<string>()
+  for (const b of branchesOf(c)) for (const k of Object.keys(b.effects ?? {})) keys.add(k)
+  let s = 0
+  for (const k of keys) s += expectedEff(c, k)
+  return s
+}
+const worstDeath = (sc: Scenario, st: GameState, c: any): number => {
+  const dk = deathKeys(sc)
+  if (!dk.length) return 99
+  let m = Infinity
+  for (const b of branchesOf(c))
+    for (const k of dk) m = Math.min(m, (st.attributes[k] ?? 0) + (b.effects?.[k] ?? 0))
+  return m
+}
+// 冲顶策略用期望死亡余量而不是最坏值：5/6 成功、1/6 身死的晋阶赌注仍值得押；
+// 真正避险交给 survive 的 worstDeath。
+const expectedDeath = (sc: Scenario, st: GameState, c: any): number => {
+  const dk = deathKeys(sc)
+  if (!dk.length) return 99
+  const outs = c.outcomes ?? []
+  if (!outs.length) return Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects?.[k] ?? 0)))
+  const total = outs.reduce((s: number, o: any) => s + (o.weight ?? 1), 0)
+  let sum = 0
+  for (const o of outs)
+    sum += Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (o.effects?.[k] ?? 0))) * (o.weight ?? 1)
+  return sum / total
+}
 
 const strategies: Record<string, (rng: () => number) => Pick> = {
   // 乱点（覆盖广度）
   random: (rng) => (_sc, _st, tr) => Math.floor(rng() * tr.choices.length),
   // 避死求稳（走向平和/苟活类结局）
   survive: () => (sc, st, tr) => {
-    const dk = deathKeys(sc)
     let best = 0, bs = -Infinity
     tr.choices.forEach((c, i) => {
       const risky = (c.outcomes ?? []).some((o) => o.endTone && LETHAL.test(o.endTone)) || (c.endTone && LETHAL.test(c.endTone))
       if (risky) return
-      const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 0
+      const m = worstDeath(sc, st, c)
       const s = m * 100 + sumEff(c)
       if (s > bs) { bs = s; best = i }
     })
@@ -67,12 +102,11 @@ const strategies: Record<string, (rng: () => number) => Pick> = {
   },
   // 精算登顶（冲境界印记、权衡生死 → apex/境界结局）
   climber: () => (sc, st, tr) => {
-    const lad = ladderFlags(sc), held = new Set(st.flags ?? []), dk = deathKeys(sc)
-    const minD = (c: { effects: Record<string, number> }) => (dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99)
+    const lad = ladderFlags(sc), held = new Set(st.flags ?? [])
     let g = -1, gs = -Infinity
     tr.choices.forEach((c, i) => {
       const gn = (c.flagsSet ?? []).some((f) => lad.has(f) && !held.has(f)) || (c.outcomes ?? []).some((o) => (o.flagsSet ?? []).some((f) => lad.has(f) && !held.has(f)))
-      if (!gn || minD(c) < 14) return
+      if (!gn || expectedDeath(sc, st, c) < 14) return
       const s = sumEff(c); if (s > gs) { gs = s; g = i }
     })
     if (g >= 0) return g
@@ -80,24 +114,23 @@ const strategies: Record<string, (rng: () => number) => Pick> = {
     tr.choices.forEach((c, i) => {
       const risky = (c.outcomes ?? []).some((o) => o.endTone && LETHAL.test(o.endTone)) || (c.endTone && LETHAL.test(c.endTone))
       if (risky) return
-      const s = minD(c) * 100 + sumEff(c); if (s > bs) { bs = s; best = i }
+      const s = expectedDeath(sc, st, c) * 100 + sumEff(c); if (s > bs) { bs = s; best = i }
     })
     return best
   },
   // 探索者：优先抢「任意未持有 flag」的选项（触达支线/开局/印记门控内容），否则避死
   explorer: () => (sc, st, tr) => {
-    const held = new Set(st.flags ?? []), dk = deathKeys(sc)
-    const minD = (c: { effects: Record<string, number> }) => (dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99)
+    const held = new Set(st.flags ?? [])
     let g = -1, gs = -Infinity
     tr.choices.forEach((c, i) => {
       const fls = [...(c.flagsSet ?? []), ...(c.outcomes ?? []).flatMap((o) => o.flagsSet ?? [])]
       const gn = fls.some((f) => !held.has(f))
-      if (!gn || minD(c) < 12) return
+      if (!gn || expectedDeath(sc, st, c) < 12) return
       const s = sumEff(c) + 5; if (s > gs) { gs = s; g = i }
     })
     if (g >= 0) return g
     let best = 0, bs = -Infinity
-    tr.choices.forEach((c, i) => { const s = minD(c) * 100 + sumEff(c); if (s > bs) { bs = s; best = i } })
+    tr.choices.forEach((c, i) => { const s = expectedDeath(sc, st, c) * 100 + sumEff(c); if (s > bs) { bs = s; best = i } })
     return best
   },
 }
@@ -136,30 +169,27 @@ function infeasibleEndings(sc: Scenario): string[] {
 
 // 方向策略：把某属性推到极高/极低（在结算后致死属性留 6 缓冲以免过早送命），覆盖 attr>=高 / attr<=低 阈值结局
 const pushAttr = (key: string, dir: 1 | -1): Pick => (sc, st, tr) => {
-  const dk = deathKeys(sc)
   let best = 0, bs = -Infinity
   tr.choices.forEach((c, i) => {
-    const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99
+    const m = worstDeath(sc, st, c)
     // 推「低」时允许送死（要触发死线结局）；推「高」时尽量别中途暴毙
     if (dir === 1 && m < 6) return
-    const v = dir * ((st.attributes[key] ?? 0) + (c.effects?.[key] ?? 0))
+    const v = dir * ((st.attributes[key] ?? 0) + expectedEff(c, key))
     if (v > bs) { bs = v; best = i }
   })
   return best
 }
 // 「压低某属性但活到满期」：在不送死(致死属性结算后>=10)的前提下尽量压低 key，触发 `maxTurns & key<=低` 类结局
 const holdLow = (key: string): Pick => (sc, st, tr) => {
-  const dk = deathKeys(sc)
   let best = -1, bestK = Infinity
   tr.choices.forEach((c, i) => {
-    const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 99
-    if (m < 10) return
-    const kv = (st.attributes[key] ?? 0) + (c.effects?.[key] ?? 0)
+    if (worstDeath(sc, st, c) < 10) return
+    const kv = (st.attributes[key] ?? 0) + expectedEff(c, key)
     if (kv < bestK) { bestK = kv; best = i }
   })
   if (best >= 0) return best
   let b = 0, bs = -Infinity
-  tr.choices.forEach((c, i) => { const m = dk.length ? Math.min(...dk.map((k) => (st.attributes[k] ?? 0) + (c.effects[k] ?? 0))) : 0; if (m > bs) { bs = m; b = i } })
+  tr.choices.forEach((c, i) => { const m = worstDeath(sc, st, c); if (m > bs) { bs = m; b = i } })
   return b
 }
 // 「求彩蛋」：优先选带 endTone 分支的选项，触发 `<=-1` 哨兵/强制结局（其余随机以掷中稀有分支）
