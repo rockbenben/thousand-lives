@@ -4,14 +4,14 @@ import { clampEffects, initState, applyChoice } from '../engine/state'
 import { buildTurnMessages } from '../engine/prompt'
 
 describe('voyage 船力势力封顶', () => {
-  it('无势力印记时船力封顶 35（= base，≥ initial 不被削）', () => {
-    expect(clampEffects(voyage, { ship: 35 }, { ship: 20 }, []).ship).toBe(35)
+  it('无势力印记时船力封顶 50（= 校准起手，≥ initial 不被削）', () => {
+    expect(clampEffects(voyage, { ship: 45 }, { ship: 20 }, []).ship).toBe(50)
   })
-  it('私掠→50 船队→70 海枭→88 霸主→100 逐级解锁', () => {
+  it('船队→70 海枭→88 霸主→100 逐级解锁；私掠是事件链门控，不额外抬上限', () => {
     expect(clampEffects(voyage, { ship: 45 }, { ship: 20 }, ['私掠']).ship).toBe(50)
-    expect(clampEffects(voyage, { ship: 65 }, { ship: 20 }, ['私掠', '船队']).ship).toBe(70)
-    expect(clampEffects(voyage, { ship: 85 }, { ship: 20 }, ['私掠', '船队', '海枭']).ship).toBe(88)
-    expect(clampEffects(voyage, { ship: 95 }, { ship: 20 }, ['私掠', '船队', '海枭', '霸主']).ship).toBe(100)
+    expect(clampEffects(voyage, { ship: 65 }, { ship: 20 }, ['船队']).ship).toBe(70)
+    expect(clampEffects(voyage, { ship: 85 }, { ship: 20 }, ['海枭']).ship).toBe(88)
+    expect(clampEffects(voyage, { ship: 95 }, { ship: 20 }, ['霸主']).ship).toBe(100)
   })
   it('财富与人心不设势力封顶', () => {
     expect(clampEffects(voyage, { wealth: 95 }, { wealth: 20 }, []).wealth).toBe(100)
@@ -57,8 +57,9 @@ describe('voyage 升势力闸门', () => {
       if (w.need) expect(ev!.requires, w.summary).toBe(w.need)
     }
   })
-  it('海上肥羊「升起黑旗」授私掠印记并把船力上限抬到 50', () => {
-    // 该支 effects 含 ship:-3（劫掠损船），故不验「船力上涨」，而验印记 + 上限抬升
+  it('海上肥羊「升起黑旗」授私掠印记（势力链第一道门控）', () => {
+    // 该支 effects 含 ship:-3（劫掠损船），故不验「船力上涨」，而验印记；
+    // 基础上限已是校准起手 50，私掠不再额外抬上限。
     let st = initState(voyage, voyage.openings![0])
     st = { ...st, attributes: { ship: 35, wealth: 30, crew: 60 }, history: Array(2).fill({ narrative: '', choiceText: '', summary: '' }) }
     const ev = (voyage.localEvents ?? []).find((e) => e.summary === '海上肥羊')!
@@ -66,7 +67,6 @@ describe('voyage 升势力闸门', () => {
     const idx = tr.choices.findIndex((c) => (c.flagsSet ?? []).includes('私掠'))
     const next = applyChoice(voyage, st, tr as any, idx, () => 0.5) // 0.5>=0.18 不触发命运无常，确定
     expect(next.flags).toContain('私掠')
-    // 私掠 把船力上限 35→50：再给一记 +30 应被压在 50（而非旧上限 35），证明上限已抬升
     expect(clampEffects(voyage, next.attributes, { ship: 30 }, next.flags!).ship).toBe(50)
   })
   it('海盗结盟「歃血结盟」同回合授船队印记且船力可破私掠上限 50', () => {
