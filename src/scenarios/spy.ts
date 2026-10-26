@@ -233,7 +233,7 @@ export const spy: Scenario = {
       choices: [
         {
           text: '从容递证，谈笑周旋',
-          effects: { cover: 8, trust: 2 },
+          effects: {},
           outcomes: [
             { weight: 5, effects: { cover: 8, trust: 2 }, reaction: '宪兵翻看证件的手随你的谈笑慢了下来，竟也咧嘴应了句洋泾浜的客套，挥手放行；邻座老者悄悄看了你一眼。' },
             { weight: 1, effects: { cover: -200 }, reaction: '宪兵的目光却没随你的谈笑松开，反在证件的钢印上停住，又抬眼把你从头打量到脚。一声呵斥，他翻开了你的内袋——那卷底片掉了出来，被他两根指头捏起，举到你眼前。你被拖下电车，再没回来。' },
@@ -541,7 +541,7 @@ export const spy: Scenario = {
       choices: [
         {
           text: '从容赴约，咬定洋行职员身份',
-          effects: { cover: 10, trust: 4 },
+          effects: {},
           outcomes: [
             { weight: 5, effects: { cover: 10, trust: 4 }, reaction: '审讯的特务盘问半晌，被你滴水不漏的供词逼得没了脾气，终是挥手放人；那杯凉透的茶，你竟从头到尾没动过分毫。' },
             { weight: 1, effects: { cover: -200 }, reaction: '可你没料到，他们早从别处摸清了你的底。供词刚说到一半，那特务便冷笑着掀开桌上的卷宗——你的化名、你的来路，赫然在列。怀里那本没来得及销毁的密写小册，被搜了出来。极司菲尔路的门，你进去了，却没能再出来。' },

@@ -365,7 +365,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '欣然应召，席间曲意逢迎',
-          effects: { fame: 8, safety: 2 },
+          effects: {},
           outcomes: [
             { weight: 5, effects: { fame: 10, safety: 4 }, reaction: '督军听得叫了声「好！」，当场赏你大洋绸缎，许你日后随时进出督军府；这一晚，你的名字算是挂进了督军府的堂会账上。' },
             { weight: 4, effects: { safety: -22, fame: -3 }, reaction: '酒过三巡，督军醉态毕露，借着点戏百般刁难、动手动脚，你强陪着笑挨到散席，回府的车上一身冷汗——这趟贵人的赏脸，险些把命也赏了进去。' },
@@ -385,7 +385,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '随班社南下，辗转跑码头',
-          effects: { safety: 4, fame: -4 },
+          effects: {},
           outcomes: [
             { weight: 6, effects: { safety: 6, fame: -4 }, reaction: '一路风餐露宿，总算在南边的码头站住了脚；离了熟地，名气折损大半，可乱世里能囫囵活着挪个窝，已是万幸。' },
             { weight: 4, effects: { safety: -24, fame: -6 }, reaction: '南下的路上撞见了散兵流寇，行头细软被劫掠一空，你裹在难民里东躲西藏，几番在鬼门关前缩回脚，到地方时已是脱了形的半条命。' },
@@ -393,7 +393,7 @@ export const liyuan: Scenario = {
         },
         {
           text: '守着空园，护住祖师爷的家业',
-          effects: { safety: -8, fame: 2 },
+          effects: {},
           outcomes: [
             { weight: 5, effects: { safety: -10, fame: 6 }, reaction: '你赌乱兵不进租界，守着空园子熬了过来；待战事稍歇、戏园重张，你「乱世不弃台」的义气传开，老主顾们反倒更念你的好。' },
             { weight: 5, effects: { safety: -30, fame: 0 }, reaction: '乱兵到底还是闯了进来，你护着祖传的戏箱躲进地窖，听着头顶翻箱倒柜、刀枪乱响，整整一夜不敢出声——这条命，是从兵燹里捡回来的。' },
@@ -401,7 +401,7 @@ export const liyuan: Scenario = {
         },
         {
           text: '投奔军阀撑腰的大戏院避风头',
-          effects: { safety: 6, fame: -2 },
+          effects: {},
           outcomes: [
             { weight: 6, effects: { safety: 6, fame: -2, art: -2 }, reaction: '那大戏院果然没人敢动，你在屋檐下安稳避了风头；只是仰人鼻息、点什么唱什么，憋屈得很，自家的戏路也荒了几分。' },
             { weight: 4, effects: { safety: -18, fame: -4 }, reaction: '没承想那军阀没撑过这一仗，靠山一倒，戏院被新来的势力查抄，你这「某某的人」也跟着挨了挂落，狼狈得几乎扫地出门。' },
@@ -418,7 +418,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '以牙还牙，也雇枪手回敬对台',
-          effects: { fame: 6 },
+          effects: {},
           outcomes: [
             { weight: 5, effects: { fame: 12 }, reaction: '你请的那支笔着实老辣，几篇文章绵里藏针，反把对台那角儿多年的旧账翻了出来；舆论一夜倒戈，看客只道是对方理亏，你这一仗打得漂亮。' },
             { weight: 5, effects: { fame: -16, safety: -4 }, reaction: '笔战越演越烈，两边的脏水越泼越浑，到末了看客早忘了谁对谁错，只记住了你俩当街对骂似的难看吃相；这一摊烂污，溅了你满身。' },
@@ -799,7 +799,7 @@ export const liyuan: Scenario = {
       narrative:
         '那位手握兵权的司令把你「请」进了公馆，开门见山地摆出一桩交易：他正与另一路军阀争地盘，想借你的名气替他在堂会上长脸、笼络人心，要你从此只为他一人献艺，做他金屋里藏着的「私伶」。条件是泼天的富贵、十足的安稳，再没人敢动你一根指头；可代价是你这戏从此只唱给一个人听，那满堂的看客、那红氍毹上的自由，全都没了。副官按着腰间的枪，皮笑肉不笑地等你点头。',
       choices: [
-        { text: '婉言巧拒，戏要唱给天下人', effects: { fame: 8, safety: -10, art: 2 }, outcomes: [
+        { text: '婉言巧拒，戏要唱给天下人', effects: {}, outcomes: [
           { weight: 10, effects: { fame: 8, safety: -10, art: 2 }, reaction: '你以「困在公馆里、嗓子要养废、反倒堕了司令的面子」为由婉拒，司令悻悻作罢；这份不肯被金屋圈住的傲骨悄悄传开，看客愈发敬重你。' },
           { weight: 3, effects: { safety: -100 }, endTone: '开罪权贵·横死乱世', reaction: '你硬顶回去的那句话，把那位司令的兴致扫到了冻冰上。当夜门房换了生面孔，班主来催戏时眼睛不敢看你——你才惊觉，乱世里一条伶人的命，从来由不得自己。' },
         ] },
@@ -924,7 +924,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '倾尽所学，力压群伦问鼎',
-          effects: { art: 12, fame: 12, safety: -12 },
+          effects: {},
           outcomes: [
             { weight: 8, effects: { art: 12, fame: 12, safety: -12 }, reaction: '你这一场使尽浑身解数，压轴一开腔，满园子先没了声，跟着炸雷般的倒好和正好齐吼上来；自此群英会拔筹，梨园说了你多少年。' },
             { weight: 2, effects: { safety: -100 }, endTone: '殚精竭力·当场气殒', reaction: '为压住满台前辈，你把那口气提到了从未有过的极限，一段最险的高腔拔到尽处——只觉眼前金星乱迸、天旋地转。彩声还没起，你已栽倒在台板上，再没能起来。满园子这才明白，方才那一声，是拿命托出来的。' },
@@ -1039,7 +1039,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '挂头牌压阵，亲赴外埠跑码头',
-          effects: { fame: 8, art: 4, safety: -6 },
+          effects: {},
           outcomes: [
             { weight: 9, effects: { fame: 8, art: 4, safety: -6 }, reaction: '你亲自压阵唱响了那座码头，硬是凭一身好戏镇住了地头蛇、赢得满堂彩；全班人都松了口气，对你这台柱子愈发心服口服。' },
             { weight: 2, effects: { safety: -100 }, endTone: '客途遭劫·葬身荒野', reaction: '那地头蛇是个翻脸不认人的主儿，嫌你抢了他相熟戏班的彩头，竟暗里使了狠手。回程的水路上风高浪急，一伙不知哪来的恶徒摸黑登了船——等同伴反应过来，你已被掀进了冰冷的江里，连同那一身惊艳过满座的玩意儿，沉进了这异乡的荒水深处，再没浮上来。' },
@@ -1245,7 +1245,7 @@ export const liyuan: Scenario = {
       choices: [
         {
           text: '叩谢笑纳，攀稳这座靠山',
-          effects: { fame: 6, safety: 8, art: -2 },
+          effects: {},
           outcomes: [
             { weight: 9, effects: { fame: 6, safety: 8, art: -2 }, reaction: '你眉开眼笑地谢了赏、收下那几根金条，司令愈发受用；自此你有了军中靠山、家底厚实，只是这条船上了，往后便难由着自己性子了。' },
             { weight: 3, effects: { safety: -100 }, endTone: '攀附逆党·横遭抹杀', reaction: '你贪了那几根金条、上了那位司令的船，谁知没过多久他便兵败身死。新当权的清算余党，顺着金条上的私库印记摸到了你头上——一顶「逆党」的帽子扣下来，连分辩的机会都没有，你的名字便和那几根金条一道，记进了清算的新册子里。这条船，到底没等你下来。' },
@@ -1988,7 +1988,8 @@ export const liyuan: Scenario = {
       narrative:
         '梨园里近来起了场不大不小的「流派之争」。另一位与你齐名的大角儿，唱法、做派与你恰是两路，捧两家的看客、报馆主笔在茶楼报端吵得不可开交，把「谁家的玩意儿才是正宗」争出了火气。这日两边的捧客竟撺掇着要摆一场「对台打擂」——同一出戏，两派各唱一场，叫满城的内行评个高下。这是扬名立派、压倒对家的好机会，也是一招走错便要当众跌了招牌、连累一派声名的险棋。对家已下了战书，满城都等着看你接不接。',
       choices: [
-        { text: '应战打擂，唱出本派的真章', effects: { fame: 8 },
+        { text: '应战打擂，唱出本派的真章',
+          effects: {},
           outcomes: [
             { weight: 5, effects: { art: 6, fame: 14, safety: -4 }, reaction: '擂台上你拿出压箱的真玩意儿，一腔一式都唱在节骨眼上，满座内行心服口服、彩声压倒对家；这一仗打得你这一派声名大噪，从此在梨园里站稳了正宗的位子。' },
             { weight: 3, effects: { fame: -10, safety: -4, art: 2 }, reaction: '对家到底也是浸淫几十年的真角儿，那一场旗鼓相当、各擅胜场，看客争得面红耳赤也评不出高下；这擂台没分出输赢，倒把两派的梁子结得更深，徒惹一身是非。' },

@@ -350,7 +350,7 @@ export const xian: Scenario = {
     {
       narrative: '深山幽谷，云雾终年不散。你避雨钻入一处古洞，借着指尖一缕微光，竟在石榻积尘之下摸出半卷无名残篇。绢帛已朽，墨迹却古拙森然，字字如活物般在眼底游走，玄奥晦涩，似有上乘法门暗藏其中。可这来历不明之物，或是前人遗泽，或是吞人心神的祸患——研读它，等于把自己的识海，交给一个素未谋面的死人。',
       choices: [
-        { text: '潜心参悟，循篇修行', effects: { cultivation: 12 }, outcomes: [
+        { text: '潜心参悟，循篇修行', effects: {}, outcomes: [
           { weight: 5, effects: { cultivation: 12, daoHeart: -6 }, reaction: '你循那古拙残篇潜心参悟，竟真从中窥出一门上乘法门，修为悄然大进——同行散修远远瞧见你身上骤起的森然气机，无不变了脸色，悄悄退开数丈：「这等邪门东西也敢练，嫌命长了？」' },
           { weight: 2, effects: { daoHeart: -100, lifespan: -100 }, endTone: '走火入魔·身死道消', reaction: '那残篇果然是吞人心神的祸患。你识海方一沉浸，便有一缕森冷的死人神识顺着字迹钻了进来，将你的清明一寸寸染黑、将你的经脉一根根绞断。待你惊觉欲退已是晚了——那素未谋面的死人借你的识海还了魂，而你的神魂，则在那字里行间彻底溃散，成了残篇的又一个祭品。' },
         ] },
@@ -400,7 +400,7 @@ export const xian: Scenario = {
     {
       narrative: '天地异动，一处上古秘境轰然洞开。原本荒芜的山坳间，灵雾如瀑倾泻而出，宝光在云隙间隐隐明灭，馥郁的灵气扑面而来，只觉五内俱润。四方修士闻风而至，御剑遁光在天际划出无数长虹，争先恐后涌向那道门户。人人都知里头有泼天造化，可人人也都明白——那门内机缘与杀劫并存，进去的人，未必都能囫囵着出来。',
       choices: [
-        { text: '抢先深入，搏一场大造化', effects: { cultivation: 16, lifespan: 2 }, outcomes: [
+        { text: '抢先深入，搏一场大造化', effects: {}, outcomes: [
           { weight: 6, effects: { cultivation: 16, lifespan: 2 }, reaction: '身后蜂拥的修士见你头一个冲入那凶名赫赫的门户，无不倒吸凉气：「这人疯了不成？」你却在那秘境深处抢得一桩泼天造化，修为一举猛进、更得了半枚续命灵丹——这一把，赌对了。' },
           { weight: 2, effects: { cultivation: 8, lifespan: -80 }, endTone: '误入杀阵·横死当场', reaction: '你头一个冲进那凶名赫赫的门户，抢造化抢得忘了形，却一脚踏进了门内深藏的上古杀阵。刀光未亮，那无声的阵纹已将你周身灵光绞得粉碎——抢得最前的人，也成了葬身最深的那个。' },
         ] },
@@ -535,7 +535,7 @@ export const xian: Scenario = {
     {
       narrative: '苦修多载，你终于触及了结丹的玄关。丹田之中真气盘旋如龙，那一线突破的契机若隐若现，近得仿佛伸手可及。可凝丹之时心神大开、神魂最是脆弱，半点外扰都受不得。偏偏眼下灵气虽足，天时却隐隐不稳——远处天际有乌云聚散，地脉灵机时强时弱，似有变数将至。强行凝丹是赌天时，延后再凝是赌机缘不再，这一注，押下去便无法回头。',
       choices: [
-        { text: '把握此机，全力凝结金丹', effects: { cultivation: 16 }, outcomes: [
+        { text: '把握此机，全力凝结金丹', effects: {}, outcomes: [
           { weight: 5, effects: { cultivation: 16, daoHeart: -2 }, reaction: '丹田之中金光乍现的刹那，方圆百里灵机为之一震，你竟在那不稳的天时里硬生生凝实了丹基、修为大进，远处感应到这般动静的修士无不动容：「有人在这等天时下强凝金丹？好大的魄力！」' },
           { weight: 1, effects: { daoHeart: -100, lifespan: -100 }, endTone: '走火入魔·身死道消', reaction: '凝丹凝到最紧要处，那变数终究还是来了——一道乱窜的地脉灵机猝然冲入你大开的识海。神魂本就脆弱不堪，被这一搅，凝了大半的丹基轰然炸碎，逆行的真气沿着经脉寸寸绞断。你赌的是天时，天时却不跟你赌。' },
         ] },
@@ -2018,18 +2018,18 @@ export const xian: Scenario = {
         },
         {
           text: '孤注一掷，以魔道秘法反杀立威',
-          effects: { cultivation: 8, daoHeart: -8, lifespan: -4 },
+          effects: {},
           outcomes: [
             {
               weight: 3,
               flagsClear: ['正道追缉'],
-              effects: { cultivation: 6 },
+              effects: { cultivation: 14, daoHeart: -8, lifespan: -4 },
               reaction: '你以孤注一掷的魔道秘法将追缉队伍尽数击溃，那剑修被你魔焰击飞，重伤滚落山道。你立于血色残局之中，仰头望了望四面山影——「来追我的人，今日该知道了：我不是好杀的猎物。」消息传出，正道追缉暂且撤去，却也将更强的敌人，推向了你。',
             },
             {
               weight: 2,
               flagsClear: ['正道追缉'],
-              effects: { daoHeart: -12, lifespan: -20 },
+              effects: { cultivation: 8, daoHeart: -20, lifespan: -24 },
               endTone: '走火入魔·身死道消',
               reaction: '你催动孤注一掷的魔道秘法，戾气暴走、反噬入识海，道心在那一瞬间彻底崩散。你听见自己的经脉一根根寸断，最后的意识在血色中飘散——魔道行到尽头，原来是这样一个结局。',
             },
