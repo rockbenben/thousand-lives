@@ -235,6 +235,15 @@ export function Setup({
         >
           开始这段人生
         </button>
+        {!ready && (
+          <p className="hint start-hint">
+            {mode === 'ai' && !cfg.complete
+              ? '填好上方 AI 配置后即可开始；也可以切回「本地试玩」'
+              : customId && !customIdText.trim()
+                ? '写完自定义身份后再开始'
+                : ''}
+          </p>
+        )}
       </div>
     </div>
   )

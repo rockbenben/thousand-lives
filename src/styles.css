@@ -503,7 +503,9 @@ html { scrollbar-color: var(--line-strong) transparent; }
 
 /* 收藏入口条：两枚进度刻盘（结局 / 成就）+ 通往命书阁的引线。
    原先是两条 3px 细线 + emoji 前缀：0% 时只剩一道几乎看不见的轨道，整块明度发灰，
-   撑不起「收集」这个留存钩子。改为 conic 刻盘——占比本身就是图形，且进度越高越亮。 */
+   撑不起「收集」这个留存钩子。改为 conic 刻盘——占比本身就是图形，且进度越高越亮。
+   入口列按整列拉伸画出分隔线，但文字必须垂直居中；标签行高收紧，避免行盒在刻盘与
+   文字之间撑出一块空白。 */
 .collection-strip {
   display: inline-flex;
   align-items: center;
@@ -525,7 +527,7 @@ html { scrollbar-color: var(--line-strong) transparent; }
 }
 .cs-dials { display: flex; align-items: center; gap: var(--sp-lg); }
 .cs-dial-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-/* 刻盘：conic 画弧，内嵌深底盘托住数字；--pct 由 Home.tsx 经 cssVars 注入 */
+/* 刻盘：conic 画弧，0° = 12 点、顺时针；内嵌深底盘托住数字；--pct 由 Home.tsx 经 cssVars 注入 */
 .cs-dial {
   position: relative;
   display: grid;
@@ -533,10 +535,10 @@ html { scrollbar-color: var(--line-strong) transparent; }
   width: 48px;
   height: 48px;
   border-radius: var(--r-full);
-  background: conic-gradient(from -90deg, var(--cinnabar) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0);
+  background: conic-gradient(from 0deg, var(--cinnabar) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0);
   transition: background var(--dur-4) var(--ease-out), box-shadow var(--dur-3) var(--ease-out);
 }
-.cs-dial.gold { background: conic-gradient(from -90deg, var(--gold) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0); }
+.cs-dial.gold { background: conic-gradient(from 0deg, var(--gold) calc(var(--pct, 0) * 1%), rgba(40, 50, 106, 0.5) 0); }
 .cs-dial::before {
   content: '';
   position: absolute;
@@ -558,6 +560,7 @@ html { scrollbar-color: var(--line-strong) transparent; }
   align-items: baseline;
   gap: 3px;
   font-size: 0.76rem;
+  line-height: 1.2;
   letter-spacing: 0.08em;
   color: var(--paper-dim);
   white-space: nowrap;
@@ -565,7 +568,8 @@ html { scrollbar-color: var(--line-strong) transparent; }
 .cs-dial-label i { color: var(--muted); font-style: normal; font-variant-numeric: tabular-nums; }
 .cs-go {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  align-self: stretch;
   gap: 5px;
   padding-left: var(--sp-lg);
   border-left: 1px solid var(--line);
@@ -573,7 +577,6 @@ html { scrollbar-color: var(--line-strong) transparent; }
   letter-spacing: 0.1em;
   font-size: 0.86rem;
   white-space: nowrap;
-  align-self: stretch;
 }
 .cs-go i { font-style: normal; transition: transform var(--dur-2) var(--ease-out); }
 .collection-strip:hover .cs-go { color: var(--gold-bright); }
@@ -2073,6 +2076,7 @@ span.ach-unlock-chip { padding: var(--sp-xxs) 15px; cursor: default; }
   margin-top: var(--sp-lg);
   padding-top: var(--sp-md);
 }
+.start-hint { margin: 8px 0 0; text-align: center; }
 .start-bar::before {
   content: '';
   position: absolute;
@@ -2509,6 +2513,9 @@ input[type='range']:focus:not(:focus-visible) { outline: none; }
 
 /* 窄屏：☰ 菜单改底部抽屉（U-11/M-03），不再盖住卷文大半屏；⛶ 移贴面板右缘（U-16/M-08） */
 @media (max-width: 600px) {
+  /* backdrop-filter 会给 fixed 子元素造一个包含块，抽屉会被裁在 HUD 高度里，
+     只剩最后一个菜单项露在屏幕顶端；窄屏去掉模糊，抽屉才真正相对视口定位。 */
+  .vn-hud-ctl { backdrop-filter: none; }
   .play-menu-panel {
     position: fixed; top: auto; bottom: 0; left: 0; right: 0;
     min-width: 0; max-height: 72vh; overflow-y: auto;

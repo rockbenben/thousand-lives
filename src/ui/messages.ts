@@ -5,7 +5,7 @@ export const msg = {
   noApiConfig: '未找到 API 配置，请回到卷首重新设置',
 
   /** Import error prefix */
-  importFailed: '剧本导入失败：请确认选择的是命书阁「导出」生成的 JSON 文件。原因：',
+  importFailed: '剧本导入失败：请确认文件是符合剧本格式的 JSON。原因：',
 
   /** Save import error prefix */
   saveImportFailed: '存档导入失败：请确认选择的是「导出存档」生成的 JSON 文件。原因：',

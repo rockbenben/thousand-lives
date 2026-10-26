@@ -142,7 +142,7 @@ export function GenerateModal({
                 关闭
               </button>
               <button className="primary" disabled={!ready} onClick={run}>
-                开始生成
+                {!theme.trim() ? '先写一个主题' : !cfg.complete ? '填好 API 配置后生成' : '开始生成'}
               </button>
             </>
           )}

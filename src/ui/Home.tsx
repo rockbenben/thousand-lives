@@ -1,7 +1,7 @@
 import { cssVars } from '../utils/cssVars'
 import { useRef, useState } from 'react'
-import { ZodError } from 'zod'
 import { msg } from './messages'
+import { importErrorMessage } from './importError'
 import { importScenarioSchema, type Scenario } from '../scenarios/schema'
 import { builtinScenarios } from '../scenarios'
 import { hasLocalMode } from '../engine/local'
@@ -20,21 +20,6 @@ import { GenerateModal } from './GenerateModal'
 
 // 八卦：作为剧本卡角落的星盘点缀，按序轮替
 const TRIGRAMS = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷']
-
-function importErrorMessage(e: unknown): string {
-  if (e instanceof ZodError) {
-    const issue = e.issues[0]
-    if (!issue) return e.message
-    const path = issue.path
-    const evAt = path.indexOf('events')
-    const last = String(path[path.length - 1] ?? '')
-    const where = evAt >= 0 && typeof path[evAt + 1] === 'number'
-      ? `剧本文件第 ${Number(path[evAt + 1]) + 1} 个事件里的「${last}」一项`
-      : last ? `「${last}」这一项` : '剧本文件的顶层结构'
-    return `${where}格式不对（详情：${issue.message}；格式说明见项目 README）`
-  }
-  return e instanceof Error ? e.message.slice(0, 200) : String(e)
-}
 
 export function Home({
   onSelect,
@@ -68,6 +53,11 @@ export function Home({
     achConfig: achievementConfig,
   })
   const achDone = achievements.filter((a) => a.done).length
+  // 刻盘只是定性提示：1/388 仅 0.26%（不到 1°），肉眼等于空环；非零时给 1% 的最小可见弧
+  const endingsPct = endingsTotal ? (endingsSeen / endingsTotal) * 100 : 0
+  const endingsArc = endingsSeen > 0 ? Math.max(endingsPct, 1) : 0
+  const achPct = achievements.length ? (achDone / achievements.length) * 100 : 0
+  const achArc = achDone > 0 ? Math.max(achPct, 1) : 0
 
   const onImport = async (file: File) => {
     try {
@@ -104,12 +94,17 @@ export function Home({
         </div>
       </div>
 
-      <button className="collection-strip" onClick={onOpenArchive}>
+      <button
+        className="collection-strip"
+        onClick={onOpenArchive}
+        aria-label={`命书阁：已历结局 ${endingsSeen}/${endingsTotal}，成就 ${achDone}/${achievements.length}`}
+        title="已历结局按不同收尾累计，死亡也计入；点击打开命书阁"
+      >
         <span className="cs-dials">
           <span className="cs-dial-cell">
             <span
               className="cs-dial"
-              style={cssVars({ '--pct': `${endingsTotal ? (endingsSeen / endingsTotal) * 100 : 0}` })}
+              style={cssVars({ '--pct': `${endingsArc}` })}
               aria-hidden="true"
             >
               <span className="cs-dial-num">{endingsSeen}</span>
@@ -121,7 +116,7 @@ export function Home({
           <span className="cs-dial-cell">
             <span
               className="cs-dial gold"
-              style={cssVars({ '--pct': `${achievements.length ? (achDone / achievements.length) * 100 : 0}` })}
+              style={cssVars({ '--pct': `${achArc}` })}
               aria-hidden="true"
             >
               <span className="cs-dial-num">{achDone}</span>
@@ -131,8 +126,8 @@ export function Home({
             </span>
           </span>
         </span>
-        <span className="cs-go" aria-hidden="true">
-          命书阁<i>→</i>
+        <span className="cs-go">
+          命书阁<i aria-hidden="true">→</i>
         </span>
       </button>
 
@@ -187,12 +182,12 @@ export function Home({
         <button className="scenario-card action-card gen-card" onClick={() => setShowGen(true)}>
           <span className="scenario-glyph" aria-hidden="true">拟</span>
           <span className="scenario-title">AI 生成剧本</span>
-          <span className="scenario-intro">给一个主题，AI 现编一个带数十至上百支线的全新剧本，加入剧本库</span>
+          <span className="scenario-intro">给一个主题，AI 现编一个带数十至上百支线的全新剧本，加入剧本库（需 API Key）</span>
         </button>
         <button className="scenario-card action-card import-card" onClick={() => fileRef.current?.click()}>
           <span className="scenario-glyph" aria-hidden="true">入</span>
           <span className="scenario-title">导入剧本</span>
-          <span className="scenario-intro">选择符合剧本格式的 JSON 文件；可先在命书阁点「导出」拿现成模板</span>
+          <span className="scenario-intro">选择符合剧本格式的 JSON 文件；字段说明见项目 README 的「剧本格式规范」</span>
         </button>
       </div>
 

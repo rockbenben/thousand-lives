@@ -260,6 +260,10 @@ export function Play({
     setTimeout(() => aliveRef.current && setSaved(false), 2000)
   }
 
+  const requestQuit = () => {
+    if (window.confirm('退出本局会舍弃这段未存档的进度（已存档的不受影响），确定？')) onQuit()
+  }
+
   const exportSave = () => {
     downloadText(`千世书-${safeFilename(scenario.title)}-第${turnNo}${scenario.turnUnit}.json`, exportSaveString(session))
   }
@@ -385,9 +389,7 @@ export function Play({
                 <button
                   className="play-menu-item danger"
                   role="menuitem"
-                  onClick={() => {
-                    if (window.confirm('退出本局会舍弃这段未存档的进度（已存档的不受影响），确定？')) onQuit()
-                  }}
+                  onClick={requestQuit}
                   title="退出当前这局，回到卷首（未存档的进度将舍弃）"
                 >
                   <span>退出本局</span><span className="play-menu-glyph">↩</span>
@@ -534,7 +536,10 @@ export function Play({
             {error && (
               <div className="error-box">
                 <p>{error}</p>
-                <button onClick={runTurn}>重试本回合</button>
+                <div className="row">
+                  <button onClick={runTurn}>重试本回合</button>
+                  <button className="ghost" onClick={requestQuit}>回卷首改配置</button>
+                </div>
               </div>
             )}
           </div>
